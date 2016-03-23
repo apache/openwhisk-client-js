@@ -13,30 +13,30 @@ $ npm install openwhisk // replace with package name....
 
 ```
 var openwhisk = require('openwhisk');
-var ow = openwhisk('api_key', {namespace: 'default_namespace'});
+var ow = openwhisk('https://openwhisk.ng.bluemix.net/api/v1/', 'api_key', {namespace: 'default_namespace'});
 ```
 
-_All operation methods return a Promise resolved asynchronously with the results. Failures are available through the catch method._
+_All resource operation methods return a Promise resolved asynchronously with the results. Failures are available through the catch method._
 
 ```
-ow.some_operation().then(function () { // success! }).catch(function (err) { // failed! })
+ow.resource.operation().then(function () { // success! }).catch(function (err) { // failed! })
 ```
 ### retrieve all actions
 
 ```
-ow.actions()
+ow.actions.list()
 ```
 
 ### invoke an action
 
 ```
-ow.action('action_name')
+ow.actions.invoke('action_name')
 ```
 
 ### invoke an action with options
 
 ```
-ow.action('action_name', {...})
+ow.actions.invoke('action_name', {...})
 ```
 
 The following options are supported:
