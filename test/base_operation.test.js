@@ -4,7 +4,7 @@ const test = require('ava')
 const proxyquire = require('proxyquire')
 const stub = {}
 
-const Actions = proxyquire('../lib/actions.js', { 'request-promise': stub})
+const Actions = proxyquire('../lib/base_operation.js', { 'request-promise': stub})
 
 test('list all actions using default namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
