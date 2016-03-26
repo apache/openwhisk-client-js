@@ -1,204 +1,55 @@
 'use strict'
 
 const test = require('ava')
-const proxyquire = require('proxyquire')
-const stub = {}
+const BaseOperation = require('../lib/base_operation')
 
-const Actions = proxyquire('../lib/base_operation.js', { 'request-promise': stub})
-
-test('list all actions using default namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const result = [{
-    namespace: 'default',
-    name: 'action_name',
-    version: '0.0.1',
-    publish: true
-  }]
-
-  stub.get = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    return Promise.resolve(result)
-  }
-
-  t.plan(3)
-
-  const actions = new Actions(params)
-  return actions.list().then(results => {
-    t.same(results, result)
-  }).catch(() => t.fail())
+test('should throw errors for HTTP response failures', t => {
+  const base_operation = new BaseOperation()
+  t.throws(() => base_operation.handle_errors({statusCode: 401}), /authentication failed/)
+  t.throws(() => base_operation.handle_errors({statusCode: 404}), /HTTP 404/)
+  t.throws(() => base_operation.handle_errors({statusCode: 500}), /API call failed/)
 })
 
-test('retrieve action using default namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-  const result = {
-    namespace: 'default',
-    name: 'action_name',
-    version: '0.0.1',
-    publish: true
-  }
-
-  stub.get = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    return Promise.resolve(result)
-  }
-
-  t.plan(3)
-
-  const actions = new Actions(params)
-  return actions.get({actionName: action_name}).then(results => {
-    t.same(results, result)
-  }).catch(() => t.fail())
+test('should throw errors for non-HTTP response failures', t => {
+  const base_operation = new BaseOperation()
+  t.throws(() => base_operation.handle_errors({message: 'error message'}), /error message/)
 })
 
-test('retrieve action using options namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-  const result = {
-    namespace: 'default',
-    name: 'action_name',
-    version: '0.0.1',
-    publish: true
-  }
-
-  stub.get = req => {
-    t.is(req.url, `${params.api}namespaces/custom/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    return Promise.resolve(result)
-  }
-
-  t.plan(3)
-
-  const actions = new Actions(params)
-  return actions.get({actionName: action_name, namespace: 'custom'}).then(results => {
-    t.same(results, result)
-  }).catch(() => t.fail())
+test('should generate auth header from API key', t => {
+  const api_key = 'some sample api key'
+  const base_operation = new BaseOperation({api_key: api_key})
+  t.is(base_operation.auth_header(), `Basic ${new Buffer(api_key).toString('base64')}`)
 })
 
-test('list all actions using provided namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const result = [{
-    namespace: 'default',
-    name: 'action_name',
-    version: '0.0.1',
-    publish: true
-  }]
-
-  const options = {namespace: 'not_default'}
-  stub.get = req => {
-    t.is(req.url, `${params.api}namespaces/${options.namespace}/actions`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    return Promise.resolve(result)
-  }
-
-  t.plan(3)
-
-  const actions = new Actions(params)
-  return actions.list(options).then(results => {
-    t.same(results, result)
-  }).catch(() => t.fail())
+test('should extract available query string parameters', t => {
+  const base_operation = new BaseOperation()
+  t.same(base_operation.qs({}, ['a', 'b', 'c']), {})
+  t.same(base_operation.qs({a: 1}, ['a', 'b', 'c']), {a: 1})
+  t.same(base_operation.qs({a: 1, c: 2}, ['a', 'b', 'c']), {a: 1, c: 2})
+  t.same(base_operation.qs({a: 1, c: 2, d: 3}, ['a', 'b', 'c']), {a: 1, c: 2})
 })
 
-test('list all actions using limit and skip parameters', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const result = [{
-    namespace: 'default',
-    name: 'action_name',
-    version: '0.0.1',
-    publish: true
-  }]
-
-  const options = {limit: 100, skip: 50}
-  stub.get = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.same(req.qs, options)
-    return Promise.resolve(result)
-  }
-
-  t.plan(4)
-
-  const actions = new Actions(params)
-  return actions.list(options).then(results => {
-    t.same(results, result)
-  }).catch(() => t.fail())
+test('should return provided namespace', t => {
+  let base_operation = new BaseOperation()
+  t.is(base_operation.namespace({namespace: 'provided'}), 'provided')
+  base_operation = new BaseOperation({namespace: 'default'})
+  t.is(base_operation.namespace({namespace: 'provided'}), 'provided')
 })
 
-test('list all actions without providing any namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.get = req => {
-    t.fail()
-  }
-
-  const actions = new Actions(params)
-  return t.throws(actions.list())
+test('should return default namespace', t => {
+  const base_operation = new BaseOperation({namespace: 'default'})
+  t.is(base_operation.namespace(), 'default')
 })
 
-test('get an action without providing any namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.get = req => {
-    t.fail()
-  }
-
-  const actions = new Actions(params)
-  return t.throws(actions.get({actionName: 'custom'}))
+test('should throw for missing namespace', t => {
+  const base_operation = new BaseOperation({})
+  t.throws(() => base_operation.namespace({}), /Missing namespace/)
 })
 
-test('get an action without providing an action name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.get = req => {
-    t.fail()
-  }
-
-  const actions = new Actions(params)
-  return t.throws(actions.get({namespace: 'custom'}))
-})
-
-test('throw error for invalid authorization', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', namespace: 'default', api_key: 'user_authorisation_key'}
-
-  stub.get = req => {
-    return Promise.reject({statusCode: 401})
-  }
-
-  const actions = new Actions(params)
-  return t.throws(actions.list(), /authentication failed/)
-})
-
-test('throw error for missing url endpoint', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', namespace: 'default', api_key: 'user_authorisation_key'}
-
-  stub.get = req => {
-    return Promise.reject({statusCode: 404})
-  }
-
-  const actions = new Actions(params)
-  return t.throws(actions.list(), /404/)
-})
-
-test('throw error for openwhisk 5xx response', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', namespace: 'default', api_key: 'user_authorisation_key'}
-
-  stub.get = req => {
-    return Promise.reject({statusCode: 500})
-  }
-
-  const actions = new Actions(params)
-  return t.throws(actions.list(), /error HTTP code/)
-})
-
-test('throw error for request errors', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', namespace: 'default', api_key: 'user_authorisation_key'}
-
-  stub.get = req => {
-    return Promise.reject({message: 'error reason'})
-  }
-
-  const actions = new Actions(params)
-  return t.throws(actions.list(), /error reason/)
+test('should return request parameters from path', t => {
+  const base_operation = new BaseOperation({api: 'https://api.com/', api_key: 'default'})
+  const params = base_operation.params('method', 'some/path')
+  t.is(params.url, 'https://api.com/some/path')
+  t.is(params.method, 'method')
+  t.true(params.headers.hasOwnProperty('Authorization'))
 })
