@@ -7,6 +7,8 @@ test('should throw errors for HTTP response failures', t => {
   const base_operation = new BaseOperation()
   t.throws(() => base_operation.handle_errors({statusCode: 401}), /authentication failed/)
   t.throws(() => base_operation.handle_errors({statusCode: 404}), /HTTP 404/)
+  t.throws(() => base_operation.handle_errors({statusCode: 408}), /timed out/)
+  t.throws(() => base_operation.handle_errors({statusCode: 409}), /action already exists/i)
   t.throws(() => base_operation.handle_errors({statusCode: 500}), /API call failed/)
 })
 
