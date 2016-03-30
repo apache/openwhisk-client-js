@@ -10,7 +10,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "ava"
+    "test": "ava test/unit",
+    "test-integration": "ava test/integration"
   },
   "repository": {
     "type": "git",

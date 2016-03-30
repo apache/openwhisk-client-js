@@ -6,7 +6,7 @@ const stub = {}
 const ctor = function (options) { this.options = options }
 ctor.prototype = stub
 
-const Actions = proxyquire('../lib/actions.js', {'./base_operation': ctor})
+const Actions = proxyquire('../../lib/actions.js', {'./base_operation': ctor})
 
 test('list all actions using default namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
@@ -187,42 +187,64 @@ test('delete an action without providing an action name', t => {
 test('create a new action using the default namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const action_name = 'action_name'
-  const body = 'function main() { // main function body};'
+  const action = 'function main() { // main function body};'
 
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.is(req.body, body)
-    t.false(req.hasOwnProperty('overwrite'))
+    t.same(req.body, {exec: {kind: 'nodejs', code: action}})
+    t.same(req.qs, {})
     return Promise.resolve()
   }
 
   t.plan(5)
 
   const actions = new Actions(params)
-  return actions.create({actionName: action_name, action: body})
+  return actions.create({actionName: action_name, action: action})
 })
 
 test('create an action using options namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const action_name = 'action_name'
   const namespace = 'provided'
-  const body = 'function main() { // main function body};'
+  const action = 'function main() { // main function body};'
 
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.is(req.body, body)
-    t.true(req.overwrite)
+    t.same(req.body, {exec: {kind: 'nodejs', code: action}})
+    t.same(req.qs, {overwrite: true})
     return Promise.resolve()
   }
 
   t.plan(5)
 
   const actions = new Actions(params)
-  return actions.create({actionName: action_name, namespace: 'provided', action: body, overwrite: true})
+  return actions.create({actionName: action_name, namespace: 'provided', action: action, overwrite: true})
+})
+
+test('create an action with custom body', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const action_name = 'action_name'
+  const namespace = 'provided'
+  const code = 'function main() { // main function body};'
+  const action = {exec: {kind: 'swift', code: code}}
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/${namespace}/actions/${action_name}`)
+    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+    t.is(req.method, 'PUT')
+    t.same(req.body, {exec: {kind: 'swift', code: code}})
+    t.same(req.qs, {overwrite: true})
+    return Promise.resolve()
+  }
+
+  t.plan(5)
+
+  const actions = new Actions(params)
+  return actions.create({actionName: action_name, namespace: 'provided', action: action, overwrite: true})
 })
 
 test('create an action without providing any namespace', t => {
@@ -261,21 +283,21 @@ test('create an action without providing an action body', t => {
 test('update an action', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const action_name = 'action_name'
-  const body = 'function main() { // main function body};'
+  const action = 'function main() { // main function body};'
 
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.is(req.body, body)
-    t.true(req.hasOwnProperty('overwrite'))
+    t.same(req.body, {exec: {kind: 'nodejs', code: action}})
+    t.same(req.qs, {overwrite: true})
     return Promise.resolve()
   }
 
   t.plan(5)
 
   const actions = new Actions(params)
-  return actions.update({actionName: action_name, action: body})
+  return actions.update({actionName: action_name, action: action})
 })
 
 test('invoke an action with no parameters', t => {
@@ -286,7 +308,7 @@ test('invoke an action with no parameters', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, '')
+    t.same(req.body, {})
     return Promise.resolve()
   }
 
@@ -304,7 +326,7 @@ test('invoke an action with JSON string', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, '{}')
+    t.same(req.body, {})
     return Promise.resolve()
   }
 
@@ -322,14 +344,14 @@ test('invoke an action with object', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, JSON.stringify({a: 1, b: 2}))
+    t.same(req.body, {a: 1, b: 2})
     return Promise.resolve()
   }
 
   t.plan(4)
 
   const actions = new Actions(params)
-  return actions.invoke({actionName: action_name, payload: {a: 1, b: 2}})
+  return actions.invoke({actionName: action_name, params: {a: 1, b: 2}})
 })
 
 test('invoke an action (blocking)', t => {
@@ -340,7 +362,7 @@ test('invoke an action (blocking)', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, '')
+    t.same(req.body, {})
     t.same(req.qs, {blocking: true})
     return Promise.resolve()
   }
