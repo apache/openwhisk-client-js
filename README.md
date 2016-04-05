@@ -21,10 +21,13 @@ _All resource operation methods return a Promise resolved asynchronously with th
 ```
 ow.resource.operation().then(function () { // success! }).catch(function (err) { // failed! })
 ```
-### retrieve all actions
+### retrieve resources
 
 ```
 ow.actions.list()
+ow.activations.list()
+ow.rules.list()
+ow.packages.list()
 ```
 
 ### invoke an action
