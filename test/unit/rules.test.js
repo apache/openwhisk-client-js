@@ -176,7 +176,7 @@ test('create a new rule using the default namespace', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, rule)
+    t.same(req.body, {action: rule.action, trigger: rule.trigger})
     t.same(req.qs, {})
     return Promise.resolve()
   }
@@ -184,7 +184,7 @@ test('create a new rule using the default namespace', t => {
   t.plan(5)
 
   const rules = new Rules(params)
-  return rules.create({ruleName: rule_name, rule: rule})
+  return rules.create({ruleName: rule_name, action: rule.action, trigger: rule.trigger})
 })
 
 test('create an rule using options namespace', t => {
@@ -197,7 +197,7 @@ test('create an rule using options namespace', t => {
     t.is(req.url, `${params.api}namespaces/${namespace}/rules/${rule_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, rule)
+    t.same(req.body, {action: rule.action, trigger: rule.trigger})
     t.same(req.qs, {overwrite: true})
     return Promise.resolve()
   }
@@ -205,7 +205,7 @@ test('create an rule using options namespace', t => {
   t.plan(5)
 
   const rules = new Rules(params)
-  return rules.create({ruleName: rule_name, namespace: 'provided', rule: rule, overwrite: true})
+  return rules.create({ruleName: rule_name, namespace: 'provided', action: rule.action, trigger: rule.trigger, overwrite: true})
 })
 
 test('create an rule without providing any namespace', t => {
@@ -216,7 +216,7 @@ test('create an rule without providing any namespace', t => {
   }
 
   const rules = new Rules(params)
-  return t.throws(() => { rules.create({ruleName: 'custom', rule: ''}) }, /Missing namespace/)
+  return t.throws(() => { rules.create({ruleName: 'custom', action: '', trigger: ''}) }, /Missing namespace/)
 })
 
 test('create an rule without providing an rule name', t => {
@@ -227,10 +227,10 @@ test('create an rule without providing an rule name', t => {
   }
 
   const rules = new Rules(params)
-  return t.throws(() => { rules.create({namespace: 'custom', rule: ''}) }, /ruleName/)
+  return t.throws(() => { rules.create({namespace: 'custom', action: '', trigger: ''}) }, /ruleName/)
 })
 
-test('create an rule without providing an rule body', t => {
+test('create an rule without providing an action', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
 
   stub.request = req => {
@@ -238,7 +238,18 @@ test('create an rule without providing an rule body', t => {
   }
 
   const rules = new Rules(params)
-  return t.throws(() => { rules.create({namespace: 'custom', ruleName: 'hello'}) }, /rule/)
+  return t.throws(() => { rules.create({namespace: 'custom', ruleName: 'hello', trigger: ''}) }, /action/)
+})
+
+test('create an rule without providing a trigger', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
+
+  stub.request = req => {
+    t.fail()
+  }
+
+  const rules = new Rules(params)
+  return t.throws(() => { rules.create({namespace: 'custom', ruleName: 'hello', action: ''}) }, /trigger/)
 })
 
 test('update an rule', t => {
@@ -250,7 +261,7 @@ test('update an rule', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, rule)
+    t.same(req.body, {action: rule.action, trigger: rule.trigger})
     t.same(req.qs, {overwrite: true})
     return Promise.resolve()
   }
@@ -258,7 +269,7 @@ test('update an rule', t => {
   t.plan(5)
 
   const rules = new Rules(params)
-  return rules.update({ruleName: rule_name, rule: rule})
+  return rules.update({ruleName: rule_name, action: rule.action, trigger: rule.trigger})
 })
 
 test('enable a rule', t => {
@@ -269,7 +280,7 @@ test('enable a rule', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.qs, {state: 'enabled'})
+    t.same(req.body, {status: 'active'})
     return Promise.resolve()
   }
 
@@ -287,7 +298,7 @@ test('disable a rule', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.qs, {state: 'disabled'})
+    t.same(req.body, {status: 'inactive'})
     return Promise.resolve()
   }
 
