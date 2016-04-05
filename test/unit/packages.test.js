@@ -230,17 +230,6 @@ test('create an package without providing an package name', t => {
   return t.throws(() => { packages.create({namespace: 'custom', package: ''}) }, /packageName/)
 })
 
-test('create an package without providing an package body', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const packages = new Packages(params)
-  return t.throws(() => { packages.create({namespace: 'custom', packageName: 'hello'}) }, /package/)
-})
-
 test('update an package', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const package_name = 'package_name'
