@@ -16,7 +16,7 @@ var openwhisk = require('openwhisk');
 var ow = openwhisk({api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: '...', namespace: 'default_namespace'});
 ```
 
-_All resource operation methods return a Promise resolved asynchronously with the results. Failures are available through the catch method._
+_All methods return a Promise resolved asynchronously with the results. Failures are available through the catch method._
 
 ```
 ow.resource.operation().then(function () { // success! }).catch(function (err) { // failed! })
