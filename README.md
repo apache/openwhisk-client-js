@@ -81,12 +81,15 @@ The following optional parameters are supported:
 ### create & update action
 
 ```
-ow.actions.create({actionName: '...'})
-ow.actions.update({actionName: '...'})
+ow.actions.create({actionName: '...', action: 'function main() {};'})
+ow.actions.update({actionName: '...', action: 'function main() {};'})
 ```
 
+The following mandatory parameters are supported:
+- `actionName` - action identifier
+- `action` - String containing JS function source code or JSON object containing full parameters for the action body 
+
 The following optional parameters are supported:
-- `action` - JSON object containing parameters for the action body (default: `{}`)
 - `namespace` - set custom namespace for endpoint
 
 ### fire trigger
