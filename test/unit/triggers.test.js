@@ -170,13 +170,12 @@ test('delete an trigger without providing an trigger name', t => {
 test('create a new trigger using the default namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const trigger_name = 'trigger_name'
-  const trigger = {version: '1.0.0', publish: true, annotations: [], parameters: []}
 
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/triggers/${trigger_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, trigger)
+    t.is(Object.keys(req.body).length, 0)
     t.same(req.qs, {})
     return Promise.resolve()
   }
@@ -184,20 +183,19 @@ test('create a new trigger using the default namespace', t => {
   t.plan(5)
 
   const triggers = new Triggers(params)
-  return triggers.create({triggerName: trigger_name, trigger: trigger})
+  return triggers.create({triggerName: trigger_name})
 })
 
 test('create an trigger using options namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const trigger_name = 'trigger_name'
   const namespace = 'provided'
-  const trigger = {version: '1.0.0', publish: true, annotations: [], parameters: []}
 
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${namespace}/triggers/${trigger_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, trigger)
+    t.is(Object.keys(req.body).length, 0)
     t.same(req.qs, {overwrite: true})
     return Promise.resolve()
   }
@@ -205,7 +203,7 @@ test('create an trigger using options namespace', t => {
   t.plan(5)
 
   const triggers = new Triggers(params)
-  return triggers.create({triggerName: trigger_name, namespace: 'provided', trigger: trigger, overwrite: true})
+  return triggers.create({triggerName: trigger_name, namespace: 'provided', overwrite: true})
 })
 
 test('create an trigger without providing any namespace', t => {
@@ -230,27 +228,15 @@ test('create an trigger without providing an trigger name', t => {
   return t.throws(() => { triggers.create({namespace: 'custom', trigger: ''}) }, /triggerName/)
 })
 
-test('create an trigger without providing an trigger body', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const triggers = new Triggers(params)
-  return t.throws(() => { triggers.create({namespace: 'custom', triggerName: 'hello'}) }, /trigger/)
-})
-
 test('update an trigger', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const trigger_name = 'trigger_name'
-  const trigger = {version: '1.0.0', publish: true, annotations: [], parameters: []}
 
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/triggers/${trigger_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, trigger)
+    t.is(Object.keys(req.body).length, 0)
     t.same(req.qs, {overwrite: true})
     return Promise.resolve()
   }
@@ -258,7 +244,7 @@ test('update an trigger', t => {
   t.plan(5)
 
   const triggers = new Triggers(params)
-  return triggers.update({triggerName: trigger_name, trigger: trigger})
+  return triggers.update({triggerName: trigger_name})
 })
 
 test('invoke an trigger with no parameters', t => {
@@ -269,7 +255,7 @@ test('invoke an trigger with no parameters', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/triggers/${trigger_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, {})
+    t.is(Object.keys(req.body).length, 0)
     return Promise.resolve()
   }
 
