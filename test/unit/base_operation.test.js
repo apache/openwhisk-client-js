@@ -10,6 +10,7 @@ test('should throw errors for HTTP response failures', t => {
   t.throws(() => base_operation.handle_errors({statusCode: 408}), /timed out/)
   t.throws(() => base_operation.handle_errors({statusCode: 409}), /action already exists/i)
   t.throws(() => base_operation.handle_errors({statusCode: 500, error: {}}), /API call failed/)
+  t.throws(() => base_operation.handle_errors({statusCode: 500, error: {response: {result: {error: 'custom'}}}}), /custom/)
 })
 
 test('should throw errors for non-HTTP response failures', t => {
