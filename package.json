@@ -30,5 +30,8 @@
   "homepage": "https://github.com/openwhisk/openwhisk-client-js#readme",
   "devDependencies": {
     "ava": "^0.13.0"
+  },
+  "dependencies": {
+    "request-promise": "^2.0.1"
   }
 }
