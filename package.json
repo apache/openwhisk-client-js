@@ -1,6 +1,6 @@
 {
   "name": "openwhisk-client-js",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "description": "JavaScript client library for the OpenWhisk platform",
   "main": "lib/main.js",
   "engines": {
@@ -23,7 +23,7 @@
     "nodejs"
   ],
   "author": "James Thomas <james@jamesthom.as>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/openwhisk/openwhisk-client-js/issues"
   },

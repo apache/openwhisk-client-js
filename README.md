@@ -6,7 +6,7 @@ Provides a wrapper around the [OpenWhisk APIs](https://new-console.ng.bluemix.ne
 ## installation
 
 ```
-$ npm install openwhisk // replace with package name....
+$ npm install openwhisk
 ```
 
 ## usage
