@@ -23,7 +23,7 @@
     "nodejs"
   ],
   "author": "James Thomas <james@jamesthom.as>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/openwhisk/openwhisk-client-js/issues"
   },
