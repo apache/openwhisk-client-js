@@ -51,7 +51,7 @@ test('list all rules using options namespace', t => {
   })
 })
 
-test('get an rule', t => {
+test('get a rule', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
   const errors = err => {
@@ -68,7 +68,7 @@ test('get an rule', t => {
   }).catch(errors)
 })
 
-test('create and delete an rule', t => {
+test('create and delete a rule', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
   const errors = err => {
@@ -87,7 +87,7 @@ test('create and delete an rule', t => {
   }).catch(errors)
 })
 
-test('create and update an rule', t => {
+test('create and update a rule', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
   const errors = err => {
