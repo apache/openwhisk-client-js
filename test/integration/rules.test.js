@@ -51,24 +51,7 @@ test('list all rules using options namespace', t => {
   })
 })
 
-test('get an rule', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
-  const errors = err => {
-    console.log(err)
-    t.fail()
-  }
-  const rules = new Rules(params)
-  return rules.list().then(result => {
-    return rules.get({ruleName: result[0].name}).then(rule_result => {
-      t.is(rule_result.name, result[0].name)
-      t.is(rule_result.namespace, NAMESPACE)
-      t.pass()
-    }).catch(errors)
-  }).catch(errors)
-})
-
-test('create and delete an rule', t => {
+test('create, get and delete an rule', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
   const errors = err => {
@@ -82,8 +65,12 @@ test('create and delete an rule', t => {
     t.is(result.namespace, NAMESPACE)
     t.is(result.action, 'hello')
     t.is(result.trigger, 'sample')
-    t.pass()
-    return rules.delete({ruleName: 'random_rule_test'}).catch(errors)
+    return rules.get({ruleName: result.name}).then(rule_result => {
+      t.is(rule_result.name, result.name)
+      t.is(rule_result.namespace, NAMESPACE)
+      t.pass()
+      return rules.delete({ruleName: 'random_rule_test'}).catch(errors)
+    }).catch(errors)
   }).catch(errors)
 })
 
@@ -105,30 +92,6 @@ test('create and update an rule', t => {
       t.is(update_result.action, 'tests')
       t.pass()
       return rules.delete({ruleName: 'random_update_test'}).catch(errors)
-    }).catch(errors)
-  }).catch(errors)
-})
-
-test('create, enable and disable rule', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
-  const errors = err => {
-    console.log(err)
-    t.fail()
-  }
-
-  const rules = new Rules(params)
-  return rules.create({ruleName: 'random_enable_test', action: 'hello', trigger: 'sample'}).then(result => {
-    t.is(result.name, 'random_enable_test')
-    t.is(result.status, 'inactive')
-    t.is(result.namespace, NAMESPACE)
-    t.is(result.action, 'hello')
-    t.is(result.trigger, 'sample')
-    return rules.enable({ruleName: 'random_enable_test'}).then(update_result => {
-      return rules.disable({ruleName: 'random_enable_test'}).then(() => {
-        t.pass()
-        return rules.delete({ruleName: 'random_enable_test'}).catch(errors)
-      })
     }).catch(errors)
   }).catch(errors)
 })

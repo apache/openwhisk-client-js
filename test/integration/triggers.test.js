@@ -51,24 +51,7 @@ test('list all triggers using options namespace', t => {
   })
 })
 
-test('get an trigger', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
-  const errors = err => {
-    console.log(err)
-    t.fail()
-  }
-  const triggers = new Triggers(params)
-  return triggers.list().then(result => {
-    return triggers.get({triggerName: result[0].name}).then(trigger_result => {
-      t.is(trigger_result.name, result[0].name)
-      t.is(trigger_result.namespace, NAMESPACE)
-      t.pass()
-    }).catch(errors)
-  }).catch(errors)
-})
-
-test('create and delete an trigger', t => {
+test('create, get and delete an trigger', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
   const errors = err => {
@@ -84,7 +67,12 @@ test('create and delete an trigger', t => {
     t.is(result.version, '0.0.1')
     t.same(result.limits, {})
     t.pass()
-    return triggers.delete({triggerName: 'random_trigger_test'}).catch(errors)
+    return triggers.get({triggerName: result.name}).then(trigger_result => {
+      t.is(trigger_result.name, result.name)
+      t.is(trigger_result.namespace, NAMESPACE)
+      t.pass()
+      return triggers.delete({triggerName: result.name}).catch(errors)
+    }).catch(errors)
   }).catch(errors)
 })
 
@@ -97,16 +85,16 @@ test('create and update an trigger', t => {
   }
 
   const triggers = new Triggers(params)
-  return triggers.create({triggerName: 'random_update_test'}).then(result => {
-    t.is(result.name, 'random_update_test')
+  return triggers.create({triggerName: 'random_create_update_test'}).then(result => {
+    t.is(result.name, 'random_create_update_test')
     t.is(result.namespace, NAMESPACE)
     t.same(result.annotations, [])
     t.is(result.version, '0.0.1')
     t.same(result.limits, {})
-    return triggers.update({triggerName: 'random_update_test'}).then(update_result => {
+    return triggers.update({triggerName: 'random_create_update_test'}).then(update_result => {
       t.is(update_result.version, '0.0.2')
       t.pass()
-      return triggers.delete({triggerName: 'random_update_test'}).catch(errors)
+      return triggers.delete({triggerName: 'random_create_update_test'}).catch(errors)
     }).catch(errors)
   }).catch(errors)
 })

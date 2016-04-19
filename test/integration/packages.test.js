@@ -51,24 +51,7 @@ test('list all packages using options namespace', t => {
   })
 })
 
-test('get an package', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
-  const errors = err => {
-    console.log(err)
-    t.fail()
-  }
-  const packages = new Packages(params)
-  return packages.list().then(result => {
-    return packages.get({packageName: result[0].name}).then(package_result => {
-      t.is(package_result.name, result[0].name)
-      t.is(package_result.namespace, NAMESPACE)
-      t.pass()
-    }).catch(errors)
-  }).catch(errors)
-})
-
-test('create and delete an package', t => {
+test('create, get and delete an package', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
   const errors = err => {
@@ -82,8 +65,12 @@ test('create and delete an package', t => {
     t.is(result.namespace, NAMESPACE)
     t.same(result.annotations, [])
     t.is(result.version, '0.0.1')
-    t.pass()
-    return packages.delete({packageName: 'random_package_test'}).catch(errors)
+    return packages.get({packageName: 'random_package_test'}).then(package_result => {
+      t.is(package_result.name, 'random_package_test')
+      t.is(package_result.namespace, NAMESPACE)
+      t.pass()
+      return packages.delete({packageName: 'random_package_test'}).catch(errors)
+    }).catch(errors)
   }).catch(errors)
 })
 
@@ -96,15 +83,15 @@ test('create and update an package', t => {
   }
 
   const packages = new Packages(params)
-  return packages.create({packageName: 'random_update_test'}).then(result => {
-    t.is(result.name, 'random_update_test')
+  return packages.create({packageName: 'random_package_update_test'}).then(result => {
+    t.is(result.name, 'random_package_update_test')
     t.is(result.namespace, NAMESPACE)
     t.same(result.annotations, [])
     t.is(result.version, '0.0.1')
-    return packages.update({packageName: 'random_update_test'}).then(update_result => {
+    return packages.update({packageName: 'random_package_update_test'}).then(update_result => {
       t.is(update_result.version, '0.0.2')
       t.pass()
-      return packages.delete({packageName: 'random_update_test'}).catch(errors)
+      return packages.delete({packageName: 'random_package_update_test'}).catch(errors)
     }).catch(errors)
   }).catch(errors)
 })

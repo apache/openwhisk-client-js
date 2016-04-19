@@ -51,24 +51,7 @@ test('list all actions using options namespace', t => {
   })
 })
 
-test('get an action', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
-  const errors = err => {
-    console.log(err)
-    t.fail()
-  }
-  const actions = new Actions(params)
-  return actions.list().then(result => {
-    return actions.get({actionName: result[0].name}).then(action_result => {
-      t.is(action_result.name, result[0].name)
-      t.is(action_result.namespace, NAMESPACE)
-      t.pass()
-    }).catch(errors)
-  }).catch(errors)
-})
-
-test('create and delete an action', t => {
+test('create, get and delete an action', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
   const errors = err => {
@@ -82,8 +65,12 @@ test('create and delete an action', t => {
     t.is(result.namespace, NAMESPACE)
     t.is(result.exec.kind, 'nodejs')
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
-    t.pass()
-    return actions.delete({actionName: 'random_action_test'}).catch(errors)
+    return actions.get({actionName: 'random_action_test'}).then(action_result => {
+      t.is(action_result.name, 'random_action_test')
+      t.is(action_result.namespace, NAMESPACE)
+      t.pass()
+      return actions.delete({actionName: 'random_action_test'}).catch(errors)
+    }).catch(errors)
   }).catch(errors)
 })
 
@@ -96,15 +83,15 @@ test('create and update an action', t => {
   }
 
   const actions = new Actions(params)
-  return actions.create({actionName: 'random_update_test', action: 'function main() {return {payload:"testing"}}'}).then(result => {
-    t.is(result.name, 'random_update_test')
+  return actions.create({actionName: 'random_update_tested', action: 'function main() {return {payload:"testing"}}'}).then(result => {
+    t.is(result.name, 'random_update_tested')
     t.is(result.namespace, NAMESPACE)
     t.is(result.exec.kind, 'nodejs')
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
-    return actions.update({actionName: 'random_update_test', action: 'update test'}).then(update_result => {
+    return actions.update({actionName: 'random_update_tested', action: 'update test'}).then(update_result => {
       t.is(update_result.exec.code, 'update test')
       t.pass()
-      return actions.delete({actionName: 'random_update_test'}).catch(errors)
+      return actions.delete({actionName: 'random_update_tested'}).catch(errors)
     }).catch(errors)
   }).catch(errors)
 })
