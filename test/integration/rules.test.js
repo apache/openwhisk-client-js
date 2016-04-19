@@ -74,7 +74,7 @@ test('create, get and delete an rule', t => {
   }).catch(errors)
 })
 
-test('create and update an rule', t => {
+test('create and update a rule', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
   const errors = err => {

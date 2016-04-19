@@ -1,6 +1,6 @@
 {
   "name": "openwhisk-client-js",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "description": "JavaScript client library for the OpenWhisk platform",
   "main": "lib/main.js",
   "engines": {
@@ -29,7 +29,8 @@
   },
   "homepage": "https://github.com/openwhisk/openwhisk-client-js#readme",
   "devDependencies": {
-    "ava": "^0.13.0"
+    "ava": "^0.13.0",
+    "proxyquire": "1.7.4"
   },
   "dependencies": {
     "request-promise": "^2.0.1"
