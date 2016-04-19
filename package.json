@@ -1,5 +1,5 @@
 {
-  "name": "openwhisk-client-js",
+  "name": "openwhisk",
   "version": "2.0.0",
   "description": "JavaScript client library for the OpenWhisk platform",
   "main": "lib/main.js",

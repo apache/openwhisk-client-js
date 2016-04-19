@@ -51,7 +51,7 @@ test('list all rules using options namespace', t => {
   })
 })
 
-test('create, get and delete an rule', t => {
+test('create, get and delete a rule', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
   const errors = err => {
