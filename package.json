@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/openwhisk/openwhisk-client-js#readme",
   "devDependencies": {
-    "ava": "^0.13.0",
+    "ava": "^0.15.2",
     "proxyquire": "1.7.4"
   },
   "dependencies": {

@@ -31,7 +31,7 @@ test('list all actions using skip and limit parameters', t => {
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.same(req.qs, options)
+    t.deepEqual(req.qs, options)
     t.is(req.method, 'GET')
     return Promise.resolve()
   }
@@ -193,8 +193,8 @@ test('create a new action using the default namespace', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, {exec: {kind: 'nodejs', code: action}})
-    t.same(req.qs, {})
+    t.deepEqual(req.body, {exec: {kind: 'nodejs', code: action}})
+    t.deepEqual(req.qs, {})
     return Promise.resolve()
   }
 
@@ -214,8 +214,8 @@ test('create an action using options namespace', t => {
     t.is(req.url, `${params.api}namespaces/${namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, {exec: {kind: 'nodejs', code: action}})
-    t.same(req.qs, {overwrite: true})
+    t.deepEqual(req.body, {exec: {kind: 'nodejs', code: action}})
+    t.deepEqual(req.qs, {overwrite: true})
     return Promise.resolve()
   }
 
@@ -236,8 +236,8 @@ test('create an action with custom body', t => {
     t.is(req.url, `${params.api}namespaces/${namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, {exec: {kind: 'swift', code: code}})
-    t.same(req.qs, {overwrite: true})
+    t.deepEqual(req.body, {exec: {kind: 'swift', code: code}})
+    t.deepEqual(req.qs, {overwrite: true})
     return Promise.resolve()
   }
 
@@ -289,8 +289,8 @@ test('update an action', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, {exec: {kind: 'nodejs', code: action}})
-    t.same(req.qs, {overwrite: true})
+    t.deepEqual(req.body, {exec: {kind: 'nodejs', code: action}})
+    t.deepEqual(req.qs, {overwrite: true})
     return Promise.resolve()
   }
 
@@ -308,7 +308,7 @@ test('invoke an action with no parameters', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, {})
+    t.deepEqual(req.body, {})
     return Promise.resolve()
   }
 
@@ -326,7 +326,7 @@ test('invoke an action with JSON string', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, {})
+    t.deepEqual(req.body, {})
     return Promise.resolve()
   }
 
@@ -344,7 +344,7 @@ test('invoke an action with object', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, {a: 1, b: 2})
+    t.deepEqual(req.body, {a: 1, b: 2})
     return Promise.resolve()
   }
 
@@ -362,8 +362,8 @@ test('invoke an action (blocking)', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, {})
-    t.same(req.qs, {blocking: true})
+    t.deepEqual(req.body, {})
+    t.deepEqual(req.qs, {blocking: true})
     return Promise.resolve()
   }
 

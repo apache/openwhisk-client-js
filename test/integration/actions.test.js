@@ -107,7 +107,7 @@ test('create, invoke and remove action', t => {
   const actions = new Actions(params)
   return actions.create({actionName: 'random_invoke_test', action: 'function main(params) {return params}'}).then(result => {
     return actions.invoke({actionName: 'random_invoke_test', params: {hello: 'world'}, blocking: true}).then(invoke_result => {
-      t.same(invoke_result.response.result, {hello: 'world'})
+      t.deepEqual(invoke_result.response.result, {hello: 'world'})
       t.true(invoke_result.response.success)
       t.pass()
       return actions.delete({actionName: 'random_invoke_test'}).catch(errors)

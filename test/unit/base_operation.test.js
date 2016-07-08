@@ -26,10 +26,10 @@ test('should generate auth header from API key', t => {
 
 test('should extract available query string parameters', t => {
   const base_operation = new BaseOperation()
-  t.same(base_operation.qs({}, ['a', 'b', 'c']), {})
-  t.same(base_operation.qs({a: 1}, ['a', 'b', 'c']), {a: 1})
-  t.same(base_operation.qs({a: 1, c: 2}, ['a', 'b', 'c']), {a: 1, c: 2})
-  t.same(base_operation.qs({a: 1, c: 2, d: 3}, ['a', 'b', 'c']), {a: 1, c: 2})
+  t.deepEqual(base_operation.qs({}, ['a', 'b', 'c']), {})
+  t.deepEqual(base_operation.qs({a: 1}, ['a', 'b', 'c']), {a: 1})
+  t.deepEqual(base_operation.qs({a: 1, c: 2}, ['a', 'b', 'c']), {a: 1, c: 2})
+  t.deepEqual(base_operation.qs({a: 1, c: 2, d: 3}, ['a', 'b', 'c']), {a: 1, c: 2})
 })
 
 test('should return provided namespace', t => {
@@ -50,9 +50,18 @@ test('should throw for missing namespace', t => {
 })
 
 test('should return request parameters from path', t => {
-  const base_operation = new BaseOperation({api: 'https://api.com/', api_key: 'default'})
+  const base_operation = new BaseOperation({api: 'https://api.com/api/v1/', api_key: 'default'})
   const params = base_operation.params('method', 'some/path')
-  t.is(params.url, 'https://api.com/some/path')
+  t.is(params.url, 'https://api.com/api/v1/some/path')
+  t.is(params.method, 'method')
+  t.true(params.json, true)
+  t.true(params.headers.hasOwnProperty('Authorization'))
+})
+
+test('should return request parameters from path without ending forward slash', t => {
+  const base_operation = new BaseOperation({api: 'https://api.com/api/v1', api_key: 'default'})
+  const params = base_operation.params('method', 'some/path')
+  t.is(params.url, 'https://api.com/api/v1/some/path')
   t.is(params.method, 'method')
   t.true(params.json, true)
   t.true(params.headers.hasOwnProperty('Authorization'))

@@ -31,7 +31,7 @@ test('list all triggers with options', t => {
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${options.namespace}/triggers`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.same(req.qs, {limit: 100, skip: 50})
+    t.deepEqual(req.qs, {limit: 100, skip: 50})
     t.is(req.method, 'GET')
     return Promise.resolve()
   }
@@ -176,7 +176,7 @@ test('create a new trigger using the default namespace', t => {
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
     t.is(Object.keys(req.body).length, 0)
-    t.same(req.qs, {})
+    t.deepEqual(req.qs, {})
     return Promise.resolve()
   }
 
@@ -196,7 +196,7 @@ test('create an trigger using options namespace', t => {
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
     t.is(Object.keys(req.body).length, 0)
-    t.same(req.qs, {overwrite: true})
+    t.deepEqual(req.qs, {overwrite: true})
     return Promise.resolve()
   }
 
@@ -237,7 +237,7 @@ test('update an trigger', t => {
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
     t.is(Object.keys(req.body).length, 0)
-    t.same(req.qs, {overwrite: true})
+    t.deepEqual(req.qs, {overwrite: true})
     return Promise.resolve()
   }
 
@@ -273,7 +273,7 @@ test('invoke an trigger with JSON string', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/triggers/${trigger_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, {})
+    t.deepEqual(req.body, {})
     return Promise.resolve()
   }
 
@@ -291,7 +291,7 @@ test('invoke an trigger with object', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/triggers/${trigger_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, {a: 1, b: 2})
+    t.deepEqual(req.body, {a: 1, b: 2})
     return Promise.resolve()
   }
 

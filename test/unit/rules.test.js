@@ -31,7 +31,7 @@ test('list all rules with options', t => {
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${options.namespace}/rules`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.same(req.qs, {limit: 100, skip: 50})
+    t.deepEqual(req.qs, {limit: 100, skip: 50})
     t.is(req.method, 'GET')
     return Promise.resolve()
   }
@@ -176,8 +176,8 @@ test('create a new rule using the default namespace', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, {action: rule.action, trigger: rule.trigger})
-    t.same(req.qs, {})
+    t.deepEqual(req.body, {action: rule.action, trigger: rule.trigger})
+    t.deepEqual(req.qs, {})
     return Promise.resolve()
   }
 
@@ -197,8 +197,8 @@ test('create an rule using options namespace', t => {
     t.is(req.url, `${params.api}namespaces/${namespace}/rules/${rule_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, {action: rule.action, trigger: rule.trigger})
-    t.same(req.qs, {overwrite: true})
+    t.deepEqual(req.body, {action: rule.action, trigger: rule.trigger})
+    t.deepEqual(req.qs, {overwrite: true})
     return Promise.resolve()
   }
 
@@ -261,8 +261,8 @@ test('update an rule', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, {action: rule.action, trigger: rule.trigger})
-    t.same(req.qs, {overwrite: true})
+    t.deepEqual(req.body, {action: rule.action, trigger: rule.trigger})
+    t.deepEqual(req.qs, {overwrite: true})
     return Promise.resolve()
   }
 
@@ -280,7 +280,7 @@ test('enable a rule', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, {status: 'active'})
+    t.deepEqual(req.body, {status: 'active'})
     return Promise.resolve()
   }
 
@@ -298,7 +298,7 @@ test('disable a rule', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'POST')
-    t.same(req.body, {status: 'inactive'})
+    t.deepEqual(req.body, {status: 'inactive'})
     return Promise.resolve()
   }
 

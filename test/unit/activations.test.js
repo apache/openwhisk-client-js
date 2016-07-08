@@ -33,7 +33,7 @@ test('list all activations with options', t => {
     t.is(req.url, `${params.api}namespaces/options_namespace/activations`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'GET')
-    t.same(req.qs, {name: 'Hello', limit: 100, skip: 100, upto: 100, docs: true})
+    t.deepEqual(req.qs, {name: 'Hello', limit: 100, skip: 100, upto: 100, docs: true})
     return Promise.resolve()
   }
 
@@ -49,7 +49,7 @@ test('get an activation', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: namespace}
 
   stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/activations/${activation_id}/`)
+    t.is(req.url, `${params.api}namespaces/${namespace}/activations/${activation_id}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'GET')
     return Promise.resolve()

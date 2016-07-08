@@ -63,9 +63,9 @@ test('create, get and delete an trigger', t => {
   return triggers.create({triggerName: 'random_trigger_test'}).then(result => {
     t.is(result.name, 'random_trigger_test')
     t.is(result.namespace, NAMESPACE)
-    t.same(result.annotations, [])
+    t.deepEqual(result.annotations, [])
     t.is(result.version, '0.0.1')
-    t.same(result.limits, {})
+    t.deepEqual(result.limits, {})
     t.pass()
     return triggers.get({triggerName: result.name}).then(trigger_result => {
       t.is(trigger_result.name, result.name)
@@ -88,9 +88,9 @@ test('create and update an trigger', t => {
   return triggers.create({triggerName: 'random_create_update_test'}).then(result => {
     t.is(result.name, 'random_create_update_test')
     t.is(result.namespace, NAMESPACE)
-    t.same(result.annotations, [])
+    t.deepEqual(result.annotations, [])
     t.is(result.version, '0.0.1')
-    t.same(result.limits, {})
+    t.deepEqual(result.limits, {})
     return triggers.update({triggerName: 'random_create_update_test'}).then(update_result => {
       t.is(update_result.version, '0.0.2')
       t.pass()

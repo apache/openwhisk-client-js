@@ -31,7 +31,7 @@ test('list all packages with options', t => {
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${options.namespace}/packages`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.same(req.qs, {limit: 100, skip: 50, public: true})
+    t.deepEqual(req.qs, {limit: 100, skip: 50, public: true})
     t.is(req.method, 'GET')
     return Promise.resolve()
   }
@@ -176,8 +176,8 @@ test('create a new package using the default namespace', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/packages/${package_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, packageBody)
-    t.same(req.qs, {})
+    t.deepEqual(req.body, packageBody)
+    t.deepEqual(req.qs, {})
     return Promise.resolve()
   }
 
@@ -197,8 +197,8 @@ test('create an package using options namespace', t => {
     t.is(req.url, `${params.api}namespaces/${namespace}/packages/${package_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, packageBody)
-    t.same(req.qs, {overwrite: true})
+    t.deepEqual(req.body, packageBody)
+    t.deepEqual(req.qs, {overwrite: true})
     return Promise.resolve()
   }
 
@@ -239,8 +239,8 @@ test('update an package', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/packages/${package_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.same(req.body, packageBody)
-    t.same(req.qs, {overwrite: true})
+    t.deepEqual(req.body, packageBody)
+    t.deepEqual(req.qs, {overwrite: true})
     return Promise.resolve()
   }
 
