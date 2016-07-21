@@ -143,3 +143,18 @@ ow.rules.disable({ruleName: '...'})
 
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
+
+### create & delete feeds
+
+```
+ow.feeds.create({feedName: '...', trigger: '...'})
+ow.feeds.delete({feedName: '...', trigger: '...'})
+
+// for example... 
+const params = {cron: '*/8 * * * * *', trigger_payload: {name: 'James'}}
+ow.feeds.create({feedName: 'alarms/alarm', namespace: 'whisk.system', trigger: 'alarmTrigger', params})
+```
+
+The following optional parameters are supported:
+- `namespace` - set custom namespace for endpoint
+- `params` - JSON object containing parameters for the feed being invoked (default: `{}`)
