@@ -372,3 +372,41 @@ test('invoke an action (blocking)', t => {
   const actions = new Actions(params)
   return actions.invoke({actionName: action_name, blocking: true})
 })
+
+const Packages = proxyquire('../../lib/packages.js', {'./base_operation': ctor})
+test('create a new package, then create a new action in that package', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const package_name = 'package_name'
+  const packageBody = {version: '1.0.0', publish: true, annotations: [], parameters: [], binding: {}}
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/${params.namespace}/packages/${package_name}`)
+    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+    t.is(req.method, 'PUT')
+    t.deepEqual(req.body, packageBody)
+    t.deepEqual(req.qs, {})
+    return Promise.resolve()
+  }
+
+  const packages = new Packages(params)
+  return packages.create({packageName: package_name, package: packageBody})
+	.then(() => {
+	    const params2 = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: `default/${package_name}`}
+	    const action_name = 'action_name'
+	    const action = 'function main() { // main function body};'
+
+	    stub.request = req => {
+		t.is(req.url, `${params2.api}namespaces/${encodeURIComponent(params2.namespace)}/actions/${action_name}`)
+		t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+		t.is(req.method, 'PUT')
+		t.deepEqual(req.body, {exec: {kind: 'nodejs', code: action}})
+		t.deepEqual(req.qs, {})
+		return Promise.resolve()
+	    }
+
+	    t.plan(10)
+
+	    const actions = new Actions(params2)
+	    return actions.create({actionName: action_name, action: action})
+	})
+})
