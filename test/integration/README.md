@@ -4,7 +4,7 @@ Integrations Test
 Running the integration tests requires the following environment variables to be defined.
 
     export OW_API_KEY=<your api key>
-    export OW_API_HOST=<openwhisk host>
+    export OW_API_URL=<openwhisk API url>
     export OW_NAMESPACE=<namespace to test against>
 
 You can retrieve these settings using the `wsk` CLI:
@@ -17,17 +17,21 @@ Action
 ---
 * Name: hello 
 
+```
 function main() {
    return {payload: 'Hello world'};
 }
+```
 
 Action
 ---
 * Name: tests 
 
+```
 function main() {
    return {payload: 'Hello world'};
 }
+```
 
 Trigger
 ---

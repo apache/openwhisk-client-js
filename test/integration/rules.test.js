@@ -51,7 +51,8 @@ test('list all rules using options namespace', t => {
   })
 })
 
-test('create, get and delete a rule', t => {
+// Running update tests conconcurrently leads to resource conflict errors.
+test.serial('create, get and delete a rule', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
   const errors = err => {
@@ -69,12 +70,12 @@ test('create, get and delete a rule', t => {
       t.is(rule_result.name, result.name)
       t.is(rule_result.namespace, NAMESPACE)
       t.pass()
-      return rules.delete({ruleName: 'random_rule_test'}).catch(errors)
-    }).catch(errors)
+      return rules.disable({ruleName: 'random_rule_test'}).then(() => rules.delete({ruleName: 'random_rule_test'}))
+    })
   }).catch(errors)
 })
 
-test('create and update a rule', t => {
+test.serial('create and update a rule', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
   const errors = err => {
@@ -88,10 +89,12 @@ test('create and update a rule', t => {
     t.is(result.namespace, NAMESPACE)
     t.is(result.action, 'hello')
     t.is(result.trigger, 'sample')
-    return rules.update({ruleName: 'random_update_test', action: 'tests', trigger: 'sample'}).then(update_result => {
-      t.is(update_result.action, 'tests')
-      t.pass()
-      return rules.delete({ruleName: 'random_update_test'}).catch(errors)
+    return rules.disable({ruleName: 'random_update_test'}).then(() => {
+      return rules.update({ruleName: 'random_update_test', action: 'tests', trigger: 'sample'}).then(update_result => {
+        t.is(update_result.action, 'tests')
+        t.pass()
+        return rules.delete({ruleName: 'random_update_test'}).catch(errors)
+      })
     }).catch(errors)
   }).catch(errors)
 })
