@@ -33,7 +33,7 @@ test('list all activations with options', t => {
     t.is(req.url, `${params.api}namespaces/options_namespace/activations`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'GET')
-    t.deepEqual(req.qs, {name: 'Hello', limit: 100, skip: 100, upto: 100, docs: true})
+    t.deepEqual(req.qs, {name: 'Hello', limit: 100, skip: 100, upto: 100, docs: true, since: 100})
     return Promise.resolve()
   }
 
