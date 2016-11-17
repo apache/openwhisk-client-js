@@ -63,7 +63,7 @@ test('create, get and delete an action', t => {
   return actions.create({actionName: 'random_action_test', action: 'function main() {return {payload:"testing"}}'}).then(result => {
     t.is(result.name, 'random_action_test')
     t.is(result.namespace, NAMESPACE)
-    t.is(result.exec.kind, 'nodejs')
+    t.is(result.exec.kind, 'nodejs:6')
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
     return actions.get({actionName: 'random_action_test'}).then(action_result => {
       t.is(action_result.name, 'random_action_test')
@@ -86,7 +86,7 @@ test('create and update an action', t => {
   return actions.create({actionName: 'random_update_tested', action: 'function main() {return {payload:"testing"}}'}).then(result => {
     t.is(result.name, 'random_update_tested')
     t.is(result.namespace, NAMESPACE)
-    t.is(result.exec.kind, 'nodejs')
+    t.is(result.exec.kind, 'nodejs:6')
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
     return actions.update({actionName: 'random_update_tested', action: 'update test'}).then(update_result => {
       t.is(update_result.exec.code, 'update test')

@@ -67,3 +67,11 @@ test('should return request parameters from path without ending forward slash', 
   t.true(params.json, true)
   t.true(params.headers.hasOwnProperty('Authorization'))
 })
+
+test('should url encode namespace parameter', t => {
+  const options = {namespace: 'sample@path'}
+  let base_operation = new BaseOperation(options)
+
+  t.is(base_operation.namespace(), `sample%40path`)
+  t.is(base_operation.namespace({namespace: 'sample path'}), `sample%20path`)
+})
