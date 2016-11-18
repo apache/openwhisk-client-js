@@ -48,6 +48,8 @@ test('should return default namespace', t => {
 test('should throw for missing namespace', t => {
   const base_operation = new BaseOperation({})
   t.throws(() => base_operation.namespace({}), /Missing namespace/)
+  t.throws(() => base_operation.namespace({namespace: null}), /Missing namespace/)
+  t.throws(() => base_operation.namespace({namespace: undefined}), /Missing namespace/)
 })
 
 test('should return request parameters from path', t => {
