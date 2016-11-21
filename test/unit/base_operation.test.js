@@ -14,6 +14,12 @@ test('should throw errors for HTTP response failures', t => {
   t.throws(() => base_operation.handle_errors({statusCode: 500, error: {response: {result: {error: 'custom'}}}}), /custom/)
 })
 
+test('should support passing option to ignore ssl certificate checking', t => {
+  const base_operation = new BaseOperation({ignore_certs: true, api_key: 'aaa', apihost: 'my_host'})
+  const params = base_operation.params('method', 'some/path')
+  t.false(params.rejectUnauthorized)
+})
+
 test('should throw error when missing API key option.', t => {
   t.throws(() => new BaseOperation({api: true}), /Missing api_key parameter./)
 })
@@ -110,6 +116,7 @@ test('should return request parameters from path', t => {
   t.is(params.url, 'https://api.com/api/v1/some/path')
   t.is(params.method, 'method')
   t.true(params.json, true)
+  t.true(params.rejectUnauthorized)
   t.true(params.headers.hasOwnProperty('Authorization'))
 })
 
@@ -119,6 +126,7 @@ test('should return request parameters from path without ending forward slash', 
   t.is(params.url, 'https://api.com/api/v1/some/path')
   t.is(params.method, 'method')
   t.true(params.json, true)
+  t.true(params.rejectUnauthorized)
   t.true(params.headers.hasOwnProperty('Authorization'))
 })
 
