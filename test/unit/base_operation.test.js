@@ -4,7 +4,7 @@ const test = require('ava')
 const BaseOperation = require('../../lib/base_operation')
 
 test('should throw errors for HTTP response failures', t => {
-  const base_operation = new BaseOperation()
+  const base_operation = new BaseOperation({api_key: true, api: true})
   t.throws(() => base_operation.handle_errors({statusCode: 401}), /authentication failed/)
   t.throws(() => base_operation.handle_errors({statusCode: 403}), /authentication failed/)
   t.throws(() => base_operation.handle_errors({statusCode: 404}), /HTTP 404/)
@@ -14,19 +14,45 @@ test('should throw errors for HTTP response failures', t => {
   t.throws(() => base_operation.handle_errors({statusCode: 500, error: {response: {result: {error: 'custom'}}}}), /custom/)
 })
 
+test('should throw error when missing API key option.', t => {
+  t.throws(() => new BaseOperation({api: true}), /Missing api_key parameter./)
+})
+
+test('should throw error when missing both API and API Host options.', t => {
+  t.throws(() => new BaseOperation({api_key: true}), /Missing either api or apihost parameters/)
+})
+
+test('should set options.api from options.apihost with hostname only', t => {
+  const base_operation = new BaseOperation({api_key: true, apihost: 'my_host'})
+  t.true(base_operation.options.hasOwnProperty('api'))
+  t.is(base_operation.options.api, 'https://my_host/api/v1/')
+})
+
+test('should set options.api from options.apihost with hostname and https port', t => {
+  const base_operation = new BaseOperation({api_key: true, apihost: 'my_host:443'})
+  t.true(base_operation.options.hasOwnProperty('api'))
+  t.is(base_operation.options.api, 'https://my_host:443/api/v1/')
+})
+
+test('should set options.api from options.apihost with hostname and https port', t => {
+  const base_operation = new BaseOperation({api_key: true, apihost: 'my_host:80'})
+  t.true(base_operation.options.hasOwnProperty('api'))
+  t.is(base_operation.options.api, 'http://my_host:80/api/v1/')
+})
+
 test('should throw errors for non-HTTP response failures', t => {
-  const base_operation = new BaseOperation()
+  const base_operation = new BaseOperation({api_key: true, api: true})
   t.throws(() => base_operation.handle_errors({message: 'error message'}), /error message/)
 })
 
 test('should generate auth header from API key', t => {
   const api_key = 'some sample api key'
-  const base_operation = new BaseOperation({api_key: api_key})
+  const base_operation = new BaseOperation({api: true, api_key: api_key})
   t.is(base_operation.auth_header(), `Basic ${new Buffer(api_key).toString('base64')}`)
 })
 
 test('should extract available query string parameters', t => {
-  const base_operation = new BaseOperation()
+  const base_operation = new BaseOperation({api_key: true, api: true})
   t.deepEqual(base_operation.qs({}, ['a', 'b', 'c']), {})
   t.deepEqual(base_operation.qs({a: 1}, ['a', 'b', 'c']), {a: 1})
   t.deepEqual(base_operation.qs({a: 1, c: 2}, ['a', 'b', 'c']), {a: 1, c: 2})
@@ -34,19 +60,19 @@ test('should extract available query string parameters', t => {
 })
 
 test('should return provided namespace', t => {
-  let base_operation = new BaseOperation()
+  let base_operation = new BaseOperation({api_key: true, api: true})
   t.is(base_operation.namespace({namespace: 'provided'}), 'provided')
-  base_operation = new BaseOperation({namespace: 'default'})
+  base_operation = new BaseOperation({api_key: true, api: true, namespace: 'default'})
   t.is(base_operation.namespace({namespace: 'provided'}), 'provided')
 })
 
 test('should return default namespace', t => {
-  const base_operation = new BaseOperation({namespace: 'default'})
+  const base_operation = new BaseOperation({api_key: true, api: true, namespace: 'default'})
   t.is(base_operation.namespace(), 'default')
 })
 
 test('should throw for missing namespace', t => {
-  const base_operation = new BaseOperation({})
+  const base_operation = new BaseOperation({api_key: true, api: true})
   t.throws(() => base_operation.namespace({}), /Missing namespace/)
   t.throws(() => base_operation.namespace({namespace: null}), /Missing namespace/)
   t.throws(() => base_operation.namespace({namespace: undefined}), /Missing namespace/)
@@ -71,7 +97,7 @@ test('should return request parameters from path without ending forward slash', 
 })
 
 test('should url encode namespace parameter', t => {
-  const options = {namespace: 'sample@path'}
+  const options = {api_key: true, api: true, namespace: 'sample@path'}
   let base_operation = new BaseOperation(options)
 
   t.is(base_operation.namespace(), `sample%40path`)
