@@ -13,14 +13,26 @@ $ npm install openwhisk
 
 ```
 var openwhisk = require('openwhisk');
-var ow = openwhisk({api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: '...', namespace: 'default_namespace'});
+var options = {apihost: 'openwhisk.ng.bluemix.net', api_key: '...', namespace: 'my_namespace'};
+var ow = openwhisk(options);
 ```
+
+_Client constructor supports the following options:_
+- **apihost.** Hostname and optional port for openwhisk platform, e.g. `openwhisk.ng.bluemix.net` or `my_whisk_host:80`. Used with API URL template `${protocol}://${apihost}/api/v1/`. If port is missing or port value is 443 in the apihost string, protocol is HTTPS. Otherwise, protocol is HTTP.
+- **api.** Full API URL for OpenWhisk platform, e.g. `https://openwhisk.ng.bluemix.net/api/v1/`. This value overrides `apihost` if both are present.
+- **api_key.** Authorisation key for user account registered with OpenWhisk platform.
+- **namespace**. Default namespace for resource requests.
+- **ignore_certs**. Turns off server SSL/TLS certificate verification. This allows the client to be used against local deployments of OpenWhisk with a self-signed certificate. Defaults to false.
+
+*Client constructor will read values for the `apihost`, `namespace` and `api_key` options from the environment if the following parameters are set. Explicit parameter values override these values.*
+- __OW_APIHOST, __OW_NAMESPACE and __OW_APIKEY.
 
 _All methods return a Promise resolved asynchronously with the results. Failures are available through the catch method._
 
 ```
 ow.resource.operation().then(function () { // success! }).catch(function (err) { // failed! })
 ```
+
 ### list resources
 
 ```
