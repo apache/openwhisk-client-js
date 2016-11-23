@@ -99,7 +99,7 @@ ow.actions.update({actionName: '...', action: 'function main() {};'})
 
 The following mandatory parameters are supported:
 - `actionName` - action identifier
-- `action` - String containing JS function source code or JSON object containing full parameters for the action body 
+- `action` - String containing JS function source code, Buffer [containing package action zip file](https://github.com/openwhisk/openwhisk/blob/master/docs/actions.md#packaging-an-action-as-a-nodejs-module) or JSON object containing full parameters for the action body 
 
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint

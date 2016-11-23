@@ -2,6 +2,7 @@
 
 const test = require('ava')
 const Actions = require('../../lib/actions.js')
+const JSZip = require('jszip')
 
 const API_KEY = process.env.OW_API_KEY
 const API_URL = process.env.OW_API_URL
@@ -96,21 +97,28 @@ test('create and update an action', t => {
   }).catch(errors)
 })
 
-test('create, invoke and remove action', t => {
+test('create, invoke and remove package action', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
   const errors = err => {
     console.log(err)
+    console.dir(err)
     t.fail()
   }
 
-  const actions = new Actions(params)
-  return actions.create({actionName: 'random_invoke_test', action: 'function main(params) {return params}'}).then(result => {
-    return actions.invoke({actionName: 'random_invoke_test', params: {hello: 'world'}, blocking: true}).then(invoke_result => {
-      t.deepEqual(invoke_result.response.result, {hello: 'world'})
-      t.true(invoke_result.response.success)
-      t.pass()
-      return actions.delete({actionName: 'random_invoke_test'}).catch(errors)
-    }).catch(errors)
+  const zip = new JSZip()
+  zip.file('package.json', JSON.stringify({main: 'index.js'}))
+  zip.file('index.js', 'function main(params) {return params};\nexports.main = main;')
+
+  return zip.generateAsync({type: 'nodebuffer'}).then(content => {
+    const actions = new Actions(params)
+    return actions.create({actionName: 'random_package_action_test', action: content}).then(result => {
+      return actions.invoke({actionName: 'random_package_action_test', params: {hello: 'world'}, blocking: true}).then(invoke_result => {
+        t.deepEqual(invoke_result.response.result, {hello: 'world'})
+        t.true(invoke_result.response.success)
+        t.pass()
+        return actions.delete({actionName: 'random_package_action_test'}).catch(errors)
+      })
+    })
   }).catch(errors)
 })

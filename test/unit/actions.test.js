@@ -247,6 +247,26 @@ test('create an action with custom body', t => {
   return actions.create({actionName: action_name, namespace: 'provided', action: action, overwrite: true})
 })
 
+test('create an action with Buffer data for action source', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const action_name = 'action_name'
+  const namespace = 'provided'
+  const action = new Buffer('some action source contents')
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/${namespace}/actions/${action_name}`)
+    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+    t.is(req.method, 'PUT')
+    t.deepEqual(req.body, {exec: {kind: 'nodejs:default', code: action.toString('base64')}})
+    return Promise.resolve()
+  }
+
+  t.plan(4)
+
+  const actions = new Actions(params)
+  return actions.create({actionName: action_name, namespace: 'provided', action: action})
+})
+
 test('create an action without providing any namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
 
