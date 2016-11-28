@@ -105,6 +105,23 @@ test('get action using options namespace', t => {
   return actions.get({actionName: action_name, namespace: 'provided'})
 })
 
+test('get action using fully qualified action name', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const action_name = '/my_namespace/action_name'
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/my_namespace/actions/action_name`)
+    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+    t.is(req.method, 'GET')
+    return Promise.resolve()
+  }
+
+  t.plan(3)
+
+  const actions = new Actions(params)
+  return actions.get({actionName: action_name})
+})
+
 test('get an action without providing any namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
 
@@ -133,6 +150,23 @@ test('delete action using default namespace', t => {
 
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
+    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+    t.is(req.method, 'DELETE')
+    return Promise.resolve()
+  }
+
+  t.plan(3)
+
+  const actions = new Actions(params)
+  return actions.delete({actionName: action_name})
+})
+
+test('delete action using fully qualified action name', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const action_name = '/custom/action_name'
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/custom/actions/action_name`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'DELETE')
     return Promise.resolve()
@@ -336,6 +370,44 @@ test('invoke an action with no parameters', t => {
 
   const actions = new Actions(params)
   return actions.invoke({actionName: action_name})
+})
+
+test('invoke an action with fully qualified action name', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const action_name = '/custom_namespace/action_name'
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/custom_namespace/actions/action_name`)
+    return Promise.resolve()
+  }
+
+  t.plan(1)
+
+  const actions = new Actions(params)
+  return actions.invoke({actionName: action_name})
+})
+
+test('invoke an action with fully qualified action and package name', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const action_name = '/custom_namespace/custom_package/action_name'
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/custom_namespace/actions/custom_package/action_name`)
+    return Promise.resolve()
+  }
+
+  t.plan(1)
+
+  const actions = new Actions(params)
+  return actions.invoke({actionName: action_name})
+})
+
+test('invoke an action with invalid action name', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const action_name = '/custom_namespace'
+
+  const actions = new Actions(params)
+  return t.throws(() => { actions.invoke({actionName: action_name}) }, /Invalid actionName/)
 })
 
 test('invoke an action with JSON string', t => {

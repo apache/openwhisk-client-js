@@ -97,6 +97,22 @@ test('create and update an action', t => {
   }).catch(errors)
 })
 
+test('invoke action with fully-qualified name', t => {
+  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
+
+  const errors = err => {
+    console.log(err)
+    console.dir(err)
+    t.fail()
+  }
+
+  const actions = new Actions(params)
+  return actions.invoke({actionName: '/whisk.system/util/sort', blocking: true}).then(invoke_result => {
+    t.true(invoke_result.response.success)
+    t.pass()
+  }).catch(errors)
+})
+
 test('create, invoke and remove package action', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
