@@ -85,6 +85,10 @@ The following optional parameters are supported:
 ow.actions.invoke({actionName: '...'})
 ```
 
+The `actionName` parameter supports the following formats: `actionName`, `package/actionName`, `/namespace/actionName`, `/namespace/package/actionName`.
+
+If `actionName` includes a namespace, this overrides any other `namespace` properties.
+
 The following optional parameters are supported:
 - `blocking` - delay returning until action has finished executing (default: `false`)
 - `params` - JSON object containing parameters for the action being invoked (default: `{}`)
