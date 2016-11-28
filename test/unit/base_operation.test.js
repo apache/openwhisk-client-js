@@ -52,28 +52,28 @@ test('should throw errors for non-HTTP response failures', t => {
 })
 
 test('should use environment parameters for options if not set explicitly.', t => {
-  process.env['__OW_APIKEY'] = 'some_user:some_pass'
-  process.env['__OW_APIHOST'] = 'mywhiskhost'
+  process.env['__OW_API_KEY'] = 'some_user:some_pass'
+  process.env['__OW_API_HOST'] = 'mywhiskhost'
   process.env['__OW_NAMESPACE'] = 'user@host.com'
   const base_operation = new BaseOperation()
-  t.is(base_operation.options.api_key, process.env['__OW_APIKEY'])
+  t.is(base_operation.options.api_key, process.env['__OW_API_KEY'])
   t.is(base_operation.options.api, 'https://mywhiskhost/api/v1/')
   t.is(base_operation.options.namespace, process.env['__OW_NAMESPACE'])
-  delete process.env['__OW_APIKEY']
-  delete process.env['__OW_APIHOST']
+  delete process.env['__OW_API_KEY']
+  delete process.env['__OW_API_HOST']
   delete process.env['__OW_NAMESPACE']
 })
 
 test('should use options for parameters even if environment parameters are available.', t => {
-  process.env['__OW_APIKEY'] = 'some_user:some_pass'
-  process.env['__OW_APIHOST'] = 'mywhiskhost'
+  process.env['__OW_API_KEY'] = 'some_user:some_pass'
+  process.env['__OW_API_HOST'] = 'mywhiskhost'
   process.env['__OW_NAMESPACE'] = 'user@host.com'
   const base_operation = new BaseOperation({apihost: 'openwhisk', api_key: 'mykey', namespace: 'mynamespace'})
   t.is(base_operation.options.api_key, 'mykey')
   t.is(base_operation.options.api, 'https://openwhisk/api/v1/')
   t.is(base_operation.options.namespace, 'mynamespace')
-  delete process.env['__OW_APIKEY']
-  delete process.env['__OW_APIHOST']
+  delete process.env['__OW_API_KEY']
+  delete process.env['__OW_API_HOST']
   delete process.env['__OW_NAMESPACE']
 })
 

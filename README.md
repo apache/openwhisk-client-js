@@ -25,7 +25,7 @@ _Client constructor supports the following options:_
 - **ignore_certs**. Turns off server SSL/TLS certificate verification. This allows the client to be used against local deployments of OpenWhisk with a self-signed certificate. Defaults to false.
 
 *Client constructor will read values for the `apihost`, `namespace` and `api_key` options from the environment if the following parameters are set. Explicit parameter values override these values.*
-- __OW_APIHOST, __OW_NAMESPACE and __OW_APIKEY.
+- __OW_API_HOST, __OW_NAMESPACE and __OW_API_KEY.
 
 _All methods return a Promise resolved asynchronously with the results. Failures are available through the catch method._
 
