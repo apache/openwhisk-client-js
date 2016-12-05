@@ -5,12 +5,16 @@ const BaseOperation = require('../../lib/base_operation')
 
 test('should throw errors for HTTP response failures', t => {
   const base_operation = new BaseOperation({api_key: true, api: true})
+  t.throws(() => base_operation.handle_errors({statusCode: 400}), /invalid request/)
+  t.throws(() => base_operation.handle_errors({statusCode: 400, error: { error: 'some msg'}}), /some msg/)
   t.throws(() => base_operation.handle_errors({statusCode: 401}), /authentication failed/)
   t.throws(() => base_operation.handle_errors({statusCode: 403}), /authentication failed/)
   t.throws(() => base_operation.handle_errors({statusCode: 404}), /HTTP 404/)
   t.throws(() => base_operation.handle_errors({statusCode: 408}), /timed out/)
   t.throws(() => base_operation.handle_errors({statusCode: 409}), /Conflict/)
   t.throws(() => base_operation.handle_errors({statusCode: 500, error: {}}), /API call failed/)
+  t.throws(() => base_operation.handle_errors({statusCode: 500, error: {response: {result: {error: 'custom'}}}}), /custom/)
+  t.throws(() => base_operation.handle_errors({statusCode: 502, error: {}}), /Action invocation failed/)
   t.throws(() => base_operation.handle_errors({statusCode: 500, error: {response: {result: {error: 'custom'}}}}), /custom/)
 })
 
