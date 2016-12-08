@@ -38,14 +38,20 @@ test('should set options.api from options.apihost with hostname only', t => {
   t.is(base_operation.options.api, 'https://my_host/api/v1/')
 })
 
-test('should set options.api from options.apihost with hostname and https port', t => {
-  const base_operation = new BaseOperation({api_key: true, apihost: 'my_host:443'})
+test('should set options.api from options.apihost with hostname missing protocol', t => {
+  const base_operation = new BaseOperation({api_key: true, apihost: 'my_host'})
   t.true(base_operation.options.hasOwnProperty('api'))
-  t.is(base_operation.options.api, 'https://my_host:443/api/v1/')
+  t.is(base_operation.options.api, 'https://my_host/api/v1/')
 })
 
-test('should set options.api from options.apihost with hostname and https port', t => {
-  const base_operation = new BaseOperation({api_key: true, apihost: 'my_host:80'})
+test('should set options.api from options.apihost with hostname and https protocol', t => {
+  const base_operation = new BaseOperation({api_key: true, apihost: 'https://my_host:80'})
+  t.true(base_operation.options.hasOwnProperty('api'))
+  t.is(base_operation.options.api, 'https://my_host:80/api/v1/')
+})
+
+test('should set options.api from options.apihost with hostname and http protocol', t => {
+  const base_operation = new BaseOperation({api_key: true, apihost: 'http://my_host:80'})
   t.true(base_operation.options.hasOwnProperty('api'))
   t.is(base_operation.options.api, 'http://my_host:80/api/v1/')
 })
