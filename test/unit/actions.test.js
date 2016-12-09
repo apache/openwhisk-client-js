@@ -410,24 +410,6 @@ test('invoke an action with invalid action name', t => {
   return t.throws(() => { actions.invoke({actionName: action_name}) }, /Invalid actionName/)
 })
 
-test('invoke an action with JSON string', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'POST')
-    t.deepEqual(req.body, {})
-    return Promise.resolve()
-  }
-
-  t.plan(4)
-
-  const actions = new Actions(params)
-  return actions.invoke({actionName: action_name, payload: '{}'})
-})
-
 test('invoke an action with object', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const action_name = 'action_name'
