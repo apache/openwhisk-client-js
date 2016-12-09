@@ -61,11 +61,11 @@ test.serial('create, get and delete a rule', t => {
   }
 
   const rules = new Rules(params)
-  return rules.create({ruleName: 'random_rule_test', action: 'hello', trigger: 'sample'}).then(result => {
+  return rules.create({ruleName: 'random_rule_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample`}).then(result => {
     t.is(result.name, 'random_rule_test')
     t.is(result.namespace, NAMESPACE)
-    t.is(result.action, 'hello')
-    t.is(result.trigger, 'sample')
+    t.deepEqual(result.action, {path: NAMESPACE, name: 'hello'})
+    t.deepEqual(result.trigger, {path: NAMESPACE, name: 'sample'})
     return rules.get({ruleName: result.name}).then(rule_result => {
       t.is(rule_result.name, result.name)
       t.is(rule_result.namespace, NAMESPACE)
@@ -84,14 +84,14 @@ test.serial('create and update a rule', t => {
   }
 
   const rules = new Rules(params)
-  return rules.create({ruleName: 'random_update_test', action: 'hello', trigger: 'sample'}).then(result => {
+  return rules.create({ruleName: 'random_update_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample`}).then(result => {
     t.is(result.name, 'random_update_test')
     t.is(result.namespace, NAMESPACE)
-    t.is(result.action, 'hello')
-    t.is(result.trigger, 'sample')
+    t.deepEqual(result.action, {path: NAMESPACE, name: 'hello'})
+    t.deepEqual(result.trigger, {path: NAMESPACE, name: 'sample'})
     return rules.disable({ruleName: 'random_update_test'}).then(() => {
       return rules.update({ruleName: 'random_update_test', action: 'tests', trigger: 'sample'}).then(update_result => {
-        t.is(update_result.action, 'tests')
+        t.deepEqual(update_result.action, {path: NAMESPACE, name: 'tests'})
         t.pass()
         return rules.delete({ruleName: 'random_update_test'}).catch(errors)
       })

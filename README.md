@@ -147,8 +147,12 @@ ow.rules.create({ruleName: '...', action: '...', trigger: '...'})
 ow.rules.update({ruleName: '...', action: '...', trigger: '...'})
 ```
 
+`trigger` and `action` identifiers will have the default namespace (`/_/`)
+appended in the request, unless a fully qualified name is passed in
+(`/custom_ns/action_or_trigger_name`).
+
 The following optional parameters are supported:
-- `namespace` - set custom namespace for endpoint
+- `namespace` - set namespace for rule 
 
 ### enable & disable rule
 

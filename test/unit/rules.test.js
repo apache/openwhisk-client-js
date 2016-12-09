@@ -176,7 +176,7 @@ test('create a new rule using the default namespace', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.deepEqual(req.body, {action: rule.action, trigger: rule.trigger})
+    t.deepEqual(req.body, {action: '/_/' + rule.action, trigger: '/_/' + rule.trigger})
     t.deepEqual(req.qs, {})
     return Promise.resolve()
   }
@@ -192,6 +192,27 @@ test('create an rule using options namespace', t => {
   const rule_name = 'rule_name'
   const namespace = 'provided'
   const rule = {version: '1.0.0', publish: true, trigger: 'trigger', action: 'action'}
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/${namespace}/rules/${rule_name}`)
+    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+    t.is(req.method, 'PUT')
+    t.deepEqual(req.body, {action: '/_/' + rule.action, trigger: '/_/' + rule.trigger})
+    t.deepEqual(req.qs, {overwrite: true})
+    return Promise.resolve()
+  }
+
+  t.plan(5)
+
+  const rules = new Rules(params)
+  return rules.create({ruleName: rule_name, namespace: 'provided', action: rule.action, trigger: rule.trigger, overwrite: true})
+})
+
+test('create a rule with fully qualifing action and trigger namespace', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const rule_name = 'rule_name'
+  const namespace = 'provided'
+  const rule = {version: '1.0.0', publish: true, trigger: '/a/trigger', action: '/b/action'}
 
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${namespace}/rules/${rule_name}`)
@@ -261,7 +282,7 @@ test('update an rule', t => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
     t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
     t.is(req.method, 'PUT')
-    t.deepEqual(req.body, {action: rule.action, trigger: rule.trigger})
+    t.deepEqual(req.body, {action: '/_/' + rule.action, trigger: '/_/' + rule.trigger})
     t.deepEqual(req.qs, {overwrite: true})
     return Promise.resolve()
   }
