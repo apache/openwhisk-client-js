@@ -13,7 +13,7 @@ $ npm install openwhisk
 
 ```
 var openwhisk = require('openwhisk');
-var options = {apihost: 'openwhisk.ng.bluemix.net', api_key: '...', namespace: 'my_namespace'};
+var options = {apihost: 'openwhisk.ng.bluemix.net', api_key: '...'};
 var ow = openwhisk(options);
 ```
 

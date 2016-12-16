@@ -11,7 +11,7 @@ const Feeds = proxyquire('../../lib/feeds.js', {'./base_operation': ctor})
 test('delete feed using default namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const feed_name = 'rule_name'
-  const trigger_name = 'trigger_ns/trigger_name'
+  const trigger_name = '/trigger_ns/trigger_name'
 
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${feed_name}`)
@@ -31,7 +31,7 @@ test('delete feed using default namespace', t => {
 test('delete feed using custom namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const feed_name = 'rule_name'
-  const trigger_name = 'trigger_ns/trigger_name'
+  const trigger_name = '/trigger_ns/trigger_name'
   const namespace = 'custom_namespace'
 
   stub.request = req => {
@@ -78,7 +78,7 @@ test('should throw errors without feed name parameter on delete', t => {
 test('create feed using default namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const feed_name = 'rule_name'
-  const trigger_name = 'trigger_ns/trigger_name'
+  const trigger_name = '/trigger_ns/trigger_name'
 
   stub.request = req => {
     t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${feed_name}`)
@@ -98,7 +98,7 @@ test('create feed using default namespace', t => {
 test('create feed with custom parameters', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const feed_name = 'rule_name'
-  const trigger_name = 'trigger_ns/trigger_name'
+  const trigger_name = '/trigger_ns/trigger_name'
   const custom_params = {hello: 'world'}
 
   stub.request = req => {
@@ -119,7 +119,7 @@ test('create feed with custom parameters', t => {
 test('create feed using options namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const feed_name = 'rule_name'
-  const trigger_name = 'trigger_ns/trigger_name'
+  const trigger_name = '/trigger_ns/trigger_name'
   const namespace = 'custom_namespace'
 
   stub.request = req => {

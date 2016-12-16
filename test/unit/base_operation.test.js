@@ -108,16 +108,14 @@ test('should return provided namespace', t => {
   t.is(base_operation.namespace({namespace: 'provided'}), 'provided')
 })
 
-test('should return default namespace', t => {
+test('should return global namespace', t => {
   const base_operation = new BaseOperation({api_key: true, api: true, namespace: 'default'})
   t.is(base_operation.namespace(), 'default')
 })
 
-test('should throw for missing namespace', t => {
+test('should return default namespace when namespace not provided or in environment', t => {
   const base_operation = new BaseOperation({api_key: true, api: true})
-  t.throws(() => base_operation.namespace({}), /Missing namespace/)
-  t.throws(() => base_operation.namespace({namespace: null}), /Missing namespace/)
-  t.throws(() => base_operation.namespace({namespace: undefined}), /Missing namespace/)
+  t.is(base_operation.namespace(), '_')
 })
 
 test('should return request parameters from path', t => {

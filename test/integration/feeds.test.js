@@ -2,6 +2,7 @@
 
 const test = require('ava')
 const Feeds = require('../../lib/feeds.js')
+const Triggers = require('../../lib/triggers.js')
 
 const API_KEY = process.env.OW_API_KEY
 const API_URL = process.env.OW_API_URL
@@ -28,17 +29,20 @@ test('create and delete a feed', t => {
   }
 
   const feeds = new Feeds(params)
+  const triggers = new Triggers(params)
   const feed_params = {
     feedName: 'alarms/alarm',
     namespace: 'whisk.system',
-    trigger: 'sample',
+    trigger: `/${NAMESPACE}/sample_feed_trigger`,
     params: {cron: '*/8 * * * * *', trigger_payload: {name: 'test', place: 'hello'}}
   }
-  return feeds.create(feed_params).then(result => {
+  return triggers.create({triggerName: 'sample_feed_trigger'}).then(() => feeds.create(feed_params)).then(result => {
     t.is(result.response.success, true)
     return feeds.delete(feed_params).then(feed_result => {
       t.is(feed_result.response.success, true)
-      t.pass()
+      return triggers.delete({triggerName: 'sample_feed_trigger'}).then(() => {
+        t.pass()
+      })
     }).catch(errors)
   }).catch(errors)
 })

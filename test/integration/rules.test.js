@@ -2,6 +2,7 @@
 
 const test = require('ava')
 const Rules = require('../../lib/rules.js')
+const Triggers = require('../../lib/triggers.js')
 
 const API_KEY = process.env.OW_API_KEY
 const API_URL = process.env.OW_API_URL
@@ -61,16 +62,21 @@ test.serial('create, get and delete a rule', t => {
   }
 
   const rules = new Rules(params)
-  return rules.create({ruleName: 'random_rule_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample`}).then(result => {
-    t.is(result.name, 'random_rule_test')
-    t.is(result.namespace, NAMESPACE)
-    t.deepEqual(result.action, {path: NAMESPACE, name: 'hello'})
-    t.deepEqual(result.trigger, {path: NAMESPACE, name: 'sample'})
-    return rules.get({ruleName: result.name}).then(rule_result => {
-      t.is(rule_result.name, result.name)
-      t.is(rule_result.namespace, NAMESPACE)
-      t.pass()
-      return rules.disable({ruleName: 'random_rule_test'}).then(() => rules.delete({ruleName: 'random_rule_test'}))
+  const triggers = new Triggers(params)
+  return triggers.create({triggerName: 'sample_rule_trigger'}).then(() => {
+    return rules.create({ruleName: 'random_rule_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample_rule_trigger`}).then(result => {
+      t.is(result.name, 'random_rule_test')
+      t.is(result.namespace, NAMESPACE)
+      t.deepEqual(result.action, {path: NAMESPACE, name: 'hello'})
+      t.deepEqual(result.trigger, {path: NAMESPACE, name: 'sample_rule_trigger'})
+      return rules.get({ruleName: result.name}).then(rule_result => {
+        t.is(rule_result.name, result.name)
+        t.is(rule_result.namespace, NAMESPACE)
+        t.pass()
+        return rules.disable({ruleName: 'random_rule_test'})
+          .then(() => rules.delete({ruleName: 'random_rule_test'}))
+          .then(() => triggers.delete({triggerName: 'sample_rule_trigger'}))
+      })
     })
   }).catch(errors)
 })
@@ -84,16 +90,21 @@ test.serial('create and update a rule', t => {
   }
 
   const rules = new Rules(params)
-  return rules.create({ruleName: 'random_update_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample`}).then(result => {
-    t.is(result.name, 'random_update_test')
-    t.is(result.namespace, NAMESPACE)
-    t.deepEqual(result.action, {path: NAMESPACE, name: 'hello'})
-    t.deepEqual(result.trigger, {path: NAMESPACE, name: 'sample'})
-    return rules.disable({ruleName: 'random_update_test'}).then(() => {
-      return rules.update({ruleName: 'random_update_test', action: 'tests', trigger: 'sample'}).then(update_result => {
-        t.deepEqual(update_result.action, {path: NAMESPACE, name: 'tests'})
-        t.pass()
-        return rules.delete({ruleName: 'random_update_test'}).catch(errors)
+  const triggers = new Triggers(params)
+  return triggers.create({triggerName: 'sample_rule_trigger'}).then(() => {
+    return rules.create({ruleName: 'random_update_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample_rule_trigger`}).then(result => {
+      t.is(result.name, 'random_update_test')
+      t.is(result.namespace, NAMESPACE)
+      t.deepEqual(result.action, {path: NAMESPACE, name: 'hello'})
+      t.deepEqual(result.trigger, {path: NAMESPACE, name: 'sample_rule_trigger'})
+      return rules.disable({ruleName: 'random_update_test'}).then(() => {
+        return rules.update({ruleName: 'random_update_test', action: 'tests', trigger: 'sample_rule_trigger'}).then(update_result => {
+          t.deepEqual(update_result.action, {path: NAMESPACE, name: 'tests'})
+          t.pass()
+          return rules.delete({ruleName: 'random_update_test'})
+            .then(() => triggers.delete({triggerName: 'sample_rule_trigger'}))
+            .catch(errors)
+        })
       })
     }).catch(errors)
   }).catch(errors)
