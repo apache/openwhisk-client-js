@@ -178,3 +178,44 @@ ow.feeds.create({feedName: 'alarms/alarm', namespace: 'whisk.system', trigger: '
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 - `params` - JSON object containing parameters for the feed being invoked (default: `{}`)
+
+## api gateway (experimental)
+
+*[API Gateway support](https://github.com/openwhisk/openwhisk/blob/master/docs/apigateway.md)
+is currently experimental and may be subject to breaking changes.*
+
+### list routes
+
+```
+ow.routes.list()
+```
+
+The following optional parameters are supported to filter the result set:
+- `relpath` - relative URI path for endpoints
+- `basepath` - base URI path for endpoints
+- `operation` - HTTP methods 
+- `limit` - limit result set size
+- `skip` - skip results from index
+
+*`relpath` is only valid when `basepath` is also specified.*
+
+### delete routes
+
+```
+ow.routes.delete({basepath: '...'})
+```
+
+The following optional parameters are supported to filter the result set:
+- `relpath` - relative URI path for endpoints
+- `operation` - HTTP methods 
+
+### add route
+```
+ow.routes.create({relpath: '...', operation: '...', action: '...'})
+```
+
+*`action` supports normal (actionName) and fully-qualified
+(/namespace/actionName) formats.*
+
+The following optional parameters are supported to filter the result set:
+- `basepath` - base URI path for endpoints (default: `/`)
