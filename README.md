@@ -26,6 +26,7 @@ _Client constructor supports the following options:_
 
 *Client constructor will read values for the `apihost`, `namespace` and `api_key` options from the environment if the following parameters are set. Explicit parameter values override these values.*
 - __OW_API_HOST, __OW_NAMESPACE and __OW_API_KEY.
+- These parameters are set on Bluemix.
 
 _All methods return a Promise resolved asynchronously with the results. Failures are available through the catch method._
 
@@ -53,6 +54,14 @@ ow.actions.list({skip: 100, limit: 50})
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 
+Example to list packages:
+
+```js
+ow.packages.list().then(function (packages) {
+    console.log(packages);
+});
+```
+
 ### retrieve resource 
 
 ```
@@ -66,6 +75,15 @@ ow.packages.get({packageName: '...'})
 
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
+
+Example to fetch a package by name:
+
+```js
+ow.packages.get({packageName: "mypackage"})
+.then(function (pkg) {
+    console.log(pkg);
+});
+
 
 ### delete resource 
 
@@ -139,6 +157,25 @@ ow.packages.update({packageName: '...'})
 The following optional parameters are supported:
 - `package` - JSON object containing parameters for the package body (default: `{}`)
 - `namespace` - set custom namespace for endpoint
+
+Example of updating a package to set parameters (overwrites existing parameters):
+
+```js
+var options = {
+	packageName: "mypackage",
+	package: {
+		parameters: [
+			{key: "colour", value: "green"},
+			{key: "name", value: "Freya"}
+		]
+	}
+}
+
+ow.packages.update(options)
+.then(function (pkg) {
+	...
+}
+```
 
 ### create & update rule
 
