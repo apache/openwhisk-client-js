@@ -11,10 +11,28 @@ $ npm install openwhisk
 
 ## usage
 
+Instantiate openwhisk with specific options:
+
 ```
-var openwhisk = require('openwhisk');
-var options = {apihost: 'openwhisk.ng.bluemix.net', api_key: '...'};
-var ow = openwhisk(options);
+function main(params) {
+	// require the openwhisk npm package
+	var openwhisk = require('openwhisk');
+
+	// read apihost, auth, and namespace from params
+	var apiHost = params.apiHost; # e.g. openwhisk.ng.bluemix.net
+	var namespace = params.namespace;
+	var auth = params.auth; 
+
+	// generate api_key from auth
+	var base64Auth = new Buffer(auth).toString('base64');
+	var apiKey = "Basic " + base64Auth;
+
+	var options = {apihost: apiHost, api_key: apiKey, namespace: namespace};
+	
+	// instantiate the openwhisk instance before you can use it
+	var wsk = openwhisk(options);
+	...
+}
 ```
 
 _Client constructor supports the following options:_
@@ -23,6 +41,18 @@ _Client constructor supports the following options:_
 - **api_key.** Authorisation key for user account registered with OpenWhisk platform.
 - **namespace**. Default namespace for resource requests.
 - **ignore_certs**. Turns off server SSL/TLS certificate verification. This allows the client to be used against local deployments of OpenWhisk with a self-signed certificate. Defaults to false.
+
+The simplest way to instantiate openwhisk:
+
+```
+function main(params) {
+	// require the openwhisk npm package
+	var openwhisk = require('openwhisk');
+	// instantiate the openwhisk instance before you can use it
+	var wsk = openwhisk();
+	...
+}
+```
 
 *Client constructor will read values for the `apihost`, `namespace` and `api_key` options from the environment if the following parameters are set. Explicit parameter values override these values.*
 - __OW_API_HOST, __OW_NAMESPACE and __OW_API_KEY.
@@ -45,7 +75,7 @@ ow.namespaces.list()
 ow.packages.list()
 ```
 
-Query parameters for the API calls are supported (e.g. limit, skip, etc.) by passing an object with the named parameters as the first argument.
+Query parameters for the API calls are supported (e.g. limit, skip, etc.) by passing an object with the named parameters as the first argument.	
 
 ```
 ow.actions.list({skip: 100, limit: 50})
