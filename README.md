@@ -62,7 +62,7 @@ return ow.packages.list()
     return { "packages": packages };
 })
 .catch (function (err) {
-    return { "err": err }
+    return { "err": err };
 });
 ```
 
