@@ -87,7 +87,7 @@ ow.packages.get({packageName: "mypackage"})
 .then(function (pkg) {
     console.log(pkg);
 });
-
+```
 
 ### delete resource 
 
