@@ -57,8 +57,12 @@ The following optional parameters are supported:
 Example to list packages:
 
 ```js
-ow.packages.list().then(function (packages) {
-    console.log(packages);
+return ow.packages.list()
+.then(function (packages) {
+    return { "packages": packages };
+})
+.catch (function (err) {
+    return { "err": err }
 });
 ```
 
