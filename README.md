@@ -85,8 +85,11 @@ Example to fetch a package by name:
 ```js
 ow.packages.get({packageName: "mypackage"})
 .then(function (pkg) {
-    console.log(pkg);
-});
+    return { "package": pkg };
+})
+.catch(function (err){
+    return { "err": err };
+)};
 ```
 
 ### delete resource 
