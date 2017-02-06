@@ -259,6 +259,28 @@ test('create an action using options namespace', t => {
   return actions.create({actionName: action_name, namespace: 'provided', action: action, overwrite: true})
 })
 
+test('create an action using default parameters', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const action_name = 'action_name'
+  const namespace = 'provided'
+  const action = 'function main() { // main function body};'
+  const action_parameters = [{key: "param1", value: "value1"}]
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/${namespace}/actions/${action_name}`)
+    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+    t.is(req.method, 'PUT')
+    t.deepEqual(req.body, {exec: {kind: 'nodejs:default', code: action}, parameters:action_parameters})
+    t.deepEqual(req.qs, {overwrite: true})
+    return Promise.resolve()
+  }
+
+  t.plan(5)
+
+  const actions = new Actions(params)
+  return actions.create({actionName: action_name, namespace: 'provided', action: action, overwrite: true, parameters: action_parameters})
+})
+
 test('create an action with custom body', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const action_name = 'action_name'
