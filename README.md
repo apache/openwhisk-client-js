@@ -11,28 +11,187 @@ $ npm install openwhisk
 
 ## usage
 
+### within openwhisk platform
+
+This client library can use environment parameters to automatically configure the authentication credentials, platform endpoint and namespace. These parameters are defined within the Node.js runtime environment in OpenWhisk. Unless you want to override these values, you can construct the client instance without further configuration.
+
 ```
 var openwhisk = require('openwhisk');
-var options = {apihost: 'openwhisk.ng.bluemix.net', api_key: '...'};
-var ow = openwhisk(options);
+
+function action() {
+  var ow = openwhisk();  
+  return ow.actions.invoke({actionName: 'sample'})
+}
+
+exports.main = action
 ```
-
-_Client constructor supports the following options:_
-- **apihost.** Hostname and optional port for openwhisk platform, e.g. `openwhisk.ng.bluemix.net` or `my_whisk_host:80`. Used with API URL template `${protocol}://${apihost}/api/v1/`. If port is missing or port value is 443 in the apihost string, protocol is HTTPS. Otherwise, protocol is HTTP.
-- **api.** Full API URL for OpenWhisk platform, e.g. `https://openwhisk.ng.bluemix.net/api/v1/`. This value overrides `apihost` if both are present.
-- **api_key.** Authorisation key for user account registered with OpenWhisk platform.
-- **namespace**. Default namespace for resource requests.
-- **ignore_certs**. Turns off server SSL/TLS certificate verification. This allows the client to be used against local deployments of OpenWhisk with a self-signed certificate. Defaults to false.
-
-*Client constructor will read values for the `apihost`, `namespace` and `api_key` options from the environment if the following parameters are set. Explicit parameter values override these values.*
-- __OW_API_HOST, __OW_NAMESPACE and __OW_API_KEY.
-- These parameters are set on Bluemix.
 
 _All methods return a Promise resolved asynchronously with the results. Failures are available through the catch method._
 
 ```
 ow.resource.operation().then(function () { // success! }).catch(function (err) { // failed! })
 ```
+
+Users can override default constructor parameters by passing in explicit options as shown in the example below.
+
+_**Please note**: Due to [an issue](https://github.com/openwhisk/openwhisk/issues/1751) with the Node.js runtime in OpenWhisk, environment variables used by the constructor are not available until the invocation function handler is called. If you want to define the client instance outside this function, you will need to manually pass in the constructor options ._
+
+```
+var openwhisk = require('openwhisk');
+// DOES NOT WORK! Environment parameters not set.
+var ow = openwhisk();  
+
+function action() {  
+  return ow.actions.invoke({actionName: 'sample'})
+}
+
+exports.main = action
+```
+
+### outside openwhisk platform
+
+```
+var openwhisk = require('openwhisk');
+var options = {apihost: 'openwhisk.ng.bluemix.net', api_key: '...'};
+var ow = openwhisk(options);
+ow.actions.invoke({actionName: 'sample'}).then(result => console.log(result))
+```
+
+### constructor options
+
+_Client constructor supports the following mandatory parameters:_
+
+- **apihost.** Hostname and optional port for openwhisk platform, e.g. `openwhisk.ng.bluemix.net` or `my_whisk_host:80`. Used with API URL template `${protocol}://${apihost}/api/v1/`. If port is missing or port value is 443 in the apihost string, protocol is HTTPS. Otherwise, protocol is HTTP.
+- **api_key.** Authorisation key for user account registered with OpenWhisk platform.
+
+*Client constructor supports the following optional parameters:*
+
+- **api.** Full API URL for OpenWhisk platform, e.g. `https://openwhisk.ng.bluemix.net/api/v1/`. This value overrides `apihost` if both are present.
+- **namespace**. Namespace for resource requests, defaults to `_`.
+
+- **ignore_certs**. Turns off server SSL/TLS certificate verification. This allows the client to be used against local deployments of OpenWhisk with a self-signed certificate. Defaults to false.
+
+### environment variables
+
+Client constructor will read values for the `apihost`, `namespace` and `api_key` options from the environment if the following parameters are set. Explicit parameter values override these values.
+
+- *\_\_OW_API_HOST__*
+- *\_\_OW_NAMESPACE__*
+- *__OW_API_KEY*
+
+
+
+## Examples
+
+### invoke action, blocking for result
+
+```
+const actionName = 'reverseWords'
+const blocking = true
+const params = {msg: 'this is some words to reverse'}
+
+ow.actions.invoke({actionName, blocking, params}).then(result => {
+  console.log('here's the reversed string', result.reversed)
+}).catch(err => {
+  console.error(failed to invoke actions', err)
+})
+```
+
+### fire trigger
+
+```
+const triggerName = 'eventTrigger'
+const params = {msg: 'event trigger message string'}
+ow.triggers.invoke({triggerName, params}).then(result => {
+  console.log('trigger fired!')
+}).catch(err => {
+  console.error('failed to fire trigger', err)
+})
+```
+
+### create action from source file
+
+```
+const actionName = 'reverseWords'
+const action = fs.readFileSync('source.js', {encoding: 'utf8'})
+
+ow.actions.create({actionName, action}).then(result => {
+  console.log('action created!')
+}).catch(err => {
+  console.error('failed to create action', err)
+})
+```
+
+### create action from zip package
+
+```
+const actionName = 'reverseWords'
+const action = fs.readFileSync('package.zip')
+
+ow.actions.create({actionName, action}).then(result => {
+  console.log('action created!')
+}).catch(err => {
+  console.error('failed to create action', err)
+})
+```
+
+### retrieve action resource
+
+```
+const actionName = 'reverseWords'
+ow.actions.retrieve({actionName}).then(action => {
+  console.log('action resource', action)
+}).catch(err => {
+  console.error('failed to retrieve action', err)
+})
+```
+
+### list packages
+
+```
+ow.packages.list().then(packages => {
+  packages.forEach(package => console.log(package.name))
+}).catch(err => {
+  console.error('failed to list packages', err)
+})
+```
+
+### update package parameters
+
+```
+const packageName = 'myPackage'
+const package = {
+  parameters: [
+    {key: "colour", value: "green"},
+    {key: "name", value: "Freya"}
+  ]
+}
+
+ow.packages.update({packageName, package}).then(package => {
+  console.log('updated package:', package.name)
+}).catch(err => {
+  console.error('failed to update package', err)
+})
+```
+
+### create trigger feed from alarm package
+
+```
+// for example... 
+const params = {cron: '*/8 * * * * *', trigger_payload: {name: 'James'}}
+const feedName = 'alarms/alarm'
+const namespace = 'whisk.system'
+const trigger = 'alarmTrigger'
+ow.feeds.create({feedName, namespace, trigger, params}).then(package => {
+  console.log('alarm trigger feed created')
+}).catch(err => {
+  console.error('failed to create alarm trigger', err)
+})
+```
+
+
+
+## API Details 
 
 ### list resources
 
@@ -54,18 +213,6 @@ ow.actions.list({skip: 100, limit: 50})
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 
-Example to list packages:
-
-```js
-ow.packages.list()
-.then(function (packages) {
-    return { "packages": packages };
-})
-.catch (function (err) {
-    return { "err": err };
-});
-```
-
 ### retrieve resource 
 
 ```
@@ -79,18 +226,6 @@ ow.packages.get({packageName: '...'})
 
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
-
-Example to fetch a package by name:
-
-```js
-ow.packages.get({packageName: "mypackage"})
-.then(function (pkg) {
-    return { "package": pkg };
-})
-.catch(function (err){
-    return { "err": err };
-)};
-```
 
 ### delete resource 
 
@@ -165,25 +300,6 @@ The following optional parameters are supported:
 - `package` - JSON object containing parameters for the package body (default: `{}`)
 - `namespace` - set custom namespace for endpoint
 
-Example of updating a package to set parameters (overwrites existing parameters):
-
-```js
-var options = {
-	packageName: "mypackage",
-	package: {
-		parameters: [
-			{key: "colour", value: "green"},
-			{key: "name", value: "Freya"}
-		]
-	}
-}
-
-ow.packages.update(options)
-.then(function (pkg) {
-	...
-}
-```
-
 ### create & update rule
 
 ```
@@ -213,10 +329,6 @@ The following optional parameters are supported:
 ```
 ow.feeds.create({feedName: '...', trigger: '...'})
 ow.feeds.delete({feedName: '...', trigger: '...'})
-
-// for example... 
-const params = {cron: '*/8 * * * * *', trigger_payload: {name: 'James'}}
-ow.feeds.create({feedName: 'alarms/alarm', namespace: 'whisk.system', trigger: 'alarmTrigger', params})
 ```
 
 The following optional parameters are supported:
@@ -225,8 +337,7 @@ The following optional parameters are supported:
 
 ## api gateway (experimental)
 
-*[API Gateway support](https://github.com/openwhisk/openwhisk/blob/master/docs/apigateway.md)
-is currently experimental and may be subject to breaking changes.*
+*[API Gateway support](https://github.com/openwhisk/openwhisk/blob/master/docs/apigateway.md) is currently experimental and may be subject to breaking changes.*
 
 ### list routes
 
@@ -258,8 +369,7 @@ The following optional parameters are supported to filter the result set:
 ow.routes.create({relpath: '...', operation: '...', action: '...'})
 ```
 
-*`action` supports normal (actionName) and fully-qualified
-(/namespace/actionName) formats.*
+*`action` supports normal (actionName) and fully-qualified (/namespace/actionName) formats.*
 
 The following optional parameters are supported to filter the result set:
 - `basepath` - base URI path for endpoints (default: `/`)
