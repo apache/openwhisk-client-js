@@ -70,6 +70,23 @@ test('get trigger using default namespace', t => {
   return triggers.get({triggerName: trigger_name})
 })
 
+test('get trigger using name parameter', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const trigger_name = 'trigger_name'
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/${params.namespace}/triggers/${trigger_name}`)
+    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+    t.is(req.method, 'GET')
+    return Promise.resolve()
+  }
+
+  t.plan(3)
+
+  const triggers = new Triggers(params)
+  return triggers.get({name: trigger_name})
+})
+
 test('get trigger using options namespace', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const trigger_name = 'trigger_name'
@@ -125,6 +142,23 @@ test('delete trigger using default namespace', t => {
 
   const triggers = new Triggers(params)
   return triggers.delete({triggerName: trigger_name})
+})
+
+test('delete trigger using name parameter', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const trigger_name = 'trigger_name'
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/${params.namespace}/triggers/${trigger_name}`)
+    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+    t.is(req.method, 'DELETE')
+    return Promise.resolve()
+  }
+
+  t.plan(3)
+
+  const triggers = new Triggers(params)
+  return triggers.delete({name: trigger_name})
 })
 
 test('delete trigger using options namespace', t => {
@@ -184,6 +218,25 @@ test('create a new trigger using the default namespace', t => {
 
   const triggers = new Triggers(params)
   return triggers.create({triggerName: trigger_name})
+})
+
+test('create a new trigger using the name parameter', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const trigger_name = 'trigger_name'
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/${params.namespace}/triggers/${trigger_name}`)
+    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+    t.is(req.method, 'PUT')
+    t.is(Object.keys(req.body).length, 0)
+    t.deepEqual(req.qs, {})
+    return Promise.resolve()
+  }
+
+  t.plan(5)
+
+  const triggers = new Triggers(params)
+  return triggers.create({name: trigger_name})
 })
 
 test('create an trigger using options namespace', t => {
@@ -247,6 +300,25 @@ test('update an trigger', t => {
   return triggers.update({triggerName: trigger_name})
 })
 
+test('update an trigger with name parameter', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const trigger_name = 'trigger_name'
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/${params.namespace}/triggers/${trigger_name}`)
+    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+    t.is(req.method, 'PUT')
+    t.is(Object.keys(req.body).length, 0)
+    t.deepEqual(req.qs, {overwrite: true})
+    return Promise.resolve()
+  }
+
+  t.plan(5)
+
+  const triggers = new Triggers(params)
+  return triggers.update({name: trigger_name})
+})
+
 test('invoke an trigger with no parameters', t => {
   const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
   const trigger_name = 'trigger_name'
@@ -263,6 +335,24 @@ test('invoke an trigger with no parameters', t => {
 
   const triggers = new Triggers(params)
   return triggers.invoke({triggerName: trigger_name})
+})
+
+test('invoke an trigger with name parameter', t => {
+  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
+  const trigger_name = 'trigger_name'
+
+  stub.request = req => {
+    t.is(req.url, `${params.api}namespaces/${params.namespace}/triggers/${trigger_name}`)
+    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
+    t.is(req.method, 'POST')
+    t.is(Object.keys(req.body).length, 0)
+    return Promise.resolve()
+  }
+
+  t.plan(4)
+
+  const triggers = new Triggers(params)
+  return triggers.invoke({name: trigger_name})
 })
 
 test('invoke an trigger with JSON string', t => {
