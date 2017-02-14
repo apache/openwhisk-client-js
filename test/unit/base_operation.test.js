@@ -34,6 +34,23 @@ test('should invoke client request for resource with identifier', t => {
   base_operation.request({method, id})
 })
 
+test('should invoke client request with user parameters', t => {
+  t.plan(3)
+  const namespace = 'user_ns'
+  const resource = 'resource_id'
+  const method = 'GET'
+  const id = '12345'
+  const options = {qs: {hello: 'world'}, body: {hello: 'world'}}
+  const client = {request:  (_method, _path, _options) => {
+    t.is(_method, method)
+    t.is(_path, `namespace/${namespace}/${resource}/${id}`)
+    t.deepEqual(_options, {qs: {hello: 'world'}, body: {hello: 'world'}})
+  }}
+
+  const base_operation = new BaseOperation(namespace, client)
+  base_operation.resource = resource
+  base_operation.request({method, id, options})
+})
 
 test('should generate list resource request', t => {
   t.plan(1)

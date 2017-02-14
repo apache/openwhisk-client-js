@@ -1,486 +1,215 @@
 'use strict'
 
 const test = require('ava')
-const proxyquire = require('proxyquire')
-const stub = {}
-const ctor = function (options) { this.options = options }
-ctor.prototype = stub
+const Actions = require('../../lib/actions')
 
-const Actions = proxyquire('../../lib/actions.js', {'./base_operation': ctor})
+test('should list all actions without parameters', t => {
+  t.plan(3)
+  const ns = 'testing_ns'
+  const client = {}
+  const actions = new Actions(ns, client)
 
-test('list all actions using default namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespace/${ns}/actions`)
+    t.deepEqual(options, {qs: {}})
   }
 
-  t.plan(3)
-
-  const actions = new Actions(params)
   return actions.list()
 })
 
-test('list all actions using skip and limit parameters', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const options = {limit: 100, skip: 50}
+test('should list all actions with parameters', t => {
+  t.plan(3)
+  const ns = 'testing_ns'
+  const client = {}
+  const actions = new Actions(ns, client)
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.deepEqual(req.qs, options)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespace/custom/actions`)
+    t.deepEqual(options.qs, {skip: 100, limit: 100})
   }
 
+  return actions.list({namespace: 'custom', skip: 100, limit: 100})
+})
+
+test('should retrieve action from identifier', t => {
+  t.plan(2)
+  const ns = 'testing_ns'
+  const client = {}
+  const actions = new Actions(ns, client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespace/${ns}/actions/12345`)
+  }
+
+  return actions.get({id: '12345'})
+})
+
+test('should delete action from identifier', t => {
+  t.plan(2)
+  const ns = 'testing_ns'
+  const client = {}
+  const actions = new Actions(ns, client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'DELETE')
+    t.is(path, `namespace/${ns}/actions/12345`)
+  }
+
+  return actions.delete({id: '12345'})
+})
+
+
+test('should retrieve actionName from identifier', t => {
+  t.plan(2)
+  const ns = 'testing_ns'
+  const client = {}
+  const actions = new Actions(ns, client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespace/${ns}/actions/12345`)
+  }
+
+  return actions.get({actionName: '12345'})
+})
+
+test('should invoke action', t => {
   t.plan(4)
+  const ns = 'testing_ns'
+  const client = {}
+  const actions = new Actions(ns, client)
 
-  const actions = new Actions(params)
-  return actions.list(options)
-})
-
-test('list all actions using provided namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const namespace = 'provided'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/actions`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespace/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {})
   }
 
-  t.plan(3)
-
-  const actions = new Actions(params)
-  return actions.list({namespace: namespace})
+  return actions.invoke({id: '12345'})
 })
 
-test('list all actions without providing any namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
+test('should invoke fully qualified action', t => {
+  t.plan(4)
+  const ns = 'testing_ns'
+  const client = {}
+  const actions = new Actions(ns, client)
 
-  stub.request = req => {
-    t.fail()
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespace/custom/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {})
   }
 
-  const actions = new Actions(params)
-  return t.throws(() => { actions.list() }, /Missing namespace/)
+  return actions.invoke({id: '/custom/12345'})
 })
 
-test('get action using default namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
+test('should invoke fully qualified action with package', t => {
+  t.plan(4)
+  const ns = 'testing_ns'
+  const client = {}
+  const actions = new Actions(ns, client)
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespace/custom/actions/package/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {})
   }
 
-  t.plan(3)
-
-  const actions = new Actions(params)
-  return actions.get({actionName: action_name})
+  return actions.invoke({id: '/custom/package/12345'})
 })
 
-test('get action using options namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-  const namespace = 'provided'
+test('should invoke blocking action with body', t => {
+  t.plan(4)
+  const ns = 'testing_ns'
+  const client = {}
+  const actions = new Actions(ns, client)
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespace/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {blocking: true})
+    t.deepEqual(options.body, {foo: 'bar'})
   }
 
-  t.plan(3)
-
-  const actions = new Actions(params)
-  return actions.get({actionName: action_name, namespace: 'provided'})
+  return actions.invoke({id: '12345', blocking: true, params: {foo: 'bar'}})
 })
 
-test('get action using fully qualified action name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = '/my_namespace/action_name'
+test('should invoke blocking action using actionName', t => {
+  t.plan(4)
+  const ns = 'testing_ns'
+  const client = {}
+  const actions = new Actions(ns, client)
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/my_namespace/actions/action_name`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespace/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {})
   }
 
-  t.plan(3)
-
-  const actions = new Actions(params)
-  return actions.get({actionName: action_name})
+  return actions.invoke({actionName: '12345'})
 })
 
-test('get an action without providing any namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const actions = new Actions(params)
-  return t.throws(() => { actions.get({actionName: 'custom'}) }, /Missing namespace/)
-})
-
-test('get an action without providing an action name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const actions = new Actions(params)
-  return t.throws(() => { actions.get({namespace: 'custom'}) }, /actionName/)
-})
-
-test('delete action using default namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'DELETE')
-    return Promise.resolve()
-  }
-
-  t.plan(3)
-
-  const actions = new Actions(params)
-  return actions.delete({actionName: action_name})
-})
-
-test('delete action using fully qualified action name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = '/custom/action_name'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/custom/actions/action_name`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'DELETE')
-    return Promise.resolve()
-  }
-
-  t.plan(3)
-
-  const actions = new Actions(params)
-  return actions.delete({actionName: action_name})
-})
-
-test('delete action using options namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-  const namespace = 'provided'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'DELETE')
-    return Promise.resolve()
-  }
-
-  t.plan(3)
-
-  const actions = new Actions(params)
-  return actions.delete({actionName: action_name, namespace: 'provided'})
-})
-
-test('delete an action without providing any namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const actions = new Actions(params)
-  return t.throws(() => { actions.delete({actionName: 'custom'}) }, /Missing namespace/)
-})
-
-test('delete an action without providing an action name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const actions = new Actions(params)
-  return t.throws(() => { actions.delete({namespace: 'custom'}) }, /actionName/)
-})
-
-test('create a new action using the default namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
+test('create a new action', t => {
+  t.plan(4)
+  const ns = 'testing_ns'
+  const client = {}
   const action = 'function main() { // main function body};'
+  const actions = new Actions(ns, client)
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'PUT')
-    t.deepEqual(req.body, {exec: {kind: 'nodejs:default', code: action}})
-    t.deepEqual(req.qs, {})
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespace/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {exec: {kind: 'nodejs:default', code: action}})
   }
 
-  t.plan(5)
-
-  const actions = new Actions(params)
-  return actions.create({actionName: action_name, action: action})
+  return actions.create({id: '12345', action})
 })
 
-test('create an action using options namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-  const namespace = 'provided'
-  const action = 'function main() { // main function body};'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'PUT')
-    t.deepEqual(req.body, {exec: {kind: 'nodejs:default', code: action}})
-    t.deepEqual(req.qs, {overwrite: true})
-    return Promise.resolve()
-  }
-
-  t.plan(5)
-
-  const actions = new Actions(params)
-  return actions.create({actionName: action_name, namespace: 'provided', action: action, overwrite: true})
-})
-
-test('create an action with custom body', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-  const namespace = 'provided'
+test('create a new action with custom body', t => {
+  t.plan(4)
+  const ns = 'testing_ns'
+  const client = {}
   const code = 'function main() { // main function body};'
   const action = {exec: {kind: 'swift', code: code}}
+  const actions = new Actions(ns, client)
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'PUT')
-    t.deepEqual(req.body, {exec: {kind: 'swift', code: code}})
-    t.deepEqual(req.qs, {overwrite: true})
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespace/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, action)
   }
 
-  t.plan(5)
-
-  const actions = new Actions(params)
-  return actions.create({actionName: action_name, namespace: 'provided', action: action, overwrite: true})
+  return actions.create({id: '12345', action})
 })
 
-test('create an action with Buffer data for action source', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-  const namespace = 'provided'
-  const action = new Buffer('some action source contents')
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'PUT')
-    t.deepEqual(req.body, {exec: {kind: 'nodejs:default', code: action.toString('base64')}})
-    return Promise.resolve()
-  }
-
+test('create a new action with buffer body', t => {
   t.plan(4)
+  const ns = 'testing_ns'
+  const client = {}
+  const code = 'function main() { // main function body};'
+  const action = new Buffer('some action source contents')
+  const actions = new Actions(ns, client)
 
-  const actions = new Actions(params)
-  return actions.create({actionName: action_name, namespace: 'provided', action: action})
-})
-
-test('create an action without providing any namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespace/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {exec: {kind: 'nodejs:default', code: action.toString('base64')}})
   }
 
-  const actions = new Actions(params)
-  return t.throws(() => { actions.create({actionName: 'custom', action: ''}) }, /Missing namespace/)
-})
-
-test('create an action without providing an action name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const actions = new Actions(params)
-  return t.throws(() => { actions.create({namespace: 'custom', action: ''}) }, /actionName/)
+  return actions.create({id: '12345', action})
 })
 
 test('create an action without providing an action body', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const actions = new Actions(params)
-  return t.throws(() => { actions.create({namespace: 'custom', actionName: 'hello'}) }, /action/)
-})
-
-test('update an action', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-  const action = 'function main() { // main function body};'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'PUT')
-    t.deepEqual(req.body, {exec: {kind: 'nodejs:default', code: action}})
-    t.deepEqual(req.qs, {overwrite: true})
-    return Promise.resolve()
-  }
-
-  t.plan(5)
-
-  const actions = new Actions(params)
-  return actions.update({actionName: action_name, action: action})
-})
-
-test('invoke an action with no parameters', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'POST')
-    t.deepEqual(req.body, {})
-    return Promise.resolve()
-  }
-
-  t.plan(4)
-
-  const actions = new Actions(params)
-  return actions.invoke({actionName: action_name})
-})
-
-test('invoke an action with fully qualified action name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = '/custom_namespace/action_name'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/custom_namespace/actions/action_name`)
-    return Promise.resolve()
-  }
-
-  t.plan(1)
-
-  const actions = new Actions(params)
-  return actions.invoke({actionName: action_name})
-})
-
-test('invoke an action with fully qualified action and package name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = '/custom_namespace/custom_package/action_name'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/custom_namespace/actions/custom_package/action_name`)
-    return Promise.resolve()
-  }
-
-  t.plan(1)
-
-  const actions = new Actions(params)
-  return actions.invoke({actionName: action_name})
-})
-
-test('invoke an action with invalid action name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = '/custom_namespace'
-
-  const actions = new Actions(params)
-  return t.throws(() => { actions.invoke({actionName: action_name}) }, /Invalid actionName/)
-})
-
-test('invoke an action with object', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'POST')
-    t.deepEqual(req.body, {a: 1, b: 2})
-    return Promise.resolve()
-  }
-
-  t.plan(4)
-
-  const actions = new Actions(params)
-  return actions.invoke({actionName: action_name, params: {a: 1, b: 2}})
-})
-
-test('invoke an action (blocking)', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const action_name = 'action_name'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/actions/${action_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'POST')
-    t.deepEqual(req.body, {})
-    t.deepEqual(req.qs, {blocking: true})
-    return Promise.resolve()
-  }
-
-  t.plan(5)
-
-  const actions = new Actions(params)
-  return actions.invoke({actionName: action_name, blocking: true})
-})
-
-const Packages = proxyquire('../../lib/packages.js', {'./base_operation': ctor})
-test('create a new package, then create a new action in that package', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const package_name = 'package_name'
-  const packageBody = {version: '1.0.0', publish: true, annotations: [], parameters: [], binding: {}}
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/packages/${package_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'PUT')
-    t.deepEqual(req.body, packageBody)
-    t.deepEqual(req.qs, {})
-    return Promise.resolve()
-  }
-
-  const packages = new Packages(params)
-  return packages.create({packageName: package_name, package: packageBody})
-    .then(() => {
-      const params2 = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: `default/${package_name}`}
-      const action_name = 'action_name'
-      const action = 'function main() { // main function body};'
-
-      stub.request = req => {
-        t.is(req.url, `${params2.api}namespaces/${encodeURIComponent(params2.namespace)}/actions/${action_name}`)
-        t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-        t.is(req.method, 'PUT')
-        t.deepEqual(req.body, {exec: {kind: 'nodejs:default', code: action}})
-        t.deepEqual(req.qs, {})
-        return Promise.resolve()
-      }
-
-      t.plan(10)
-
-      const actions = new Actions(params2)
-      return actions.create({actionName: action_name, action: action})
-    })
+  const actions = new Actions()
+  t.throws(() => actions.create({id: '12345'}), /Missing mandatory action/)
 })
