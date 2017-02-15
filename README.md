@@ -90,10 +90,10 @@ const actionName = 'reverseWords'
 const blocking = true
 const params = {msg: 'this is some words to reverse'}
 
-ow.actions.invoke({actionName, blocking, params}).then(result => {
-  console.log('here's the reversed string', result.reversed)
+ow.actions.invoke({actionName, blocking, params}).then(invokeResponse => {
+  console.log('here\'s the reversed string', invokeResponse.response.result.reversed)
 }).catch(err => {
-  console.error(failed to invoke actions', err)
+  console.error('failed to invoke actions', err)
 })
 ```
 
