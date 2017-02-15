@@ -11,7 +11,7 @@ test('should list all actions without parameters', t => {
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
-    t.is(path, `namespace/${ns}/actions`)
+    t.is(path, `namespaces/${ns}/actions`)
     t.deepEqual(options, {qs: {}})
   }
 
@@ -26,7 +26,7 @@ test('should list all actions with parameters', t => {
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
-    t.is(path, `namespace/custom/actions`)
+    t.is(path, `namespaces/custom/actions`)
     t.deepEqual(options.qs, {skip: 100, limit: 100})
   }
 
@@ -41,7 +41,7 @@ test('should retrieve action from identifier', t => {
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
-    t.is(path, `namespace/${ns}/actions/12345`)
+    t.is(path, `namespaces/${ns}/actions/12345`)
   }
 
   return actions.get({id: '12345'})
@@ -55,12 +55,11 @@ test('should delete action from identifier', t => {
 
   client.request = (method, path, options) => {
     t.is(method, 'DELETE')
-    t.is(path, `namespace/${ns}/actions/12345`)
+    t.is(path, `namespaces/${ns}/actions/12345`)
   }
 
   return actions.delete({id: '12345'})
 })
-
 
 test('should retrieve actionName from identifier', t => {
   t.plan(2)
@@ -70,7 +69,7 @@ test('should retrieve actionName from identifier', t => {
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
-    t.is(path, `namespace/${ns}/actions/12345`)
+    t.is(path, `namespaces/${ns}/actions/12345`)
   }
 
   return actions.get({actionName: '12345'})
@@ -84,7 +83,7 @@ test('should invoke action', t => {
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
-    t.is(path, `namespace/${ns}/actions/12345`)
+    t.is(path, `namespaces/${ns}/actions/12345`)
     t.deepEqual(options.qs, {})
     t.deepEqual(options.body, {})
   }
@@ -100,7 +99,7 @@ test('should invoke fully qualified action', t => {
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
-    t.is(path, `namespace/custom/actions/12345`)
+    t.is(path, `namespaces/custom/actions/12345`)
     t.deepEqual(options.qs, {})
     t.deepEqual(options.body, {})
   }
@@ -116,7 +115,7 @@ test('should invoke fully qualified action with package', t => {
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
-    t.is(path, `namespace/custom/actions/package/12345`)
+    t.is(path, `namespaces/custom/actions/package/12345`)
     t.deepEqual(options.qs, {})
     t.deepEqual(options.body, {})
   }
@@ -132,7 +131,7 @@ test('should invoke blocking action with body', t => {
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
-    t.is(path, `namespace/${ns}/actions/12345`)
+    t.is(path, `namespaces/${ns}/actions/12345`)
     t.deepEqual(options.qs, {blocking: true})
     t.deepEqual(options.body, {foo: 'bar'})
   }
@@ -148,7 +147,7 @@ test('should invoke blocking action using actionName', t => {
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
-    t.is(path, `namespace/${ns}/actions/12345`)
+    t.is(path, `namespaces/${ns}/actions/12345`)
     t.deepEqual(options.qs, {})
     t.deepEqual(options.body, {})
   }
@@ -165,7 +164,7 @@ test('create a new action', t => {
 
   client.request = (method, path, options) => {
     t.is(method, 'PUT')
-    t.is(path, `namespace/${ns}/actions/12345`)
+    t.is(path, `namespaces/${ns}/actions/12345`)
     t.deepEqual(options.qs, {})
     t.deepEqual(options.body, {exec: {kind: 'nodejs:default', code: action}})
   }
@@ -183,7 +182,7 @@ test('create a new action with custom body', t => {
 
   client.request = (method, path, options) => {
     t.is(method, 'PUT')
-    t.is(path, `namespace/${ns}/actions/12345`)
+    t.is(path, `namespaces/${ns}/actions/12345`)
     t.deepEqual(options.qs, {})
     t.deepEqual(options.body, action)
   }
@@ -195,13 +194,12 @@ test('create a new action with buffer body', t => {
   t.plan(4)
   const ns = 'testing_ns'
   const client = {}
-  const code = 'function main() { // main function body};'
   const action = new Buffer('some action source contents')
   const actions = new Actions(ns, client)
 
   client.request = (method, path, options) => {
     t.is(method, 'PUT')
-    t.is(path, `namespace/${ns}/actions/12345`)
+    t.is(path, `namespaces/${ns}/actions/12345`)
     t.deepEqual(options.qs, {})
     t.deepEqual(options.body, {exec: {kind: 'nodejs:default', code: action.toString('base64')}})
   }

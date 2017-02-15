@@ -10,7 +10,7 @@ test('should invoke client request for resource', t => {
   const method = 'GET'
   const client = {request:  (_method, _path) => {
     t.is(_method, method)
-    t.is(_path, `namespace/${namespace}/${resource}`)
+    t.is(_path, `namespaces/${namespace}/${resource}`)
   }}
 
   const base_operation = new BaseOperation(namespace, client)
@@ -26,7 +26,7 @@ test('should invoke client request for resource with identifier', t => {
   const id = '12345'
   const client = {request:  (_method, _path) => {
     t.is(_method, method)
-    t.is(_path, `namespace/${namespace}/${resource}/${id}`)
+    t.is(_path, `namespaces/${namespace}/${resource}/${id}`)
   }}
 
   const base_operation = new BaseOperation(namespace, client)
@@ -43,7 +43,7 @@ test('should invoke client request with user parameters', t => {
   const options = {qs: {hello: 'world'}, body: {hello: 'world'}}
   const client = {request:  (_method, _path, _options) => {
     t.is(_method, method)
-    t.is(_path, `namespace/${namespace}/${resource}/${id}`)
+    t.is(_path, `namespaces/${namespace}/${resource}/${id}`)
     t.deepEqual(_options, {qs: {hello: 'world'}, body: {hello: 'world'}})
   }}
 
@@ -51,34 +51,6 @@ test('should invoke client request with user parameters', t => {
   base_operation.resource = resource
   base_operation.request({method, id, options})
 })
-
-test('should generate list resource request', t => {
-  t.plan(1)
-  let params = null
-  const base_operation = new BaseOperation('')
-  base_operation.request = options => {
-    t.deepEqual(options, {method: 'GET', options: {}})
-  }
-
-  base_operation.list()
-  //t.deepEqual(params, {method: 'GET', path: `namespace/${NAMESPACE}/${RESOURCE}`})
-})
-
-/**
-test('should generate resource request with query parameters', t => {
-  const NAMESPACE = 'user_ns'
-  const RESOURCE = 'resource_id'
-  const PARAMS = {skip: 100, limit: 10}
-  let params = null
-  const client = { request: p => params = p }
-  const base_operation = new BaseOperation(NAMESPACE, client)
-  base_operation.resource = RESOURCE
-
-  base_operation.list(PARAMS)
-  t.deepEqual(params, {method: 'GET', path: `namespace/${NAMESPACE}/${RESOURCE}`, qs: PARAMS})
-})
-
-*/
 
 test('should extract available query string parameters', t => {
   const base_operation = new BaseOperation()
