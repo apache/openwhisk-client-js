@@ -1,96 +1,85 @@
 'use strict'
 
 const test = require('ava')
-const proxyquire = require('proxyquire')
-const stub = {}
-const ctor = function (options) { this.options = options }
-ctor.prototype = stub
+const Routes = require('../../lib/routes')
 
-const Routes = proxyquire('../../lib/routes.js', {'./base_operation': ctor})
-
-test('list all routes', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}experimental/routemgmt`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+test('should list all routes', t => {
+  t.plan(2)
+  const client = {}
+  const ns = 'testing_ns'
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `experimental/routemgmt`)
   }
 
-  t.plan(3)
-
-  const routes = new Routes(params)
+  const routes = new Routes(ns, client)
   return routes.list()
 })
 
-test('list all routes using parameters', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-  const options = {basepath: '/hello', relpath: '/foo/bar', operation: 'GET', limit: 10, skip: 10}
+test('should list all routes with parameters', t => {
+  t.plan(3)
+  const client = {}
+  const ns = 'testing_ns'
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}experimental/routemgmt`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.deepEqual(req.qs, options)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  const options = {basepath: '/hello', relpath: '/foo/bar', operation: 'GET', limit: 10, skip: 10}
+  client.request = (method, path, _options) => {
+    t.is(method, 'GET')
+    t.is(path, `experimental/routemgmt`)
+    t.deepEqual(_options.qs, options)
   }
 
-  t.plan(4)
-
-  const routes = new Routes(params)
-  return routes.list({basepath: '/hello', relpath: '/foo/bar', operation: 'GET', limit: 10, skip: 10})
+  const routes = new Routes(ns, client)
+  return routes.list(options)
 })
 
-test('delete routes', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
+test('should delete a route', t => {
+  t.plan(3)
+  const client = {}
+  const ns = 'testing_ns'
   const options = {force: true, basepath: '/hello'}
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}experimental/routemgmt`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.deepEqual(req.qs, options)
-    t.is(req.method, 'DELETE')
-    return Promise.resolve()
+  client.request = (method, path, _options) => {
+    t.is(method, 'DELETE')
+    t.is(path, `experimental/routemgmt`)
+    t.deepEqual(_options.qs, options)
   }
 
-  t.plan(4)
-
-  const routes = new Routes(params)
+  const routes = new Routes(ns, client)
   return routes.delete({basepath: '/hello'})
 })
 
-test('delete routes with optional parameters', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
+test('should delete a route with parameters', t => {
+  t.plan(3)
+  const client = {}
+  const ns = 'testing_ns'
   const options = {force: true, basepath: '/hello', relpath: '/bar/1', operation: 'GET'}
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}experimental/routemgmt`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.deepEqual(req.qs, options)
-    t.is(req.method, 'DELETE')
-    return Promise.resolve()
+  client.request = (method, path, _options) => {
+    t.is(method, 'DELETE')
+    t.is(path, `experimental/routemgmt`)
+    t.deepEqual(_options.qs, options)
   }
 
-  t.plan(4)
-
-  const routes = new Routes(params)
+  const routes = new Routes(ns, client)
   return routes.delete({basepath: '/hello', relpath: '/bar/1', operation: 'GET'})
 })
 
 test('delete routes without providing basepath', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const routes = new Routes(params)
+  const client = {}
+  const ns = 'testing_ns'
+  const routes = new Routes(ns, client)
   return t.throws(() => { routes.delete() }, /Missing mandatory basepath/)
 })
 
-test('create route', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
+test('should create a route', t => {
+  t.plan(3)
+  const path_url = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const api_key = 'username:password'
+  const client_options = { api_key }
+  const client = { path_url, options: client_options }
+  const ns = 'testing_ns'
+  const options = {force: true, basepath: '/hello', relpath: '/bar/1', operation: 'GET'}
+
   const body = {
     apidoc: {
       namespace: '_',
@@ -103,26 +92,29 @@ test('create route', t => {
         namespace: '_',
         backendMethod: 'POST',
         backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/_/actions/helloAction',
-        authkey: 'user_authorisation_key' }
+        authkey: api_key }
     }
   }
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}experimental/routemgmt`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.deepEqual(req.body, body)
-    t.is(req.method, 'POST')
-    return Promise.resolve()
+  client.request = (method, path, _options) => {
+    t.is(method, 'POST')
+    t.is(path, `experimental/routemgmt`)
+    t.deepEqual(_options.body, body)
   }
 
-  t.plan(4)
-
-  const routes = new Routes(params)
+  const routes = new Routes(ns, client)
   return routes.create({relpath: '/hello', operation: 'GET', action: 'helloAction'})
 })
 
-test('create route using basepath', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
+test('should create a route using basepath', t => {
+  t.plan(3)
+  const path_url = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const api_key = 'username:password'
+  const client_options = { api_key }
+  const client = { path_url, options: client_options }
+  const ns = 'testing_ns'
+  const options = {force: true, basepath: '/hello', relpath: '/bar/1', operation: 'GET'}
+
   const body = {
     apidoc: {
       namespace: '_',
@@ -135,26 +127,29 @@ test('create route using basepath', t => {
         namespace: '_',
         backendMethod: 'POST',
         backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/_/actions/helloAction',
-        authkey: 'user_authorisation_key' }
+        authkey: api_key }
     }
   }
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}experimental/routemgmt`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.deepEqual(req.body, body)
-    t.is(req.method, 'POST')
-    return Promise.resolve()
+  client.request = (method, path, _options) => {
+    t.is(method, 'POST')
+    t.is(path, `experimental/routemgmt`)
+    t.deepEqual(_options.body, body)
   }
 
-  t.plan(4)
-
-  const routes = new Routes(params)
-  return routes.create({relpath: '/hello', operation: 'GET', action: 'helloAction', basepath: '/foo'})
+  const routes = new Routes(ns, client)
+  return routes.create({basepath: '/foo', relpath: '/hello', operation: 'GET', action: 'helloAction'})
 })
 
-test('create route using fully qualified action name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
+test('should create a route using fully-qualified action name', t => {
+  t.plan(3)
+  const path_url = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const api_key = 'username:password'
+  const client_options = { api_key }
+  const client = { path_url, options: client_options }
+  const ns = 'testing_ns'
+  const options = {force: true, basepath: '/hello', relpath: '/bar/1', operation: 'GET'}
+
   const body = {
     apidoc: {
       namespace: '_',
@@ -167,26 +162,29 @@ test('create route using fully qualified action name', t => {
         namespace: 'test',
         backendMethod: 'POST',
         backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/test/actions/foo/helloAction',
-        authkey: 'user_authorisation_key' }
+        authkey: api_key }
     }
   }
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}experimental/routemgmt`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.deepEqual(req.body, body)
-    t.is(req.method, 'POST')
-    return Promise.resolve()
+  client.request = (method, path, _options) => {
+    t.is(method, 'POST')
+    t.is(path, `experimental/routemgmt`)
+    t.deepEqual(_options.body, body)
   }
 
-  t.plan(4)
-
-  const routes = new Routes(params)
+  const routes = new Routes(ns, client)
   return routes.create({relpath: '/hello', operation: 'GET', action: '/test/foo/helloAction'})
 })
 
-test('create route using namespace and action name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
+test('should create a route using action name with ns', t => {
+  t.plan(3)
+  const path_url = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const api_key = 'username:password'
+  const client_options = { api_key }
+  const client = { path_url, options: client_options }
+  const ns = 'testing_ns'
+  const options = {force: true, basepath: '/hello', relpath: '/bar/1', operation: 'GET'}
+
   const body = {
     apidoc: {
       namespace: '_',
@@ -199,28 +197,22 @@ test('create route using namespace and action name', t => {
         namespace: 'test',
         backendMethod: 'POST',
         backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/test/actions/helloAction',
-        authkey: 'user_authorisation_key' }
+        authkey: api_key }
     }
   }
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}experimental/routemgmt`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.deepEqual(req.body, body)
-    t.is(req.method, 'POST')
-    return Promise.resolve()
+  client.request = (method, path, _options) => {
+    t.is(method, 'POST')
+    t.is(path, `experimental/routemgmt`)
+    t.deepEqual(_options.body, body)
   }
 
-  t.plan(4)
-
-  const routes = new Routes(params)
+  const routes = new Routes(ns, client)
   return routes.create({relpath: '/hello', operation: 'GET', action: '/test/helloAction'})
 })
 
 test('create routes missing mandatory parameters', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  const routes = new Routes(params)
+  const routes = new Routes()
   t.throws(() => { routes.create() }, /Missing mandatory parameters: relpath, operation, action/)
   t.throws(() => { routes.create({relpath: true, operation: true}) }, /Missing mandatory parameters: action/)
   t.throws(() => { routes.create({action: true, operation: true}) }, /Missing mandatory parameters: relpath/)
