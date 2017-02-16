@@ -5,9 +5,9 @@ const Actions = require('../../lib/actions')
 
 test('should list all actions without parameters', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -20,9 +20,9 @@ test('should list all actions without parameters', t => {
 
 test('should list all actions with parameters', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -35,9 +35,9 @@ test('should list all actions with parameters', t => {
 
 test('should retrieve action from identifier', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -49,9 +49,9 @@ test('should retrieve action from identifier', t => {
 
 test('should delete action from identifier', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'DELETE')
@@ -63,9 +63,9 @@ test('should delete action from identifier', t => {
 
 test('should retrieve actionName from identifier', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -77,9 +77,9 @@ test('should retrieve actionName from identifier', t => {
 
 test('should invoke action', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -93,9 +93,9 @@ test('should invoke action', t => {
 
 test('should invoke fully qualified action', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -109,9 +109,9 @@ test('should invoke fully qualified action', t => {
 
 test('should invoke fully qualified action with package', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -125,9 +125,9 @@ test('should invoke fully qualified action with package', t => {
 
 test('should invoke blocking action with body', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -141,9 +141,9 @@ test('should invoke blocking action with body', t => {
 
 test('should invoke blocking action using actionName', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -157,10 +157,10 @@ test('should invoke blocking action using actionName', t => {
 
 test('create a new action', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
   const action = 'function main() { // main function body};'
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'PUT')
@@ -174,11 +174,11 @@ test('create a new action', t => {
 
 test('create a new action with custom body', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
   const code = 'function main() { // main function body};'
   const action = {exec: {kind: 'swift', code: code}}
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'PUT')
@@ -192,10 +192,10 @@ test('create a new action with custom body', t => {
 
 test('create a new action with buffer body', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
   const action = new Buffer('some action source contents')
-  const actions = new Actions(ns, client)
+  const actions = new Actions(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'PUT')

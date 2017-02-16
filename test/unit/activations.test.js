@@ -5,9 +5,9 @@ const Activations = require('../../lib/activations')
 
 test('list all activations', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const activations = new Activations(ns, client)
+  const activations = new Activations(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -20,9 +20,9 @@ test('list all activations', t => {
 
 test('list all activations', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const activations = new Activations(ns, client)
+  const activations = new Activations(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -35,9 +35,9 @@ test('list all activations', t => {
 
 test('should retrieve an activation', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const activations = new Activations(ns, client)
+  const activations = new Activations(client)
   const activation_id = 'random_id'
 
   client.request = (method, path, options) => {
@@ -50,9 +50,9 @@ test('should retrieve an activation', t => {
 
 test('should retrieve an activation using alt id parameter', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const activations = new Activations(ns, client)
+  const activations = new Activations(client)
   const activation_id = 'random_id'
 
   client.request = (method, path, options) => {
@@ -65,9 +65,9 @@ test('should retrieve an activation using alt id parameter', t => {
 
 test('should retrieve an activation logs', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const activations = new Activations(ns, client)
+  const activations = new Activations(client)
   const activation_id = 'random_id'
 
   client.request = (method, path, options) => {
@@ -80,9 +80,9 @@ test('should retrieve an activation logs', t => {
 
 test('should retrieve an activation result', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const activations = new Activations(ns, client)
+  const activations = new Activations(client)
   const activation_id = 'random_id'
 
   client.request = (method, path, options) => {

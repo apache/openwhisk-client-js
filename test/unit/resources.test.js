@@ -103,10 +103,9 @@ test('should parse namespace from identifier and options', t => {
   const ns_id = '/ns/12345'
   const ns_package_id = '/ns/package/12345'
 
-  t.is(resources.parse_namespace({id}), undefined)
+  t.is(resources.parse_namespace({id}), '_')
   t.is(resources.parse_namespace({id, namespace: 'custom'}), 'custom')
   t.is(resources.parse_namespace({id: ns_id}), 'ns')
   t.is(resources.parse_namespace({id: ns_package_id}), 'ns')
-  t.is(resources.parse_namespace({id: ns_id, namespace: 'custom'}), 'ns')
-  t.is(resources.parse_namespace({id: ns_package_id, namespace: 'custom'}), 'ns')
+  t.is(resources.parse_namespace({id: ns_id, namespace: 'custom'}), 'custom')
 })

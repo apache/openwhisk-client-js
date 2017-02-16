@@ -10,8 +10,8 @@ test('should be able to delete feed', t => {
   const client = {}
   client.options = { api_key } 
 
-  const ns = 'testing_ns'
-  const feeds = new Feeds(ns, client)
+  const ns = '_'
+  const feeds = new Feeds(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -32,8 +32,8 @@ test('should be able to delete feed using feedName with params', t => {
   const client = {}
   client.options = { api_key } 
 
-  const ns = 'testing_ns'
-  const feeds = new Feeds(ns, client)
+  const ns = '_'
+  const feeds = new Feeds(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -55,8 +55,8 @@ test('should be able to create feed', t => {
   const client = {}
   client.options = { api_key } 
 
-  const ns = 'testing_ns'
-  const feeds = new Feeds(ns, client)
+  const ns = '_'
+  const feeds = new Feeds(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -77,8 +77,8 @@ test('should be able to create feed using feedName with params', t => {
   const client = {}
   client.options = { api_key } 
 
-  const ns = 'testing_ns'
-  const feeds = new Feeds(ns, client)
+  const ns = '_'
+  const feeds = new Feeds(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -94,15 +94,15 @@ test('should be able to create feed using feedName with params', t => {
 })
 
 test('should throw errors without trigger parameter ', t => {
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = { options: {} }
-  const feeds = new Feeds(ns, client)
+  const feeds = new Feeds(client)
   t.throws(() => feeds.feed('', {feedName: 'myFeed'}), /trigger/)
 })
 
 test('should throw errors without id parameter', t => {
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = { options: {} }
-  const feeds = new Feeds(ns, client)
+  const feeds = new Feeds(client)
   t.throws(() => feeds.feed('', {trigger: 'myFeed'}), /feedName/)
 })

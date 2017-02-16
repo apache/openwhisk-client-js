@@ -5,9 +5,9 @@ const Packages = require('../../lib/packages')
 
 test('should list all packages without parameters', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const packages = new Packages(ns, client)
+  const packages = new Packages(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -20,9 +20,9 @@ test('should list all packages without parameters', t => {
 
 test('should list all packages with parameters', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const packages = new Packages(ns, client)
+  const packages = new Packages(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -35,9 +35,9 @@ test('should list all packages with parameters', t => {
 
 test('should retrieve package from identifier', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const packages = new Packages(ns, client)
+  const packages = new Packages(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -49,9 +49,9 @@ test('should retrieve package from identifier', t => {
 
 test('should retrieve package from packageName identifier', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const packages = new Packages(ns, client)
+  const packages = new Packages(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -63,9 +63,9 @@ test('should retrieve package from packageName identifier', t => {
 
 test('should delete package from identifier', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const packages = new Packages(ns, client)
+  const packages = new Packages(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'DELETE')
@@ -82,9 +82,9 @@ test('should throw error trying to invoke package', t => {
 
 test('should create a new package', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const packages = new Packages(ns, client)
+  const packages = new Packages(client)
 
   const id = '12345'
 
@@ -99,9 +99,9 @@ test('should create a new package', t => {
 
 test('should create a new package with parameters', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const packages = new Packages(ns, client)
+  const packages = new Packages(client)
   const pkg = {foo: 'bar'}
 
   const id = '12345'
@@ -117,9 +117,9 @@ test('should create a new package with parameters', t => {
 
 test('should update an existing package', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const packages = new Packages(ns, client)
+  const packages = new Packages(client)
 
   const id = '12345'
 

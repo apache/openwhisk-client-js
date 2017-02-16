@@ -5,9 +5,9 @@ const Triggers = require('../../lib/triggers')
 
 test('should list all triggers without parameters', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const triggers = new Triggers(ns, client)
+  const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -20,9 +20,9 @@ test('should list all triggers without parameters', t => {
 
 test('should list all triggers with parameters', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const triggers = new Triggers(ns, client)
+  const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -35,9 +35,9 @@ test('should list all triggers with parameters', t => {
 
 test('should retrieve trigger from identifier', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const triggers = new Triggers(ns, client)
+  const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -49,9 +49,9 @@ test('should retrieve trigger from identifier', t => {
 
 test('should delete trigger from identifier', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const triggers = new Triggers(ns, client)
+  const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'DELETE')
@@ -63,9 +63,9 @@ test('should delete trigger from identifier', t => {
 
 test('should retrieve triggerName from identifier', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const triggers = new Triggers(ns, client)
+  const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -77,9 +77,9 @@ test('should retrieve triggerName from identifier', t => {
 
 test('should invoke trigger', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const triggers = new Triggers(ns, client)
+  const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -92,9 +92,9 @@ test('should invoke trigger', t => {
 
 test('should invoke fully qualified trigger', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const triggers = new Triggers(ns, client)
+  const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -107,9 +107,9 @@ test('should invoke fully qualified trigger', t => {
 
 test('should invoke fully qualified trigger with package', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const triggers = new Triggers(ns, client)
+  const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -122,9 +122,9 @@ test('should invoke fully qualified trigger with package', t => {
 
 test('should invoke trigger with body', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const triggers = new Triggers(ns, client)
+  const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -137,9 +137,9 @@ test('should invoke trigger with body', t => {
 
 test('should invoke trigger using triggerName', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const triggers = new Triggers(ns, client)
+  const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
@@ -152,9 +152,9 @@ test('should invoke trigger using triggerName', t => {
 
 test('create a new trigger', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const triggers = new Triggers(ns, client)
+  const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'PUT')
@@ -168,10 +168,10 @@ test('create a new trigger', t => {
 
 test('create a new trigger with custom body', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
   const trigger = { foo: 'bar' }
-  const triggers = new Triggers(ns, client)
+  const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'PUT')

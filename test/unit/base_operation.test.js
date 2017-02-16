@@ -5,7 +5,7 @@ const BaseOperation = require('../../lib/base_operation')
 
 test('should invoke client request for resource', t => {
   t.plan(2)
-  const namespace = 'user_ns'
+  const namespace = '_'
   const resource = 'resource_id'
   const method = 'GET'
   const client = {request:  (_method, _path) => {
@@ -13,14 +13,14 @@ test('should invoke client request for resource', t => {
     t.is(_path, `namespaces/${namespace}/${resource}`)
   }}
 
-  const base_operation = new BaseOperation(namespace, client)
+  const base_operation = new BaseOperation(client)
   base_operation.resource = resource
   base_operation.request({method})
 })
 
 test('should invoke client request for resource with identifier', t => {
   t.plan(2)
-  const namespace = 'user_ns'
+  const namespace = '_'
   const resource = 'resource_id'
   const method = 'GET'
   const id = '12345'
@@ -29,14 +29,14 @@ test('should invoke client request for resource with identifier', t => {
     t.is(_path, `namespaces/${namespace}/${resource}/${id}`)
   }}
 
-  const base_operation = new BaseOperation(namespace, client)
+  const base_operation = new BaseOperation(client)
   base_operation.resource = resource
   base_operation.request({method, id})
 })
 
 test('should invoke client request with user parameters', t => {
   t.plan(3)
-  const namespace = 'user_ns'
+  const namespace = '_'
   const resource = 'resource_id'
   const method = 'GET'
   const id = '12345'
@@ -47,7 +47,7 @@ test('should invoke client request with user parameters', t => {
     t.deepEqual(_options, {qs: {hello: 'world'}, body: {hello: 'world'}})
   }}
 
-  const base_operation = new BaseOperation(namespace, client)
+  const base_operation = new BaseOperation(client)
   base_operation.resource = resource
   base_operation.request({method, id, options})
 })
@@ -65,11 +65,11 @@ test('should return appropriate namespace', t => {
   t.is(base_operation.namespace({namespace: 'provided'}), 'provided')
   base_operation = new BaseOperation('default')
   t.is(base_operation.namespace({namespace: 'provided'}), 'provided')
-  t.is(base_operation.namespace(), 'default')
+  t.is(base_operation.namespace(), '_')
 })
 
 test('should url encode namespace parameter', t => {
   let base_operation = new BaseOperation('sample@path')
-  t.is(base_operation.namespace(), `sample%40path`)
   t.is(base_operation.namespace({namespace: 'sample path'}), `sample%20path`)
+  t.is(base_operation.namespace({namespace: 'sample@path'}), `sample%40path`)
 })

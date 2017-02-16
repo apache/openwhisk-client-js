@@ -12,7 +12,7 @@ test('should list all namespaces', t => {
     t.is(path, `namespaces`)
   }
 
-  const namespaces = new Namespaces(ns, client)
+  const namespaces = new Namespaces(client)
   return namespaces.list()
 })
 
@@ -26,7 +26,7 @@ test('should retrieve namespace using id', t => {
     t.is(path, `namespaces/${id}`)
   }
 
-  const namespaces = new Namespaces(ns, client)
+  const namespaces = new Namespaces(client)
   return namespaces.get({id})
 })
 
@@ -40,7 +40,7 @@ test('should retrieve namespace using namespace', t => {
     t.is(path, `namespaces/${id}`)
   }
 
-  const namespaces = new Namespaces(ns, client)
+  const namespaces = new Namespaces(client)
   return namespaces.get({namespace: id})
 })
 

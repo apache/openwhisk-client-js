@@ -5,9 +5,9 @@ const Rules = require('../../lib/rules')
 
 test('should list all rules without parameters', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const rules = new Rules(ns, client)
+  const rules = new Rules(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -20,9 +20,9 @@ test('should list all rules without parameters', t => {
 
 test('should list all rules with parameters', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const rules = new Rules(ns, client)
+  const rules = new Rules(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -35,9 +35,9 @@ test('should list all rules with parameters', t => {
 
 test('should retrieve rule from identifier', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const rules = new Rules(ns, client)
+  const rules = new Rules(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -49,9 +49,9 @@ test('should retrieve rule from identifier', t => {
 
 test('should retrieve rule from ruleName identifier', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const rules = new Rules(ns, client)
+  const rules = new Rules(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -63,9 +63,9 @@ test('should retrieve rule from ruleName identifier', t => {
 
 test('should delete rule from identifier', t => {
   t.plan(2)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const rules = new Rules(ns, client)
+  const rules = new Rules(client)
 
   client.request = (method, path, options) => {
     t.is(method, 'DELETE')
@@ -82,9 +82,9 @@ test('should throw error trying to invoke rule', t => {
 
 test('create a new rule', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const rules = new Rules(ns, client)
+  const rules = new Rules(client)
 
   const id = '12345'
   const action = 'some_action'
@@ -102,9 +102,9 @@ test('create a new rule', t => {
 
 test('create a new rule using fully qualified names', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const rules = new Rules(ns, client)
+  const rules = new Rules(client)
 
   const id = '12345'
   const action = '/hello/some_action'
@@ -137,9 +137,9 @@ test('create a rule without providing a trigger name', t => {
 
 test('update existing rule', t => {
   t.plan(4)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const rules = new Rules(ns, client)
+  const rules = new Rules(client)
 
   const id = '12345'
   const action = 'some_action'
@@ -157,9 +157,9 @@ test('update existing rule', t => {
 
 test('should enable rule', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const rules = new Rules(ns, client)
+  const rules = new Rules(client)
 
   const id = '12345'
 
@@ -174,9 +174,9 @@ test('should enable rule', t => {
 
 test('should disable rule', t => {
   t.plan(3)
-  const ns = 'testing_ns'
+  const ns = '_'
   const client = {}
-  const rules = new Rules(ns, client)
+  const rules = new Rules(client)
 
   const id = '12345'
 
