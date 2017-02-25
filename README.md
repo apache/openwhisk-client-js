@@ -20,7 +20,7 @@ var openwhisk = require('openwhisk');
 
 function action() {
   var ow = openwhisk();  
-  return ow.actions.invoke({actionName: 'sample'})
+  return ow.actions.invoke('sample')
 }
 
 exports.main = action
@@ -42,7 +42,7 @@ var openwhisk = require('openwhisk');
 var ow = openwhisk();  
 
 function action() {  
-  return ow.actions.invoke({actionName: 'sample'})
+  return ow.actions.invoke('sample')
 }
 
 exports.main = action
@@ -54,7 +54,7 @@ exports.main = action
 var openwhisk = require('openwhisk');
 var options = {apihost: 'openwhisk.ng.bluemix.net', api_key: '...'};
 var ow = openwhisk(options);
-ow.actions.invoke({actionName: 'sample'}).then(result => console.log(result))
+ow.actions.invoke('sample').then(result => console.log(result))
 ```
 
 ### constructor options
