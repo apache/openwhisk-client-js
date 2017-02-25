@@ -1,68 +1,60 @@
 'use strict'
 
 const test = require('ava')
-const proxyquire = require('proxyquire')
-const stub = {}
-const ctor = function (options) { this.options = options }
-ctor.prototype = stub
+const Namespaces = require('../../lib/namespaces')
 
-const Namespaces = proxyquire('../../lib/namespaces.js', {'./base_operation': ctor})
-
-test('list all namespaces', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+test('should list all namespaces', t => {
+  t.plan(2)
+  const client = {}
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces`)
   }
 
-  t.plan(3)
-
-  const namespaces = new Namespaces(params)
+  const namespaces = new Namespaces(client)
   return namespaces.list()
 })
 
-test('get namespace passed in options', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/standard`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+test('should retrieve namespace using id', t => {
+  t.plan(2)
+  const client = {}
+  const id = 'custom_ns'
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${id}`)
   }
 
-  t.plan(3)
-
-  const namespaces = new Namespaces(params)
-  return namespaces.get({namespace: 'standard'})
+  const namespaces = new Namespaces(client)
+  return namespaces.get({name: id})
 })
 
-test('get default namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'standard'}
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/standard`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+test('should retrieve namespace using string id', t => {
+  t.plan(2)
+  const client = {}
+  const id = 'custom_ns'
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${id}`)
   }
 
-  t.plan(3)
-
-  const namespaces = new Namespaces(params)
-  return namespaces.get()
+  const namespaces = new Namespaces(client)
+  return namespaces.get(id)
 })
 
-test('get a namespace without providing any namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
+test('should retrieve namespace using namespace', t => {
+  t.plan(2)
+  const client = {}
+  const id = 'custom_ns'
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${id}`)
   }
 
-  const namespaces = new Namespaces(params)
-  return t.throws(() => { namespaces.get() }, /Missing namespace/)
+  const namespaces = new Namespaces(client)
+  return namespaces.get({namespace: id})
+})
+
+test('should throw error for missing namespace id', t => {
+  const namespaces = new Namespaces()
+  return t.throws(() => { namespaces.get() }, /Missing mandatory parameter/)
 })

@@ -5,7 +5,7 @@ Running the integration tests requires the following environment variables to be
 
     export OW_API_KEY=<your api key>
     export OW_API_URL=<openwhisk API url>
-    export OW_NAMESPACE=<namespace to test against>
+    export __OW_NAMESPACE=<namespace to test against>
 
 You can retrieve these settings using the `wsk` CLI:
 

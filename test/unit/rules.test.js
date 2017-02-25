@@ -1,330 +1,189 @@
 'use strict'
 
 const test = require('ava')
-const proxyquire = require('proxyquire')
-const stub = {}
-const ctor = function (options) { this.options = options }
-ctor.prototype = stub
+const Rules = require('../../lib/rules')
 
-const Rules = proxyquire('../../lib/rules.js', {'./base_operation': ctor})
+test('should list all rules without parameters', t => {
+  t.plan(3)
+  const ns = '_'
+  const client = {}
+  const rules = new Rules(client)
 
-test('list all rules', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/rules`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/rules`)
+    t.deepEqual(options, {qs: {}})
   }
 
-  t.plan(3)
-
-  const rules = new Rules(params)
   return rules.list()
 })
 
-test('list all rules with options', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const options = {limit: 100, skip: 50, namespace: 'sample'}
+test('should list all rules with parameters', t => {
+  t.plan(3)
+  const client = {}
+  const rules = new Rules(client)
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${options.namespace}/rules`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.deepEqual(req.qs, {limit: 100, skip: 50})
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/custom/rules`)
+    t.deepEqual(options.qs, {skip: 100, limit: 100})
   }
 
+  return rules.list({namespace: 'custom', skip: 100, limit: 100})
+})
+
+test('should retrieve rule from identifier', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const rules = new Rules(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/rules/12345`)
+  }
+
+  return rules.get({name: '12345'})
+})
+
+test('should retrieve rule from ruleName identifier', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const rules = new Rules(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/rules/12345`)
+  }
+
+  return rules.get({ruleName: '12345'})
+})
+
+test('should delete rule from identifier', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const rules = new Rules(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'DELETE')
+    t.is(path, `namespaces/${ns}/rules/12345`)
+  }
+
+  return rules.delete({name: '12345'})
+})
+
+test('should throw error trying to invoke rule', t => {
+  const rules = new Rules()
+  return t.throws(() => rules.invoke(), /Operation \(invoke\) not supported/)
+})
+
+test('create a new rule', t => {
   t.plan(4)
+  const ns = '_'
+  const client = {}
+  const rules = new Rules(client)
 
-  const rules = new Rules(params)
-  return rules.list(options)
-})
+  const name = '12345'
+  const action = 'some_action'
+  const trigger = 'some_trigger'
 
-test('list all rules without providing any namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/rules/${name}`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, { action: `/_/${action}`, trigger: `/_/${trigger}` })
   }
 
-  const rules = new Rules(params)
-  return t.throws(() => { rules.list() }, /Missing namespace/)
+  return rules.create({name, action, trigger})
 })
 
-test('get rule using default namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const rule_name = 'rule_name'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
-  }
-
-  t.plan(3)
-
-  const rules = new Rules(params)
-  return rules.get({ruleName: rule_name})
-})
-
-test('get rule using options namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const rule_name = 'rule_name'
-  const namespace = 'provided'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/rules/${rule_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
-  }
-
-  t.plan(3)
-
-  const rules = new Rules(params)
-  return rules.get({ruleName: rule_name, namespace: 'provided'})
-})
-
-test('get an rule without providing any namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const rules = new Rules(params)
-  return t.throws(() => { rules.get({ruleName: 'custom'}) }, /Missing namespace/)
-})
-
-test('get a rule without providing a rule name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const rules = new Rules(params)
-  return t.throws(() => { rules.get({namespace: 'custom'}) }, /ruleName/)
-})
-
-test('delete rule using default namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const rule_name = 'rule_name'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'DELETE')
-    return Promise.resolve()
-  }
-
-  t.plan(3)
-
-  const rules = new Rules(params)
-  return rules.delete({ruleName: rule_name})
-})
-
-test('delete rule using options namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const rule_name = 'rule_name'
-  const namespace = 'provided'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/rules/${rule_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'DELETE')
-    return Promise.resolve()
-  }
-
-  t.plan(3)
-
-  const rules = new Rules(params)
-  return rules.delete({ruleName: rule_name, namespace: 'provided'})
-})
-
-test('delete an rule without providing any namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const rules = new Rules(params)
-  return t.throws(() => { rules.delete({ruleName: 'custom'}) }, /Missing namespace/)
-})
-
-test('delete an rule without providing an rule name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const rules = new Rules(params)
-  return t.throws(() => { rules.delete({namespace: 'custom'}) }, /ruleName/)
-})
-
-test('create a new rule using the default namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const rule_name = 'rule_name'
-  const rule = {version: '1.0.0', publish: true, trigger: 'trigger', action: 'action'}
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'PUT')
-    t.deepEqual(req.body, {action: '/_/' + rule.action, trigger: '/_/' + rule.trigger})
-    t.deepEqual(req.qs, {})
-    return Promise.resolve()
-  }
-
-  t.plan(5)
-
-  const rules = new Rules(params)
-  return rules.create({ruleName: rule_name, action: rule.action, trigger: rule.trigger})
-})
-
-test('create an rule using options namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const rule_name = 'rule_name'
-  const namespace = 'provided'
-  const rule = {version: '1.0.0', publish: true, trigger: 'trigger', action: 'action'}
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/rules/${rule_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'PUT')
-    t.deepEqual(req.body, {action: '/_/' + rule.action, trigger: '/_/' + rule.trigger})
-    t.deepEqual(req.qs, {overwrite: true})
-    return Promise.resolve()
-  }
-
-  t.plan(5)
-
-  const rules = new Rules(params)
-  return rules.create({ruleName: rule_name, namespace: 'provided', action: rule.action, trigger: rule.trigger, overwrite: true})
-})
-
-test('create a rule with fully qualifing action and trigger namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const rule_name = 'rule_name'
-  const namespace = 'provided'
-  const rule = {version: '1.0.0', publish: true, trigger: '/a/trigger', action: '/b/action'}
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/rules/${rule_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'PUT')
-    t.deepEqual(req.body, {action: rule.action, trigger: rule.trigger})
-    t.deepEqual(req.qs, {overwrite: true})
-    return Promise.resolve()
-  }
-
-  t.plan(5)
-
-  const rules = new Rules(params)
-  return rules.create({ruleName: rule_name, namespace: 'provided', action: rule.action, trigger: rule.trigger, overwrite: true})
-})
-
-test('create an rule without providing any namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const rules = new Rules(params)
-  return t.throws(() => { rules.create({ruleName: 'custom', action: '', trigger: ''}) }, /Missing namespace/)
-})
-
-test('create an rule without providing an rule name', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const rules = new Rules(params)
-  return t.throws(() => { rules.create({namespace: 'custom', action: '', trigger: ''}) }, /ruleName/)
-})
-
-test('create an rule without providing an action', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const rules = new Rules(params)
-  return t.throws(() => { rules.create({namespace: 'custom', ruleName: 'hello', trigger: ''}) }, /action/)
-})
-
-test('create an rule without providing a trigger', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const rules = new Rules(params)
-  return t.throws(() => { rules.create({namespace: 'custom', ruleName: 'hello', action: ''}) }, /trigger/)
-})
-
-test('update an rule', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const rule_name = 'rule_name'
-  const rule = {version: '1.0.0', publish: true, trigger: 'trigger', action: 'action'}
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'PUT')
-    t.deepEqual(req.body, {action: '/_/' + rule.action, trigger: '/_/' + rule.trigger})
-    t.deepEqual(req.qs, {overwrite: true})
-    return Promise.resolve()
-  }
-
-  t.plan(5)
-
-  const rules = new Rules(params)
-  return rules.update({ruleName: rule_name, action: rule.action, trigger: rule.trigger})
-})
-
-test('enable a rule', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const rule_name = 'rule_name'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'POST')
-    t.deepEqual(req.body, {status: 'active'})
-    return Promise.resolve()
-  }
-
+test('create a new rule using fully qualified names', t => {
   t.plan(4)
+  const ns = '_'
+  const client = {}
+  const rules = new Rules(client)
 
-  const rules = new Rules(params)
-  return rules.enable({ruleName: rule_name})
-})
+  const name = '12345'
+  const action = '/hello/some_action'
+  const trigger = '/hello/some_trigger'
 
-test('disable a rule', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'default'}
-  const rule_name = 'rule_name'
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${params.namespace}/rules/${rule_name}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'POST')
-    t.deepEqual(req.body, {status: 'inactive'})
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/rules/${name}`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, { action, trigger })
   }
 
-  t.plan(4)
+  return rules.create({name, action, trigger})
+})
 
-  const rules = new Rules(params)
-  return rules.disable({ruleName: rule_name})
+test('create a rule without providing a rule name', t => {
+  const rules = new Rules()
+  return t.throws(() => { rules.create({action: '', trigger: ''}) }, /name, ruleName/)
+})
+
+test('create a rule without providing an action name', t => {
+  const rules = new Rules()
+  return t.throws(() => { rules.create({name: '', trigger: ''}) }, /Missing mandatory action parameter/)
+})
+
+test('create a rule without providing a trigger name', t => {
+  const rules = new Rules()
+  return t.throws(() => { rules.create({name: '', action: ''}) }, /Missing mandatory trigger parameter/)
+})
+
+test('update existing rule', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const rules = new Rules(client)
+
+  const name = '12345'
+  const action = 'some_action'
+  const trigger = 'some_trigger'
+
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/rules/${name}`)
+    t.deepEqual(options.qs, {overwrite: true})
+    t.deepEqual(options.body, { action: `/_/${action}`, trigger: `/_/${trigger}` })
+  }
+
+  return rules.update({name, action, trigger})
+})
+
+test('should enable rule', t => {
+  t.plan(3)
+  const ns = '_'
+  const client = {}
+  const rules = new Rules(client)
+
+  const name = '12345'
+
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespaces/${ns}/rules/${name}`)
+    t.deepEqual(options.body, {status: 'active'})
+  }
+
+  return rules.enable({name})
+})
+
+test('should disable rule', t => {
+  t.plan(3)
+  const ns = '_'
+  const client = {}
+  const rules = new Rules(client)
+
+  const name = '12345'
+
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespaces/${ns}/rules/${name}`)
+    t.deepEqual(options.body, {status: 'inactive'})
+  }
+
+  return rules.disable({name})
 })

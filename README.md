@@ -86,12 +86,12 @@ Client constructor will read values for the `apihost`, `namespace` and `api_key`
 ### invoke action, blocking for result
 
 ```
-const actionName = 'reverseWords'
+const name = 'reverseWords'
 const blocking = true
 const params = {msg: 'this is some words to reverse'}
 
-ow.actions.invoke({actionName, blocking, params}).then(invokeResponse => {
-  console.log('here\'s the reversed string', invokeResponse.response.result.reversed)
+ow.actions.invoke({name, blocking, params}).then(result => {
+  console.log('here's the reversed string', result.reversed)
 }).catch(err => {
   console.error('failed to invoke actions', err)
 })
@@ -100,9 +100,9 @@ ow.actions.invoke({actionName, blocking, params}).then(invokeResponse => {
 ### fire trigger
 
 ```
-const triggerName = 'eventTrigger'
+const name = 'eventTrigger'
 const params = {msg: 'event trigger message string'}
-ow.triggers.invoke({triggerName, params}).then(result => {
+ow.triggers.invoke({name, params}).then(result => {
   console.log('trigger fired!')
 }).catch(err => {
   console.error('failed to fire trigger', err)
@@ -112,10 +112,10 @@ ow.triggers.invoke({triggerName, params}).then(result => {
 ### create action from source file
 
 ```
-const actionName = 'reverseWords'
+const name = 'reverseWords'
 const action = fs.readFileSync('source.js', {encoding: 'utf8'})
 
-ow.actions.create({actionName, action}).then(result => {
+ow.actions.create({name, action}).then(result => {
   console.log('action created!')
 }).catch(err => {
   console.error('failed to create action', err)
@@ -125,10 +125,10 @@ ow.actions.create({actionName, action}).then(result => {
 ### create action from zip package
 
 ```
-const actionName = 'reverseWords'
+const name = 'reverseWords'
 const action = fs.readFileSync('package.zip')
 
-ow.actions.create({actionName, action}).then(result => {
+ow.actions.create({name, action}).then(result => {
   console.log('action created!')
 }).catch(err => {
   console.error('failed to create action', err)
@@ -138,12 +138,20 @@ ow.actions.create({actionName, action}).then(result => {
 ### retrieve action resource
 
 ```
-const actionName = 'reverseWords'
-ow.actions.retrieve({actionName}).then(action => {
+const name = 'reverseWords'
+ow.actions.retrieve({name}).then(action => {
   console.log('action resource', action)
 }).catch(err => {
   console.error('failed to retrieve action', err)
 })
+```
+
+### chaining calls 
+
+```
+ow.actions.list()
+  .then(actions => ow.actions.invoke(actions))
+  .then(result => ...)
 ```
 
 ### list packages
@@ -159,7 +167,7 @@ ow.packages.list().then(packages => {
 ### update package parameters
 
 ```
-const packageName = 'myPackage'
+const name = 'myPackage'
 const package = {
   parameters: [
     {key: "colour", value: "green"},
@@ -167,7 +175,7 @@ const package = {
   ]
 }
 
-ow.packages.update({packageName, package}).then(package => {
+ow.packages.update({name, package}).then(package => {
   console.log('updated package:', package.name)
 }).catch(err => {
   console.error('failed to update package', err)
@@ -179,10 +187,9 @@ ow.packages.update({packageName, package}).then(package => {
 ```
 // for example... 
 const params = {cron: '*/8 * * * * *', trigger_payload: {name: 'James'}}
-const feedName = 'alarms/alarm'
-const namespace = 'whisk.system'
+const name = '/whisk.system/alarms/alarm'
 const trigger = 'alarmTrigger'
-ow.feeds.create({feedName, namespace, trigger, params}).then(package => {
+ow.feeds.create({name, trigger, params}).then(package => {
   console.log('alarm trigger feed created')
 }).catch(err => {
   console.error('failed to create alarm trigger', err)
@@ -216,33 +223,59 @@ The following optional parameters are supported:
 ### retrieve resource 
 
 ```
-ow.actions.get({actionName: '...'})
-ow.activations.get({activation: '...'})
-ow.triggers.get({triggerName: '...'})
-ow.rules.get({ruleName: '...'})
-ow.namespaces.get({namespace: '...'})
-ow.packages.get({packageName: '...'})
+ow.actions.get({name: '...'})
+ow.activations.get({name: '...'})
+ow.triggers.get({name: '...'})
+ow.rules.get({name: '...'})
+ow.namespaces.get({name: '...'})
+ow.packages.get({name: '...'})
 ```
 
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
+
+This method also supports passing the `name` property directly without wrapping within an object.
+
+```
+const name = "actionName"
+ow.actions.get(name)
+```
+
+If you pass in an array for the first parameter, the `get` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
+
+```
+ow.actions.get(["a", {name: "b"}])
+```
 
 ### delete resource 
 
 ```
-ow.actions.delete({actionName: '...'})
-ow.triggers.delete({triggerName: '...'})
-ow.rules.delete({ruleName: '...'})
-ow.packages.delete({packageName: '...'})
+ow.actions.delete({name: '...'})
+ow.triggers.delete({name: '...'})
+ow.rules.delete({name: '...'})
+ow.packages.delete({name: '...'})
 ```
 
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 
+This method also supports passing the `name` property directly without wrapping within an object.
+
+```
+const name = "actionName"
+ow.actions.delete(name)
+```
+
+If you pass in an array for the first parameter, the `delete` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
+
+```
+ow.actions.delete(["a", {name: "b"}])
+```
+
 ### invoke action
 
 ```
-ow.actions.invoke({actionName: '...'})
+ow.actions.invoke({name: '...'})
 ```
 
 The `actionName` parameter supports the following formats: `actionName`, `package/actionName`, `/namespace/actionName`, `/namespace/package/actionName`.
@@ -254,35 +287,74 @@ The following optional parameters are supported:
 - `params` - JSON object containing parameters for the action being invoked (default: `{}`)
 - `namespace` - set custom namespace for endpoint
 
+This method also supports passing the `name` property directly without wrapping within an object.
+
+```
+const name = "actionName"
+ow.actions.invoke(name)
+```
+
+If you pass in an array for the first parameter, the `invoke` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
+
+```
+ow.actions.invoke(["a", {name: "b", blocking: true}])
+```
+
 ### create & update action
 
 ```
-ow.actions.create({actionName: '...', action: 'function main() {};'})
-ow.actions.update({actionName: '...', action: 'function main() {};'})
+ow.actions.create({name: '...', action: 'function main() {};'})
+ow.actions.update({name: '...', action: 'function main() {};'})
 ```
 
 The following mandatory parameters are supported:
-- `actionName` - action identifier
+- `name` - action identifier
 - `action` - String containing JS function source code, Buffer [containing package action zip file](https://github.com/openwhisk/openwhisk/blob/master/docs/actions.md#packaging-an-action-as-a-nodejs-module) or JSON object containing full parameters for the action body 
 
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 
+This method also supports passing the `name` property directly without wrapping within an object.
+
+```
+const name = "actionName"
+ow.actions.create(name)
+```
+
+If you pass in an array for the first parameter, the `create` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
+
+```
+ow.actions.create([{...}, {...}])
+```
+
 ### fire trigger
 
 ```
-ow.triggers.invoke({triggerName: '...'})
+ow.triggers.invoke({name: '...'})
 ```
 
 The following optional parameters are supported:
 - `params` - JSON object containing parameters for the trigger being fired (default: `{}`)
 - `namespace` - set custom namespace for endpoint
 
+This method also supports passing the `name` property directly without wrapping within an object.
+
+```
+const name = "actionName"
+ow.triggers.invoke(name)
+```
+
+If you pass in an array for the first parameter, the `invoke` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
+
+```
+ow.triggers.invoke(["a", {name: "b", blocking: true}])
+```
+
 ### create & update trigger
 
 ```
-ow.triggers.create({triggerName: '...'})
-ow.triggers.update({triggerName: '...'})
+ow.triggers.create({name: '...'})
+ow.triggers.update({name: '...'})
 ```
 
 The following optional parameters are supported:
@@ -292,8 +364,8 @@ The following optional parameters are supported:
 ### create & update packages
 
 ```
-ow.packages.create({packageName: '...'})
-ow.packages.update({packageName: '...'})
+ow.packages.create({name: '...'})
+ow.packages.update({name: '...'})
 ```
 
 The following optional parameters are supported:
@@ -303,8 +375,8 @@ The following optional parameters are supported:
 ### create & update rule
 
 ```
-ow.rules.create({ruleName: '...', action: '...', trigger: '...'})
-ow.rules.update({ruleName: '...', action: '...', trigger: '...'})
+ow.rules.create({name: '...', action: '...', trigger: '...'})
+ow.rules.update({name: '...', action: '...', trigger: '...'})
 ```
 
 `trigger` and `action` identifiers will have the default namespace (`/_/`)
@@ -317,8 +389,8 @@ The following optional parameters are supported:
 ### enable & disable rule
 
 ```
-ow.rules.enable({ruleName: '...'})
-ow.rules.disable({ruleName: '...'})
+ow.rules.enable({name: '...'})
+ow.rules.disable({name: '...'})
 ```
 
 The following optional parameters are supported:

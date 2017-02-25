@@ -1,165 +1,143 @@
 'use strict'
 
 const test = require('ava')
-const proxyquire = require('proxyquire')
-const stub = {}
-const ctor = function (options) { this.options = options }
-ctor.prototype = stub
-
-const Activations = proxyquire('../../lib/activations.js', {'./base_operation': ctor})
+const Activations = require('../../lib/activations')
 
 test('list all activations', t => {
-  const namespace = 'default_namespace'
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: namespace}
+  t.plan(3)
+  const ns = '_'
+  const client = {}
+  const activations = new Activations(client)
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/activations`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/activations`)
+    t.deepEqual(options, {qs: {}})
   }
 
-  t.plan(3)
-
-  const activations = new Activations(params)
   return activations.list()
 })
 
-test('list all activations with options', t => {
-  const namespace = 'default_namespace'
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: namespace}
+test('list all activations', t => {
+  t.plan(3)
+  const client = {}
+  const activations = new Activations(client)
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/options_namespace/activations`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    t.deepEqual(req.qs, {name: 'Hello', limit: 100, skip: 100, upto: 100, docs: true, since: 100})
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/options_namespace/activations`)
+    t.deepEqual(options.qs, {name: 'Hello', limit: 100, skip: 100, upto: 100, docs: true, since: 100})
   }
 
-  t.plan(4)
-
-  const activations = new Activations(params)
   return activations.list({namespace: 'options_namespace', name: 'Hello', limit: 100, skip: 100, since: 100, upto: 100, docs: true})
 })
 
-test('get an activation', t => {
-  const namespace = 'default_namespace'
+test('should retrieve an activation', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const activations = new Activations(client)
   const activation_id = 'random_id'
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: namespace}
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/activations/${activation_id}`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/activations/${activation_id}`)
   }
 
-  t.plan(3)
+  return activations.get({name: activation_id})
+})
 
-  const activations = new Activations(params)
+test('should retrieve an activation using alt id parameter', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const activations = new Activations(client)
+  const activation_id = 'random_id'
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/activations/${activation_id}`)
+  }
+
   return activations.get({activation: activation_id})
 })
 
-test('get an activation logs', t => {
-  const namespace = 'default_namespace'
+test('should retrieve an activation using string id parameter', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const activations = new Activations(client)
   const activation_id = 'random_id'
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: namespace}
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/activations/${activation_id}/logs`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/activations/${activation_id}`)
   }
 
-  t.plan(3)
-
-  const activations = new Activations(params)
-  return activations.logs({activation: activation_id})
+  return activations.get(activation_id)
 })
 
-test('get an activation result', t => {
-  const namespace = 'default_namespace'
+test('should retrieve an activation logs using string id', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const activations = new Activations(client)
   const activation_id = 'random_id'
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: namespace}
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/${namespace}/activations/${activation_id}/result`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/activations/${activation_id}/logs`)
   }
 
-  t.plan(3)
-
-  const activations = new Activations(params)
-  return activations.result({activation: activation_id})
+  return activations.logs(activation_id)
 })
 
-test('get an activation without providing an id', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'hello'}
+test('should retrieve an activation logs', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const activations = new Activations(client)
+  const activation_id = 'random_id'
 
-  stub.request = req => {
-    t.fail()
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/activations/${activation_id}/logs`)
   }
 
-  const activations = new Activations(params)
-  return t.throws(() => { activations.get() }, /Missing mandatory activation/)
+  return activations.logs({name: activation_id})
 })
 
-test('list all activations without providing a namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
+test('should retrieve an activation result using string id', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const activations = new Activations(client)
+  const activation_id = 'random_id'
 
-  stub.request = req => {
-    t.fail()
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/activations/${activation_id}/result`)
   }
 
-  const activations = new Activations(params)
-  return t.throws(() => { activations.list() }, /Missing namespace/)
+  return activations.result(activation_id)
 })
 
-/*
-test('get namespace passed in options', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
+test('should retrieve an activation result', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const activations = new Activations(client)
+  const activation_id = 'random_id'
 
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/standard`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/activations/${activation_id}/result`)
   }
 
-  t.plan(3)
-
-  const namespaces = new Namespaces(params)
-  return namespaces.get({namespace: 'standard'})
+  return activations.result({name: activation_id})
 })
 
-test('get default namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key', namespace: 'standard'}
-
-  stub.request = req => {
-    t.is(req.url, `${params.api}namespaces/standard`)
-    t.is(req.headers.Authorization, `Basic ${new Buffer(params.api_key).toString('base64')}`)
-    t.is(req.method, 'GET')
-    return Promise.resolve()
-  }
-
-  t.plan(3)
-
-  const namespaces = new Namespaces(params)
-  return namespaces.get()
+test('should throw when retrieving activation without id', t => {
+  const activations = new Activations()
+  return t.throws(() => { activations.get() }, /Missing mandatory/)
 })
-
-test('get a namespace without providing any namespace', t => {
-  const params = {api: 'https://openwhisk.ng.bluemix.net/api/v1/', api_key: 'user_authorisation_key'}
-
-  stub.request = req => {
-    t.fail()
-  }
-
-  const namespaces = new Namespaces(params)
-  return t.throws(() => { namespaces.get() }, /Missing namespace/)
-})
-*/
