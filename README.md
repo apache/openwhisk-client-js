@@ -93,7 +93,7 @@ const params = {msg: 'this is some words to reverse'}
 ow.actions.invoke({name, blocking, params}).then(result => {
   console.log('here's the reversed string', result.reversed)
 }).catch(err => {
-  console.error(failed to invoke actions', err)
+  console.error('failed to invoke actions', err)
 })
 ```
 
