@@ -20,7 +20,6 @@ test('list all activations', t => {
 
 test('list all activations', t => {
   t.plan(3)
-  const ns = '_'
   const client = {}
   const activations = new Activations(client)
 
@@ -45,7 +44,7 @@ test('should retrieve an activation', t => {
     t.is(path, `namespaces/${ns}/activations/${activation_id}`)
   }
 
-  return activations.get({id: activation_id})
+  return activations.get({name: activation_id})
 })
 
 test('should retrieve an activation using alt id parameter', t => {
@@ -63,6 +62,36 @@ test('should retrieve an activation using alt id parameter', t => {
   return activations.get({activation: activation_id})
 })
 
+test('should retrieve an activation using string id parameter', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const activations = new Activations(client)
+  const activation_id = 'random_id'
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/activations/${activation_id}`)
+  }
+
+  return activations.get(activation_id)
+})
+
+test('should retrieve an activation logs using string id', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const activations = new Activations(client)
+  const activation_id = 'random_id'
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/activations/${activation_id}/logs`)
+  }
+
+  return activations.logs(activation_id)
+})
+
 test('should retrieve an activation logs', t => {
   t.plan(2)
   const ns = '_'
@@ -75,7 +104,22 @@ test('should retrieve an activation logs', t => {
     t.is(path, `namespaces/${ns}/activations/${activation_id}/logs`)
   }
 
-  return activations.logs({id: activation_id})
+  return activations.logs({name: activation_id})
+})
+
+test('should retrieve an activation result using string id', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const activations = new Activations(client)
+  const activation_id = 'random_id'
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/activations/${activation_id}/result`)
+  }
+
+  return activations.result(activation_id)
 })
 
 test('should retrieve an activation result', t => {
@@ -90,7 +134,7 @@ test('should retrieve an activation result', t => {
     t.is(path, `namespaces/${ns}/activations/${activation_id}/result`)
   }
 
-  return activations.result({id: activation_id})
+  return activations.result({name: activation_id})
 })
 
 test('should throw when retrieving activation without id', t => {

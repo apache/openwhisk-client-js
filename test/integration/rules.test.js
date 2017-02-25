@@ -3,10 +3,11 @@
 const test = require('ava')
 const Rules = require('../../lib/rules.js')
 const Triggers = require('../../lib/triggers.js')
+const Client = require('../../lib/client.js')
 
 const API_KEY = process.env.OW_API_KEY
 const API_URL = process.env.OW_API_URL
-const NAMESPACE = process.env.OW_NAMESPACE
+const NAMESPACE = process.env['__OW_NAMESPACE']
 
 if (!API_KEY) {
   throw new Error('Missing OW_API_KEY environment parameter')
@@ -23,7 +24,7 @@ if (!NAMESPACE) {
 test('list all rules using default namespace', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
-  const rules = new Rules(params)
+  const rules = new Rules(new Client(params))
   return rules.list().then(result => {
     t.true(Array.isArray(result))
     result.forEach(rule => {
@@ -39,7 +40,7 @@ test('list all rules using default namespace', t => {
 test('list all rules using options namespace', t => {
   const params = {api: API_URL, api_key: API_KEY}
 
-  const rules = new Rules(params)
+  const rules = new Rules(new Client(params))
   return rules.list({namespace: NAMESPACE}).then(result => {
     t.true(Array.isArray(result))
     result.forEach(rule => {
@@ -61,8 +62,8 @@ test.serial('create, get and delete a rule', t => {
     t.fail()
   }
 
-  const rules = new Rules(params)
-  const triggers = new Triggers(params)
+  const rules = new Rules(new Client(params))
+  const triggers = new Triggers(new Client(params))
   return triggers.create({triggerName: 'sample_rule_trigger'}).then(() => {
     return rules.create({ruleName: 'random_rule_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample_rule_trigger`}).then(result => {
       t.is(result.name, 'random_rule_test')
@@ -89,8 +90,8 @@ test.serial('create and update a rule', t => {
     t.fail()
   }
 
-  const rules = new Rules(params)
-  const triggers = new Triggers(params)
+  const rules = new Rules(new Client(params))
+  const triggers = new Triggers(new Client(params))
   return triggers.create({triggerName: 'sample_rule_trigger'}).then(() => {
     return rules.create({ruleName: 'random_update_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample_rule_trigger`}).then(result => {
       t.is(result.name, 'random_update_test')

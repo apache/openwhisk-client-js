@@ -44,7 +44,7 @@ test('should retrieve action from identifier', t => {
     t.is(path, `namespaces/${ns}/actions/12345`)
   }
 
-  return actions.get({id: '12345'})
+  return actions.get({name: '12345'})
 })
 
 test('should delete action from identifier', t => {
@@ -58,7 +58,7 @@ test('should delete action from identifier', t => {
     t.is(path, `namespaces/${ns}/actions/12345`)
   }
 
-  return actions.delete({id: '12345'})
+  return actions.delete({name: '12345'})
 })
 
 test('should retrieve actionName from identifier', t => {
@@ -88,7 +88,7 @@ test('should invoke action', t => {
     t.deepEqual(options.body, {})
   }
 
-  return actions.invoke({id: '12345'})
+  return actions.invoke({name: '12345'})
 })
 
 test('should invoke fully qualified action', t => {
@@ -104,7 +104,7 @@ test('should invoke fully qualified action', t => {
     t.deepEqual(options.body, {})
   }
 
-  return actions.invoke({id: '/custom/12345'})
+  return actions.invoke({name: '/custom/12345'})
 })
 
 test('should invoke fully qualified action with package', t => {
@@ -120,7 +120,7 @@ test('should invoke fully qualified action with package', t => {
     t.deepEqual(options.body, {})
   }
 
-  return actions.invoke({id: '/custom/package/12345'})
+  return actions.invoke({name: '/custom/package/12345'})
 })
 
 test('should invoke blocking action with body', t => {
@@ -136,7 +136,7 @@ test('should invoke blocking action with body', t => {
     t.deepEqual(options.body, {foo: 'bar'})
   }
 
-  return actions.invoke({id: '12345', blocking: true, params: {foo: 'bar'}})
+  return actions.invoke({name: '12345', blocking: true, params: {foo: 'bar'}})
 })
 
 test('should invoke blocking action using actionName', t => {
@@ -169,7 +169,7 @@ test('create a new action', t => {
     t.deepEqual(options.body, {exec: {kind: 'nodejs:default', code: action}})
   }
 
-  return actions.create({id: '12345', action})
+  return actions.create({name: '12345', action})
 })
 
 test('create a new action with custom body', t => {
@@ -187,7 +187,7 @@ test('create a new action with custom body', t => {
     t.deepEqual(options.body, action)
   }
 
-  return actions.create({id: '12345', action})
+  return actions.create({name: '12345', action})
 })
 
 test('create a new action with buffer body', t => {
@@ -204,10 +204,10 @@ test('create a new action with buffer body', t => {
     t.deepEqual(options.body, {exec: {kind: 'nodejs:default', code: action.toString('base64')}})
   }
 
-  return actions.create({id: '12345', action})
+  return actions.create({name: '12345', action})
 })
 
 test('create an action without providing an action body', t => {
   const actions = new Actions()
-  t.throws(() => actions.create({id: '12345'}), /Missing mandatory action/)
+  t.throws(() => actions.create({name: '12345'}), /Missing mandatory action/)
 })

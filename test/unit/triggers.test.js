@@ -44,7 +44,7 @@ test('should retrieve trigger from identifier', t => {
     t.is(path, `namespaces/${ns}/triggers/12345`)
   }
 
-  return triggers.get({id: '12345'})
+  return triggers.get({name: '12345'})
 })
 
 test('should delete trigger from identifier', t => {
@@ -58,7 +58,7 @@ test('should delete trigger from identifier', t => {
     t.is(path, `namespaces/${ns}/triggers/12345`)
   }
 
-  return triggers.delete({id: '12345'})
+  return triggers.delete({name: '12345'})
 })
 
 test('should retrieve triggerName from identifier', t => {
@@ -87,7 +87,7 @@ test('should invoke trigger', t => {
     t.deepEqual(options.body, {})
   }
 
-  return triggers.invoke({id: '12345'})
+  return triggers.invoke({name: '12345'})
 })
 
 test('should invoke fully qualified trigger', t => {
@@ -102,7 +102,7 @@ test('should invoke fully qualified trigger', t => {
     t.deepEqual(options.body, {})
   }
 
-  return triggers.invoke({id: '/custom/12345'})
+  return triggers.invoke({name: '/custom/12345'})
 })
 
 test('should invoke fully qualified trigger with package', t => {
@@ -117,7 +117,7 @@ test('should invoke fully qualified trigger with package', t => {
     t.deepEqual(options.body, {})
   }
 
-  return triggers.invoke({id: '/custom/package/12345'})
+  return triggers.invoke({name: '/custom/package/12345'})
 })
 
 test('should invoke trigger with body', t => {
@@ -132,7 +132,7 @@ test('should invoke trigger with body', t => {
     t.deepEqual(options.body, {foo: 'bar'})
   }
 
-  return triggers.invoke({id: '12345', params: {foo: 'bar'}})
+  return triggers.invoke({name: '12345', params: {foo: 'bar'}})
 })
 
 test('should invoke trigger using triggerName', t => {
@@ -163,7 +163,7 @@ test('create a new trigger', t => {
     t.deepEqual(options.body, {})
   }
 
-  return triggers.create({id: '12345'})
+  return triggers.create({name: '12345'})
 })
 
 test('create a new trigger with custom body', t => {
@@ -180,5 +180,5 @@ test('create a new trigger with custom body', t => {
     t.deepEqual(options.body, trigger)
   }
 
-  return triggers.create({id: '12345', trigger})
+  return triggers.create({name: '12345', trigger})
 })

@@ -3,10 +3,11 @@
 const test = require('ava')
 const Feeds = require('../../lib/feeds.js')
 const Triggers = require('../../lib/triggers.js')
+const Client = require('../../lib/client.js')
 
 const API_KEY = process.env.OW_API_KEY
 const API_URL = process.env.OW_API_URL
-const NAMESPACE = process.env.OW_NAMESPACE
+const NAMESPACE = process.env['__OW_NAMESPACE']
 
 if (!API_KEY) {
   throw new Error('Missing OW_API_KEY environment parameter')
@@ -28,11 +29,10 @@ test('create and delete a feed', t => {
     t.fail()
   }
 
-  const feeds = new Feeds(params)
-  const triggers = new Triggers(params)
+  const feeds = new Feeds(new Client(params))
+  const triggers = new Triggers(new Client(params))
   const feed_params = {
-    feedName: 'alarms/alarm',
-    namespace: 'whisk.system',
+    feedName: '/whisk.system/alarms/alarm',
     trigger: `/${NAMESPACE}/sample_feed_trigger`,
     params: {cron: '*/8 * * * * *', trigger_payload: {name: 'test', place: 'hello'}}
   }

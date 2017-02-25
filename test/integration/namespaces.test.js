@@ -2,10 +2,11 @@
 
 const test = require('ava')
 const Namespaces = require('../../lib/namespaces.js')
+const Client = require('../../lib/client.js')
 
 const API_KEY = process.env.OW_API_KEY
 const API_URL = process.env.OW_API_URL
-const NAMESPACE = process.env.OW_NAMESPACE
+const NAMESPACE = process.env['__OW_NAMESPACE']
 
 if (!API_KEY) {
   throw new Error('Missing OW_API_KEY environment parameter')
@@ -22,7 +23,7 @@ if (!NAMESPACE) {
 test('list all namespaces', t => {
   const params = {api: API_URL, api_key: API_KEY}
 
-  const namespaces = new Namespaces(params)
+  const namespaces = new Namespaces(new Client(params))
   return namespaces.list().then(result => {
     t.true(Array.isArray(result))
     t.pass()
@@ -35,7 +36,7 @@ test('list all namespaces', t => {
 test('retrieve individual namespaces', t => {
   const params = {api: API_URL, api_key: API_KEY}
 
-  const namespaces = new Namespaces(params)
+  const namespaces = new Namespaces(new Client(params))
   return namespaces.list().then(result => {
     t.true(Array.isArray(result))
     return Promise.all(result.map(ns => namespaces.get({namespace: ns})))

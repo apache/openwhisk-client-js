@@ -22,7 +22,7 @@ test('should be able to delete feed', t => {
 
   t.plan(4)
 
-  return feeds.delete({id: feed_name, trigger: trigger_name})
+  return feeds.delete({name: feed_name, trigger: trigger_name})
 })
 
 test('should be able to delete feed using feedName with params', t => {
@@ -67,7 +67,7 @@ test('should be able to create feed', t => {
 
   t.plan(4)
 
-  return feeds.create({id: feed_name, trigger: trigger_name})
+  return feeds.create({name: feed_name, trigger: trigger_name})
 })
 
 test('should be able to create feed using feedName with params', t => {

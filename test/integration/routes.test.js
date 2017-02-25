@@ -3,10 +3,11 @@
 const test = require('ava')
 const Actions = require('../../lib/actions.js')
 const Routes = require('../../lib/routes.js')
+const Client = require('../../lib/client.js')
 
 const API_KEY = process.env.OW_API_KEY
 const API_URL = process.env.OW_API_URL
-const NAMESPACE = process.env.OW_NAMESPACE
+const NAMESPACE = process.env['__OW_NAMESPACE']
 
 if (!API_KEY) {
   throw new Error('Missing OW_API_KEY environment parameter')
@@ -23,8 +24,8 @@ if (!NAMESPACE) {
 test('create, retrieve and delete action route', t => {
   const params = {api: API_URL, api_key: API_KEY}
 
-  const routes = new Routes(params)
-  const actions = new Actions(params)
+  const routes = new Routes(new Client(params))
+  const actions = new Actions(new Client(params))
 
   return actions.create({actionName: 'routeAction', action: ''}).then(() => {
     return routes.create({action: 'routeAction', basepath: '/testing', relpath: '/foo/bar', operation: 'POST'}).then(() => {

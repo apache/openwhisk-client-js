@@ -6,7 +6,6 @@ const Namespaces = require('../../lib/namespaces')
 test('should list all namespaces', t => {
   t.plan(2)
   const client = {}
-  const ns = 'testing_ns'
   client.request = (method, path, options) => {
     t.is(method, 'GET')
     t.is(path, `namespaces`)
@@ -19,7 +18,6 @@ test('should list all namespaces', t => {
 test('should retrieve namespace using id', t => {
   t.plan(2)
   const client = {}
-  const ns = 'testing_ns'
   const id = 'custom_ns'
   client.request = (method, path, options) => {
     t.is(method, 'GET')
@@ -27,13 +25,25 @@ test('should retrieve namespace using id', t => {
   }
 
   const namespaces = new Namespaces(client)
-  return namespaces.get({id})
+  return namespaces.get({name: id})
+})
+
+test('should retrieve namespace using string id', t => {
+  t.plan(2)
+  const client = {}
+  const id = 'custom_ns'
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${id}`)
+  }
+
+  const namespaces = new Namespaces(client)
+  return namespaces.get(id)
 })
 
 test('should retrieve namespace using namespace', t => {
   t.plan(2)
   const client = {}
-  const ns = 'testing_ns'
   const id = 'custom_ns'
   client.request = (method, path, options) => {
     t.is(method, 'GET')
