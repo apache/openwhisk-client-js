@@ -9,7 +9,7 @@ test('should list all routes', t => {
   const ns = '_'
   client.request = (method, path, options) => {
     t.is(method, 'GET')
-    t.is(path, `experimental/routemgmt`)
+    t.is(path, `${Routes.routeMgmtApiPath}/getApi.json`)
   }
 
   const routes = new Routes(client)
@@ -24,7 +24,7 @@ test('should list all routes with parameters', t => {
   const options = {basepath: '/hello', relpath: '/foo/bar', operation: 'GET', limit: 10, skip: 10}
   client.request = (method, path, _options) => {
     t.is(method, 'GET')
-    t.is(path, `experimental/routemgmt`)
+    t.is(path, `${Routes.routeMgmtApiPath}/getApi.json`)
     t.deepEqual(_options.qs, options)
   }
 
@@ -40,7 +40,7 @@ test('should delete a route', t => {
 
   client.request = (method, path, _options) => {
     t.is(method, 'DELETE')
-    t.is(path, `experimental/routemgmt`)
+    t.is(path, `${Routes.routeMgmtApiPath}/deleteApi.json`)
     t.deepEqual(_options.qs, options)
   }
 
@@ -56,7 +56,7 @@ test('should delete a route with parameters', t => {
 
   client.request = (method, path, _options) => {
     t.is(method, 'DELETE')
-    t.is(path, `experimental/routemgmt`)
+    t.is(path, `${Routes.routeMgmtApiPath}/deleteApi.json`)
     t.deepEqual(_options.qs, options)
   }
 
@@ -98,7 +98,7 @@ test('should create a route', t => {
 
   client.request = (method, path, _options) => {
     t.is(method, 'POST')
-    t.is(path, `experimental/routemgmt`)
+    t.is(path, `${Routes.routeMgmtApiPath}/createApi.json`)
     t.deepEqual(_options.body, body)
   }
 
@@ -133,7 +133,7 @@ test('should create a route using basepath', t => {
 
   client.request = (method, path, _options) => {
     t.is(method, 'POST')
-    t.is(path, `experimental/routemgmt`)
+    t.is(path, `${Routes.routeMgmtApiPath}/createApi.json`)
     t.deepEqual(_options.body, body)
   }
 
@@ -168,7 +168,7 @@ test('should create a route using fully-qualified action name', t => {
 
   client.request = (method, path, _options) => {
     t.is(method, 'POST')
-    t.is(path, `experimental/routemgmt`)
+    t.is(path, `${Routes.routeMgmtApiPath}/createApi.json`)
     t.deepEqual(_options.body, body)
   }
 
@@ -203,7 +203,7 @@ test('should create a route using action name with ns', t => {
 
   client.request = (method, path, _options) => {
     t.is(method, 'POST')
-    t.is(path, `experimental/routemgmt`)
+    t.is(path, `${Routes.routeMgmtApiPath}/createApi.json`)
     t.deepEqual(_options.body, body)
   }
 
