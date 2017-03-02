@@ -194,7 +194,7 @@ test('create a new action with buffer body', t => {
   t.plan(4)
   const ns = '_'
   const client = {}
-  const action = new Buffer('some action source contents')
+  const action = Buffer.from('some action source contents')
   const actions = new Actions(client)
 
   client.request = (method, path, options) => {

@@ -94,7 +94,7 @@ test('should return request parameters with explicit api option', t => {
 test('should generate auth header from API key', t => {
   const api_key = 'some sample api key'
   const client = new Client({api: true, api_key: api_key})
-  t.is(client.auth_header(), `Basic ${new Buffer(api_key).toString('base64')}`)
+  t.is(client.auth_header(), `Basic ${Buffer.from(api_key).toString('base64')}`)
 })
 
 test('should throw errors for HTTP response failures', t => {
