@@ -8,7 +8,7 @@ test('should invoke client request for resource', t => {
   const namespace = '_'
   const resource = 'resource_id'
   const method = 'GET'
-  const client = {request:  (_method, _path) => {
+  const client = {request: (_method, _path) => {
     t.is(_method, method)
     t.is(_path, `namespaces/${namespace}/${resource}`)
   }}
@@ -24,7 +24,7 @@ test('should invoke client request for resource with identifier', t => {
   const resource = 'resource_id'
   const method = 'GET'
   const id = '12345'
-  const client = {request:  (_method, _path) => {
+  const client = {request: (_method, _path) => {
     t.is(_method, method)
     t.is(_path, `namespaces/${namespace}/${resource}/${id}`)
   }}
@@ -41,7 +41,7 @@ test('should invoke client request with user parameters', t => {
   const method = 'GET'
   const id = '12345'
   const options = {qs: {hello: 'world'}, body: {hello: 'world'}}
-  const client = {request:  (_method, _path, _options) => {
+  const client = {request: (_method, _path, _options) => {
     t.is(_method, method)
     t.is(_path, `namespaces/${namespace}/${resource}/${id}`)
     t.deepEqual(_options, {qs: {hello: 'world'}, body: {hello: 'world'}})
@@ -63,6 +63,14 @@ test('should extract available query string parameters', t => {
 test('should return appropriate namespace', t => {
   let base_operation = new BaseOperation()
   t.is(base_operation.namespace({namespace: 'provided'}), 'provided')
+
+  // using global ns
+  base_operation = new BaseOperation({ options: { namespace: 'global_ns' }})
+  t.is(base_operation.namespace({namespace: 'provided'}), 'provided')
+  base_operation = new BaseOperation({ options: { namespace: 'global_ns' }})
+  t.is(base_operation.namespace({}), 'global_ns')
+  t.is(base_operation.namespace(), 'global_ns')
+
   base_operation = new BaseOperation('default')
   t.is(base_operation.namespace({namespace: 'provided'}), 'provided')
   t.is(base_operation.namespace(), '_')

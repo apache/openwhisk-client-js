@@ -8,12 +8,14 @@ test('should use default constructor options', t => {
   t.false(client.options.ignore_certs)
   t.is(client.options.api_key, 'aaa')
   t.is(client.options.api, 'https://my_host/api/v1/')
+  t.falsy(client.options.namespace)
 })
 
 test('should support explicit constructor options', t => {
-  const client = new Client({ignore_certs: true, api_key: 'aaa', api: 'my_host'})
+  const client = new Client({namespace: 'ns', ignore_certs: true, api_key: 'aaa', api: 'my_host'})
   t.is(client.options.api, 'my_host')
   t.true(client.options.ignore_certs)
+  t.is(client.options.namespace, 'ns')
 })
 
 test('should use environment parameters for options if not set explicitly.', t => {
@@ -89,7 +91,6 @@ test('should return request parameters with explicit api option', t => {
   client.options.api += '/'
   t.is(client.params(METHOD, PATH).url, 'https://api.com/api/v1/some/path/to/resource')
 })
-
 
 test('should generate auth header from API key', t => {
   const api_key = 'some sample api key'
