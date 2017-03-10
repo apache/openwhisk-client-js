@@ -207,8 +207,8 @@ When passing resource identifiers as parameters you can either use a short name,
 If the namespace is missing from the resource identifier, the client will use the namespace from configuration options following this ordering. 
 
 - `namespace` from method parameter options OR
--  `namespace` from options passed into client constructor OR
--  `namespace` from environment variable (`__OW_NAMESPACE`) OR
+- `namespace` from options passed into client constructor OR
+- `namespace` from environment variable (`__OW_NAMESPACE`) OR
 - default namespace: `_`
 
 ### list resources
@@ -456,3 +456,21 @@ ow.routes.create({relpath: '...', operation: '...', action: '...'})
 
 The following optional parameters are supported to filter the result set:
 - `basepath` - base URI path for endpoints (default: `/`)
+
+
+
+## Development
+
+### unit tests
+
+```
+npm test
+```
+
+### integration tests
+
+*Please [see the instructions](https://github.com/openwhisk/openwhisk-client-js/tree/master/test/integration) for setting up the integration test environment prior to running these tests.*
+
+```
+npm run-script test-integration
+```
