@@ -200,6 +200,17 @@ ow.feeds.create({name, trigger, params}).then(package => {
 
 ## API Details 
 
+### resource identifiers + namespaces
+
+When passing resource identifiers as parameters you can either use a short name, without an explicit namespace, or a fully-qualified identifier, including namespace and package details. 
+
+If the namespace is missing from the resource identifier, the client will use the namespace from configuration options following this ordering. 
+
+- `namespace` from method parameter options OR
+-  `namespace` from options passed into client constructor OR
+-  `namespace` from environment variable (`__OW_NAMESPACE`) OR
+- default namespace: `_`
+
 ### list resources
 
 ```

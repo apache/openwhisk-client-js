@@ -106,6 +106,41 @@ test('should create a route', t => {
   return routes.create({relpath: '/hello', operation: 'GET', action: 'helloAction'})
 })
 
+test('should create a route using global ns', t => {
+  t.plan(3)
+  const path_url = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const api_key = 'username:password'
+  const client_options = { api_key, namespace: 'global_ns'}
+  const client = { path_url, options: client_options}
+  const ns = '_'
+  const options = {force: true, basepath: '/hello', relpath: '/bar/1', operation: 'GET'}
+
+  const body = {
+    apidoc: {
+      namespace: 'global_ns',
+      gatewayBasePath: '/',
+      gatewayPath: '/hello',
+      gatewayMethod: 'GET',
+      id: 'API:global_ns:/',
+      action: {
+        name: 'helloAction',
+        namespace: 'global_ns',
+        backendMethod: 'POST',
+        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/global_ns/actions/helloAction',
+        authkey: api_key }
+    }
+  }
+
+  client.request = (method, path, _options) => {
+    t.is(method, 'POST')
+    t.is(path, `${Routes.routeMgmtApiPath}/createApi.json`)
+    t.deepEqual(_options.body, body)
+  }
+
+  const routes = new Routes(client)
+  return routes.create({relpath: '/hello', operation: 'GET', action: 'helloAction'})
+})
+
 test('should create a route using basepath', t => {
   t.plan(3)
   const path_url = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
@@ -210,6 +245,42 @@ test('should create a route using action name with ns', t => {
   const routes = new Routes(client)
   return routes.create({relpath: '/hello', operation: 'GET', action: '/test/helloAction'})
 })
+
+test('should create a route using action name with ns overriding defaults', t => {
+  t.plan(3)
+  const path_url = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const api_key = 'username:password'
+  const client_options = { api_key, namespace: 'global' }
+  const client = { path_url, options: client_options }
+  const ns = '_'
+  const options = {force: true, basepath: '/hello', relpath: '/bar/1', operation: 'GET'}
+
+  const body = {
+    apidoc: {
+      namespace: 'global',
+      gatewayBasePath: '/',
+      gatewayPath: '/hello',
+      gatewayMethod: 'GET',
+      id: 'API:global:/',
+      action: {
+        name: 'helloAction',
+        namespace: 'test',
+        backendMethod: 'POST',
+        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/test/actions/helloAction',
+        authkey: api_key }
+    }
+  }
+
+  client.request = (method, path, _options) => {
+    t.is(method, 'POST')
+    t.is(path, `${Routes.routeMgmtApiPath}/createApi.json`)
+    t.deepEqual(_options.body, body)
+  }
+
+  const routes = new Routes(client)
+  return routes.create({relpath: '/hello', operation: 'GET', action: '/test/helloAction'})
+})
+
 
 test('create routes missing mandatory parameters', t => {
   const routes = new Routes()
