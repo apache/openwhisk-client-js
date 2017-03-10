@@ -117,11 +117,11 @@ test('should create a route using global ns', t => {
 
   const body = {
     apidoc: {
-      namespace: 'global_ns',
+      namespace: '_',
       gatewayBasePath: '/',
       gatewayPath: '/hello',
       gatewayMethod: 'GET',
-      id: 'API:global_ns:/',
+      id: 'API:_:/',
       action: {
         name: 'helloAction',
         namespace: 'global_ns',
@@ -257,11 +257,11 @@ test('should create a route using action name with ns overriding defaults', t =>
 
   const body = {
     apidoc: {
-      namespace: 'global',
+      namespace: '_',
       gatewayBasePath: '/',
       gatewayPath: '/hello',
       gatewayMethod: 'GET',
-      id: 'API:global:/',
+      id: 'API:_:/',
       action: {
         name: 'helloAction',
         namespace: 'test',
