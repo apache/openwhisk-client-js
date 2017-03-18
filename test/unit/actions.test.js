@@ -178,6 +178,44 @@ test('should invoke blocking action with body', t => {
   return actions.invoke({name: '12345', blocking: true, params: {foo: 'bar'}})
 })
 
+test('should invoke action to retrieve result', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const actions = new Actions(client)
+  const result = { hello: 'world' }
+
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {blocking: true})
+    return Promise.resolve({response: { result }})
+  }
+
+  return actions.invoke({name: '12345', result: true, blocking: true}).then(_result => {
+    t.deepEqual(_result, result)
+  })
+})
+
+test('should invoke action to retrieve result without blocking', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const actions = new Actions(client)
+  const result = { hello: 'world' }
+
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    return Promise.resolve({response: { result }})
+  }
+
+  return actions.invoke({name: '12345', result: true}).then(_result => {
+    t.deepEqual(_result, {response: { result } })
+  })
+})
+
 test('should invoke blocking action using actionName', t => {
   t.plan(4)
   const ns = '_'
