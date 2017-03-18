@@ -47,6 +47,20 @@ test('should retrieve trigger from identifier', t => {
   return triggers.get({name: '12345'})
 })
 
+test('should retrieve trigger from string identifier', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const triggers = new Triggers(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/triggers/12345`)
+  }
+
+  return triggers.get('12345')
+})
+
 test('should delete trigger from identifier', t => {
   t.plan(2)
   const ns = '_'
@@ -59,6 +73,20 @@ test('should delete trigger from identifier', t => {
   }
 
   return triggers.delete({name: '12345'})
+})
+
+test('should delete trigger from string identifier', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const triggers = new Triggers(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'DELETE')
+    t.is(path, `namespaces/${ns}/triggers/12345`)
+  }
+
+  return triggers.delete('12345')
 })
 
 test('should retrieve triggerName from identifier', t => {
@@ -88,6 +116,20 @@ test('should invoke trigger', t => {
   }
 
   return triggers.invoke({name: '12345'})
+})
+
+test('should invoke trigger from string identifier', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const triggers = new Triggers(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespaces/${ns}/triggers/12345`)
+  }
+
+  return triggers.invoke('12345')
 })
 
 test('should invoke fully qualified trigger', t => {

@@ -20,7 +20,6 @@ test('should list all actions without parameters', t => {
 
 test('should list all actions with parameters', t => {
   t.plan(3)
-  const ns = '_'
   const client = {}
   const actions = new Actions(client)
 
@@ -45,6 +44,20 @@ test('should retrieve action from identifier', t => {
   }
 
   return actions.get({name: '12345'})
+})
+
+test('should retrieve action from string identifier', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const actions = new Actions(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+  }
+
+  return actions.get('12345')
 })
 
 test('should delete action from identifier', t => {
@@ -75,6 +88,20 @@ test('should retrieve actionName from identifier', t => {
   return actions.get({actionName: '12345'})
 })
 
+test('should delete action from string identifier', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const actions = new Actions(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'DELETE')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+  }
+
+  return actions.delete('12345')
+})
+
 test('should invoke action', t => {
   t.plan(4)
   const ns = '_'
@@ -91,9 +118,22 @@ test('should invoke action', t => {
   return actions.invoke({name: '12345'})
 })
 
+test('should invoke action from string identifier', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = {}
+  const actions = new Actions(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+  }
+
+  return actions.invoke('12345')
+})
+
 test('should invoke fully qualified action', t => {
   t.plan(4)
-  const ns = '_'
   const client = {}
   const actions = new Actions(client)
 
@@ -109,7 +149,6 @@ test('should invoke fully qualified action', t => {
 
 test('should invoke fully qualified action with package', t => {
   t.plan(4)
-  const ns = '_'
   const client = {}
   const actions = new Actions(client)
 

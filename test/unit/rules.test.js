@@ -60,6 +60,20 @@ test('should retrieve rule from ruleName identifier', t => {
   return rules.get({ruleName: '12345'})
 })
 
+test('should retrieve rule from string identifier', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = { options: {} }
+  const rules = new Rules(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/rules/12345`)
+  }
+
+  return rules.get('12345')
+})
+
 test('should delete rule from identifier', t => {
   t.plan(2)
   const ns = '_'
@@ -72,6 +86,20 @@ test('should delete rule from identifier', t => {
   }
 
   return rules.delete({name: '12345'})
+})
+
+test('should delete rule from string identifier', t => {
+  t.plan(2)
+  const ns = '_'
+  const client = { options: {} }
+  const rules = new Rules(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'DELETE')
+    t.is(path, `namespaces/${ns}/rules/12345`)
+  }
+
+  return rules.delete('12345')
 })
 
 test('should throw error trying to invoke rule', t => {
