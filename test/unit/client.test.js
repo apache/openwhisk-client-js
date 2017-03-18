@@ -109,8 +109,10 @@ test('should throw errors for HTTP response failures', t => {
   t.throws(() => client.handle_errors({statusCode: 409}), /Conflict/)
   t.throws(() => client.handle_errors({statusCode: 500, error: {}}), /API call failed/)
   t.throws(() => client.handle_errors({statusCode: 500, error: {response: {result: {error: 'custom'}}}}), /custom/)
+  t.throws(() => client.handle_errors({statusCode: 500, error: {response: {result: {statusCode: 404}}}}), /404/)
   t.throws(() => client.handle_errors({statusCode: 502, error: {}}), /Action invocation failed/)
-  t.throws(() => client.handle_errors({statusCode: 500, error: {response: {result: {error: 'custom'}}}}), /custom/)
+  t.throws(() => client.handle_errors({statusCode: 502, error: {response: {result: {error: 'custom'}}}}), /custom/)
+  t.throws(() => client.handle_errors({statusCode: 502, error: {response: {result: {statusCode: 404}}}}), /404/)
 })
 
 test('should throw errors for non-HTTP response failures', t => {
