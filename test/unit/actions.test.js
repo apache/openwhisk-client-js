@@ -284,6 +284,28 @@ test('create a new action with buffer body', t => {
   return actions.create({name: '12345', action})
 })
 
+test('create a new action with default parameters', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const action = 'function main() { // main function body};'
+  const params = {
+    foo: 'bar'
+  }
+  const actions = new Actions(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {exec: {kind: 'nodejs:default', code: action}, parameters: [
+      { key: 'foo', value: 'bar' }
+    ]})
+  }
+
+  return actions.create({name: '12345', action, params})
+})
+
 test('create an action without providing an action body', t => {
   const actions = new Actions()
   t.throws(() => actions.create({name: '12345'}), /Missing mandatory action/)

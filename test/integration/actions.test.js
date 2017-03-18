@@ -98,6 +98,31 @@ test('create and update an action', t => {
   }).catch(errors)
 })
 
+test('create, get and delete with parameters an action', t => {
+  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
+
+  const errors = err => {
+    console.log(err)
+    t.fail()
+  }
+
+  const actions = new Actions(new Client(params))
+  return actions.create({name: 'random_action_params_test', params: { hello: 'world' }, action: 'function main() {return {payload:"testing"}}'}).then(result => {
+    t.is(result.name, 'random_action_params_test')
+    t.is(result.namespace, NAMESPACE)
+    t.deepEqual(result.parameters, [{key: 'hello', value: 'world'}])
+    t.is(result.exec.kind, 'nodejs:6')
+    t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
+    return actions.update({actionName: 'random_action_params_test', params: { foo: 'bar' }, action: 'update test'}).then(update_result => {
+      t.is(update_result.name, 'random_action_params_test')
+      t.is(update_result.namespace, NAMESPACE)
+      t.deepEqual(update_result.parameters, [{key: 'foo', value: 'bar'}])
+      t.pass()
+      return actions.delete({name: 'random_action_params_test'}).catch(errors)
+    }).catch(errors)
+  }).catch(errors)
+})
+
 test('invoke action with fully-qualified name', t => {
   const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
 
