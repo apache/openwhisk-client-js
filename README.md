@@ -75,8 +75,8 @@ _Client constructor supports the following mandatory parameters:_
 
 Client constructor will read values for the `apihost`, `namespace` and `api_key` options from the environment if the following parameters are set. Explicit parameter values override these values.
 
-- *\_\_OW_API_HOST__*
-- *\_\_OW_NAMESPACE__*
+- *\_\_OW_API_HOST*
+- *\_\_OW_NAMESPACE*
 - *__OW_API_KEY*
 
 
