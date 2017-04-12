@@ -326,6 +326,7 @@ The following mandatory parameters are supported:
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 - `params` - object containing default parameters for the action (default: `{}`)
+- `kind` - runtime environment parameter, ignored when `action` is an object (default: `nodejs:default`)
 
 If you pass in an array for the first parameter, the `create` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
 

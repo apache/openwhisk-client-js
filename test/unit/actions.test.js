@@ -249,12 +249,31 @@ test('create a new action', t => {
   return actions.create({name: '12345', action})
 })
 
+test('create a new action with custom kind', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const action = 'function main() { // main function body};'
+  const kind = 'custom_runtime:version'
+  const actions = new Actions(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {exec: {kind, code: action}})
+  }
+
+  return actions.create({name: '12345', action, kind})
+})
+
 test('create a new action with custom body', t => {
   t.plan(4)
   const ns = '_'
   const client = {}
   const code = 'function main() { // main function body};'
   const action = {exec: {kind: 'swift', code: code}}
+  const kind = 'custom_runtime:version'
   const actions = new Actions(client)
 
   client.request = (method, path, options) => {
@@ -264,7 +283,7 @@ test('create a new action with custom body', t => {
     t.deepEqual(options.body, action)
   }
 
-  return actions.create({name: '12345', action})
+  return actions.create({name: '12345', kind, action})
 })
 
 test('create a new action with buffer body', t => {
