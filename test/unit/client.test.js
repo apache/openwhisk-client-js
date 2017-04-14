@@ -2,6 +2,7 @@
 
 const test = require('ava')
 const Client = require('../../lib/client')
+const http = require('http')
 
 test('should use default constructor options', t => {
   const client = new Client({api_key: 'aaa', apihost: 'my_host'})
@@ -98,21 +99,18 @@ test('should generate auth header from API key', t => {
   t.is(client.auth_header(), `Basic ${Buffer.from(api_key).toString('base64')}`)
 })
 
-test('should throw errors for HTTP response failures', t => {
+test('should return path and status code in error message', t => {
   const client = new Client({api_key: true, api: true})
-  t.throws(() => client.handle_errors({statusCode: 400}), /invalid request/)
-  t.throws(() => client.handle_errors({statusCode: 400, error: { error: 'some msg'}}), /some msg/)
-  t.throws(() => client.handle_errors({statusCode: 401}), /authentication failed/)
-  t.throws(() => client.handle_errors({statusCode: 403}), /authentication failed/)
-  t.throws(() => client.handle_errors({statusCode: 404}), /HTTP 404/)
-  t.throws(() => client.handle_errors({statusCode: 408}), /timed out/)
-  t.throws(() => client.handle_errors({statusCode: 409}), /Conflict/)
-  t.throws(() => client.handle_errors({statusCode: 500, error: {}}), /API call failed/)
-  t.throws(() => client.handle_errors({statusCode: 500, error: {response: {result: {error: 'custom'}}}}), /custom/)
-  t.throws(() => client.handle_errors({statusCode: 500, error: {response: {result: {statusCode: 404}}}}), /404/)
-  t.throws(() => client.handle_errors({statusCode: 502, error: {}}), /Action invocation failed/)
-  t.throws(() => client.handle_errors({statusCode: 502, error: {response: {result: {error: 'custom'}}}}), /custom/)
-  t.throws(() => client.handle_errors({statusCode: 502, error: {response: {result: {statusCode: 404}}}}), /404/)
+  const method = 'METHOD', url = 'https://blah.com/api/v1/actions/list', statusCode = 400
+  t.throws(() => client.handle_errors({options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "Response Missing Error Message."`)
+})
+
+test('should return response error string in error message', t => {
+  const client = new Client({api_key: true, api: true})
+  const method = 'METHOD', url = 'https://blah.com/api/v1/actions/list', statusCode = 400
+  t.throws(() => client.handle_errors({error: { error: 'hello' }, options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
+  t.throws(() => client.handle_errors({error: { response: { result: { error: 'hello' } } }, options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
+  t.throws(() => client.handle_errors({error: { response: { result: { error: { error: 'hello' } } } }, options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
 })
 
 test('should throw errors for non-HTTP response failures', t => {
