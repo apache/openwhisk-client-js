@@ -111,6 +111,7 @@ test('should return response error string in error message', t => {
   t.throws(() => client.handle_errors({error: { error: 'hello' }, options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
   t.throws(() => client.handle_errors({error: { response: { result: { error: 'hello' } } }, options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
   t.throws(() => client.handle_errors({error: { response: { result: { error: { error: 'hello' } } } }, options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
+  t.throws(() => client.handle_errors({error: { response: { result: { error: { statusCode: 404 } } } }, options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "application error, status code: ${404}"`)
 })
 
 test('should throw errors for non-HTTP response failures', t => {
