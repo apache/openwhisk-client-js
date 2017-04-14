@@ -185,7 +185,7 @@ ow.packages.update({name, package}).then(package => {
 ### create trigger feed from alarm package
 
 ```
-// for example... 
+// alarmTrigger MUST already exist in default namespace
 const params = {cron: '*/8 * * * * *', trigger_payload: {name: 'James'}}
 const name = '/whisk.system/alarms/alarm'
 const trigger = 'alarmTrigger'
