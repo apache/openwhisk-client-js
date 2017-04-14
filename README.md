@@ -185,7 +185,7 @@ ow.packages.update({name, package}).then(package => {
 ### create trigger feed from alarm package
 
 ```
-// for example... 
+// alarmTrigger MUST already exist in default namespace
 const params = {cron: '*/8 * * * * *', trigger_payload: {name: 'James'}}
 const name = '/whisk.system/alarms/alarm'
 const trigger = 'alarmTrigger'
@@ -453,7 +453,20 @@ ow.routes.create({relpath: '...', operation: '...', action: '...'})
 The following optional parameters are supported to filter the result set:
 - `basepath` - base URI path for endpoints (default: `/`)
 
+## Debugging
 
+Setting an environment parameter (`NODE_DEBUG=request`) will dump the HTTP requests from the client library and responses received to `stderr`.
+
+```
+NODE_DEBUG=request node script.js 
+```
+
+This parameter can also be set dynamically at runtime, provided this happens before the `openwhisk` module is required.
+
+```
+process.env.NODE_DEBUG='request';
+var openwhisk = require('openwhisk');
+```
 
 ## Development
 
