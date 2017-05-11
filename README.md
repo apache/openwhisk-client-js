@@ -68,16 +68,19 @@ _Client constructor supports the following mandatory parameters:_
 
 - **api.** Full API URL for OpenWhisk platform, e.g. `https://openwhisk.ng.bluemix.net/api/v1/`. This value overrides `apihost` if both are present.
 - **namespace**. Namespace for resource requests, defaults to `_`.
-
 - **ignore_certs**. Turns off server SSL/TLS certificate verification. This allows the client to be used against local deployments of OpenWhisk with a self-signed certificate. Defaults to false.
+- **apigw_token**. API Gateway service authentication token. This is mandatory for using an external API Gateway service, rather than the built-in api gateway.
+- **apigw_space_guid**. API Gateway space identifier. This is optional when using an API gateway service, defaults to the authentication uuid.
 
 ### environment variables
 
-Client constructor will read values for the `apihost`, `namespace` and `api_key` options from the environment if the following parameters are set. Explicit parameter values override these values.
+Client constructor will read values for the `apihost`, `namespace`, `api_key`, `apigw_token` and `apigw_space_guid` options from the environment if the following parameters are set. Explicit options have precedence over environment values.
 
 - *\_\_OW_API_HOST*
 - *\_\_OW_NAMESPACE*
 - *__OW_API_KEY*
+- *__OW_APIGW_TOKEN*
+- *__OW_APIGW_SPACE_SUID*
 
 
 
@@ -414,9 +417,13 @@ The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 - `params` - JSON object containing parameters for the feed being invoked (default: `{}`)
 
-## api gateway (experimental)
+## api gateway
 
-*[API Gateway support](https://github.com/openwhisk/openwhisk/blob/master/docs/apigateway.md) is currently experimental and may be subject to breaking changes.*
+OpenWhisk supports a [built-in API gateway service](https://github.com/openwhisk/openwhisk/blob/master/docs/apigateway.md) and external third-party providers. 
+
+This client library defaults to using the platform service. If the `apigw_token` parameter is passed into the client constructor, the implementation will switch to the [IBM Bluemix API Gateway](https://console.ng.bluemix.net/docs/openwhisk/openwhisk_apigateway.html#openwhisk_apigateway). 
+
+*The interface for managing routes through the library does not change between providers.* 
 
 ### list routes
 

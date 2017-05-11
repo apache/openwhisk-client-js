@@ -4,26 +4,20 @@ const test = require('ava')
 const Triggers = require('../../lib/triggers.js')
 const Client = require('../../lib/client.js')
 
-const API_KEY = process.env.OW_API_KEY
-const API_URL = process.env.OW_API_URL
-const NAMESPACE = process.env['__OW_NAMESPACE']
+const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
-if (!API_KEY) {
-  throw new Error('Missing OW_API_KEY environment parameter')
-}
+// check that mandatory configuration properties are available
+envParams.forEach(key => {
+  const param = `__OW_${key}` 
+  if (!process.env.hasOwnProperty(param)) {
+    throw new Error(`Missing ${param} environment parameter`)
+  }
+})
 
-if (!API_URL) {
-  throw new Error('Missing OW_API_URL environment parameter')
-}
-
-if (!NAMESPACE) {
-  throw new Error('Missing OW_NAMESPACE environment parameter')
-}
+const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('list all triggers using default namespace', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
-  const triggers = new Triggers(new Client(params))
+  const triggers = new Triggers(new Client())
   return triggers.list().then(result => {
     t.true(Array.isArray(result))
     result.forEach(trigger => {
@@ -37,9 +31,7 @@ test('list all triggers using default namespace', t => {
 })
 
 test('list all triggers using options namespace', t => {
-  const params = {api: API_URL, api_key: API_KEY}
-
-  const triggers = new Triggers(new Client(params))
+  const triggers = new Triggers(new Client())
   return triggers.list({namespace: NAMESPACE}).then(result => {
     t.true(Array.isArray(result))
     result.forEach(trigger => {
@@ -53,14 +45,12 @@ test('list all triggers using options namespace', t => {
 })
 
 test('create, get and delete an trigger', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
   const errors = err => {
     console.log(err)
     t.fail()
   }
 
-  const triggers = new Triggers(new Client(params))
+  const triggers = new Triggers(new Client())
   return triggers.create({triggerName: 'random_trigger_test'}).then(result => {
     t.is(result.name, 'random_trigger_test')
     t.is(result.namespace, NAMESPACE)
@@ -78,14 +68,12 @@ test('create, get and delete an trigger', t => {
 })
 
 test('create and update an trigger', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
   const errors = err => {
     console.log(err)
     t.fail()
   }
 
-  const triggers = new Triggers(new Client(params))
+  const triggers = new Triggers(new Client())
   return triggers.create({triggerName: 'random_create_update_test'}).then(result => {
     t.is(result.name, 'random_create_update_test')
     t.is(result.namespace, NAMESPACE)
@@ -101,14 +89,12 @@ test('create and update an trigger', t => {
 })
 
 test('fire a trigger', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
   const errors = err => {
     console.log(err)
     t.fail()
   }
 
-  const triggers = new Triggers(new Client(params))
+  const triggers = new Triggers(new Client())
   return triggers.create({triggerName: 'random_fire_test'}).then(result => {
     return triggers.invoke({triggerName: 'random_fire_test'}).then(update_result => {
       t.true(update_result.hasOwnProperty('activationId'))

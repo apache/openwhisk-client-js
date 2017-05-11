@@ -4,26 +4,20 @@ const test = require('ava')
 const Namespaces = require('../../lib/namespaces.js')
 const Client = require('../../lib/client.js')
 
-const API_KEY = process.env.OW_API_KEY
-const API_URL = process.env.OW_API_URL
-const NAMESPACE = process.env['__OW_NAMESPACE']
+const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
-if (!API_KEY) {
-  throw new Error('Missing OW_API_KEY environment parameter')
-}
+// check that mandatory configuration properties are available
+envParams.forEach(key => {
+  const param = `__OW_${key}` 
+  if (!process.env.hasOwnProperty(param)) {
+    throw new Error(`Missing ${param} environment parameter`)
+  }
+})
 
-if (!API_URL) {
-  throw new Error('Missing OW_API_URL environment parameter')
-}
-
-if (!NAMESPACE) {
-  throw new Error('Missing OW_NAMESPACE environment parameter')
-}
+const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('list all namespaces', t => {
-  const params = {api: API_URL, api_key: API_KEY}
-
-  const namespaces = new Namespaces(new Client(params))
+  const namespaces = new Namespaces(new Client())
   return namespaces.list().then(result => {
     t.true(Array.isArray(result))
     t.pass()
@@ -34,9 +28,7 @@ test('list all namespaces', t => {
 })
 
 test('retrieve individual namespaces', t => {
-  const params = {api: API_URL, api_key: API_KEY}
-
-  const namespaces = new Namespaces(new Client(params))
+  const namespaces = new Namespaces(new Client())
   return namespaces.list().then(result => {
     t.true(Array.isArray(result))
     return Promise.all(result.map(ns => namespaces.get({namespace: ns})))

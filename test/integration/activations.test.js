@@ -4,26 +4,20 @@ const test = require('ava')
 const Activations = require('../../lib/activations.js')
 const Client = require('../../lib/client.js')
 
-const API_KEY = process.env.OW_API_KEY
-const API_URL = process.env.OW_API_URL
-const NAMESPACE = process.env['__OW_NAMESPACE']
+const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
-if (!API_KEY) {
-  throw new Error('Missing OW_API_KEY environment parameter')
-}
+// check that mandatory configuration properties are available
+envParams.forEach(key => {
+  const param = `__OW_${key}` 
+  if (!process.env.hasOwnProperty(param)) {
+    throw new Error(`Missing ${param} environment parameter`)
+  }
+})
 
-if (!API_URL) {
-  throw new Error('Missing OW_API_URL environment parameter')
-}
-
-if (!NAMESPACE) {
-  throw new Error('Missing __OW_NAMESPACE environment parameter')
-}
+const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('list all activations', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
-  const activations = new Activations(new Client(params))
+  const activations = new Activations(new Client())
   return activations.list().then(result => {
     t.true(Array.isArray(result))
     result.forEach(r => t.is(r.namespace, NAMESPACE))
@@ -35,9 +29,7 @@ test('list all activations', t => {
 })
 
 test('retrieve individual activations', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
-  const activations = new Activations(new Client(params))
+  const activations = new Activations(new Client())
   return activations.list().then(result => {
     t.true(Array.isArray(result))
     return Promise.all(result.map(r => activations.get({activation: r.activationId})))
@@ -48,9 +40,7 @@ test('retrieve individual activations', t => {
 })
 
 test('retrieve individual activation logs', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
-  const activations = new Activations(new Client(params))
+  const activations = new Activations(new Client())
   return activations.list().then(result => {
     t.true(Array.isArray(result))
     return Promise.all(result.map(r => activations.logs({activation: r.activationId})))
@@ -61,9 +51,7 @@ test('retrieve individual activation logs', t => {
 })
 
 test('retrieve individual activation result', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
-  const activations = new Activations(new Client(params))
+  const activations = new Activations(new Client())
   return activations.list().then(result => {
     t.true(Array.isArray(result))
     return Promise.all(result.map(r => activations.result({activation: r.activationId})))
