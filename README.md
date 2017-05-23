@@ -76,8 +76,8 @@ _Client constructor supports the following mandatory parameters:_
 
 Client constructor will read values for the `apihost`, `namespace`, `api_key`, `apigw_token` and `apigw_space_guid` options from the environment if the following parameters are set. Explicit options have precedence over environment values.
 
-- *\_\_OW_API_HOST*
-- *\_\_OW_NAMESPACE*
+- *__OW_API_HOST*
+- *__OW_NAMESPACE*
 - *__OW_API_KEY*
 - *__OW_APIGW_TOKEN*
 - *__OW_APIGW_SPACE_SUID*
@@ -419,7 +419,7 @@ The following optional parameters are supported:
 
 ## api gateway
 
-OpenWhisk supports a [built-in API gateway service](https://github.com/openwhisk/openwhisk/blob/master/docs/apigateway.md) and external third-party providers. 
+OpenWhisk supports a [built-in API gateway service](https://github.com/apache/incubator-openwhisk/blob/master/docs/apigateway.md) and external third-party providers. 
 
 This client library defaults to using the platform service. If the `apigw_token` parameter is passed into the client constructor, the implementation will switch to the [IBM Bluemix API Gateway](https://console.ng.bluemix.net/docs/openwhisk/openwhisk_apigateway.html#openwhisk_apigateway). 
 
