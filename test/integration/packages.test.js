@@ -4,26 +4,20 @@ const test = require('ava')
 const Packages = require('../../lib/packages.js')
 const Client = require('../../lib/client.js')
 
-const API_KEY = process.env.OW_API_KEY
-const API_URL = process.env.OW_API_URL
-const NAMESPACE = process.env['__OW_NAMESPACE']
+const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
-if (!API_KEY) {
-  throw new Error('Missing OW_API_KEY environment parameter')
-}
+// check that mandatory configuration properties are available
+envParams.forEach(key => {
+  const param = `__OW_${key}` 
+  if (!process.env.hasOwnProperty(param)) {
+    throw new Error(`Missing ${param} environment parameter`)
+  }
+})
 
-if (!API_URL) {
-  throw new Error('Missing OW_API_URL environment parameter')
-}
-
-if (!NAMESPACE) {
-  throw new Error('Missing OW_NAMESPACE environment parameter')
-}
+const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('list all packages using default namespace', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
-  const packages = new Packages(new Client(params))
+  const packages = new Packages(new Client())
   return packages.list().then(result => {
     t.true(Array.isArray(result))
     result.forEach(packageName => {
@@ -37,9 +31,7 @@ test('list all packages using default namespace', t => {
 })
 
 test('list all packages using options namespace', t => {
-  const params = {api: API_URL, api_key: API_KEY}
-
-  const packages = new Packages(new Client(params))
+  const packages = new Packages(new Client())
   return packages.list({namespace: NAMESPACE}).then(result => {
     t.true(Array.isArray(result))
     result.forEach(packageName => {
@@ -53,14 +45,12 @@ test('list all packages using options namespace', t => {
 })
 
 test('create, get and delete an package', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
   const errors = err => {
     console.log(err)
     t.fail()
   }
 
-  const packages = new Packages(new Client(params))
+  const packages = new Packages(new Client())
   return packages.create({packageName: 'random_package_test'}).then(result => {
     t.is(result.name, 'random_package_test')
     t.is(result.namespace, NAMESPACE)
@@ -76,14 +66,12 @@ test('create, get and delete an package', t => {
 })
 
 test('create and update an package', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
   const errors = err => {
     console.log(err)
     t.fail()
   }
 
-  const packages = new Packages(new Client(params))
+  const packages = new Packages(new Client())
   return packages.create({packageName: 'random_package_update_test'}).then(result => {
     t.is(result.name, 'random_package_update_test')
     t.is(result.namespace, NAMESPACE)

@@ -5,26 +5,20 @@ const Actions = require('../../lib/actions.js')
 const Client = require('../../lib/client.js')
 const JSZip = require('jszip')
 
-const API_KEY = process.env.OW_API_KEY
-const API_URL = process.env.OW_API_URL
-const NAMESPACE = process.env['__OW_NAMESPACE']
+const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
-if (!API_KEY) {
-  throw new Error('Missing OW_API_KEY environment parameter')
-}
+// check that mandatory configuration properties are available
+envParams.forEach(key => {
+  const param = `__OW_${key}` 
+  if (!process.env.hasOwnProperty(param)) {
+    throw new Error(`Missing ${param} environment parameter`)
+  }
+})
 
-if (!API_URL) {
-  throw new Error('Missing OW_API_URL environment parameter')
-}
-
-if (!NAMESPACE) {
-  throw new Error('Missing __OW_NAMESPACE environment parameter')
-}
+const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('list all actions using default namespace', t => {
-  const params = {api: API_URL, api_key: API_KEY}
-
-  const actions = new Actions(new Client(params))
+  const actions = new Actions(new Client())
   return actions.list().then(result => {
     t.true(Array.isArray(result))
     result.forEach(action => {
@@ -38,9 +32,7 @@ test('list all actions using default namespace', t => {
 })
 
 test('list all actions using options namespace', t => {
-  const params = {api: API_URL, api_key: API_KEY}
-
-  const actions = new Actions(new Client(params))
+  const actions = new Actions(new Client())
   return actions.list({namespace: NAMESPACE}).then(result => {
     t.true(Array.isArray(result))
     result.forEach(action => {
@@ -54,14 +46,12 @@ test('list all actions using options namespace', t => {
 })
 
 test('create, get and delete an action', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
   const errors = err => {
     console.log(err)
     t.fail()
   }
 
-  const actions = new Actions(new Client(params))
+  const actions = new Actions(new Client())
   return actions.create({actionName: 'random_action_test', action: 'function main() {return {payload:"testing"}}'}).then(result => {
     t.is(result.name, 'random_action_test')
     t.is(result.namespace, NAMESPACE)
@@ -77,14 +67,12 @@ test('create, get and delete an action', t => {
 })
 
 test('create and update an action', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
   const errors = err => {
     console.log(err)
     t.fail()
   }
 
-  const actions = new Actions(new Client(params))
+  const actions = new Actions(new Client())
   return actions.create({actionName: 'random_update_tested', action: 'function main() {return {payload:"testing"}}'}).then(result => {
     t.is(result.name, 'random_update_tested')
     t.is(result.namespace, NAMESPACE)
@@ -99,14 +87,12 @@ test('create and update an action', t => {
 })
 
 test('create, get and delete with parameters an action', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
   const errors = err => {
     console.log(err)
     t.fail()
   }
 
-  const actions = new Actions(new Client(params))
+  const actions = new Actions(new Client())
   return actions.create({name: 'random_action_params_test', params: { hello: 'world' }, action: 'function main() {return {payload:"testing"}}'}).then(result => {
     t.is(result.name, 'random_action_params_test')
     t.is(result.namespace, NAMESPACE)
@@ -124,15 +110,13 @@ test('create, get and delete with parameters an action', t => {
 })
 
 test('invoke action with fully-qualified name', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
   const errors = err => {
     console.log(err)
     console.dir(err)
     t.fail()
   }
 
-  const actions = new Actions(new Client(params))
+  const actions = new Actions(new Client())
   return actions.invoke({actionName: '/whisk.system/utils/sort', blocking: true}).then(invoke_result => {
     t.true(invoke_result.response.success)
     t.pass()
@@ -140,8 +124,6 @@ test('invoke action with fully-qualified name', t => {
 })
 
 test('create, invoke and remove package action', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
   const errors = err => {
     console.log(err)
     console.dir(err)
@@ -153,7 +135,7 @@ test('create, invoke and remove package action', t => {
   zip.file('index.js', 'function main(params) {return params};\nexports.main = main;')
 
   return zip.generateAsync({type: 'nodebuffer'}).then(content => {
-    const actions = new Actions(new Client(params))
+    const actions = new Actions(new Client())
     return actions.create({actionName: 'random_package_action_test', action: content}).then(result => {
       return actions.invoke({actionName: 'random_package_action_test', params: {hello: 'world'}, blocking: true}).then(invoke_result => {
         t.deepEqual(invoke_result.response.result, {hello: 'world'})

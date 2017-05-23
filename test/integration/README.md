@@ -3,13 +3,12 @@ Integrations Test
 
 Running the integration tests requires the following environment variables to be defined.
 
-    export OW_API_KEY=<your api key>
-    export OW_API_URL=<openwhisk API url>
-    export __OW_NAMESPACE=<namespace to test against>
+    export __OW_API_KEY=<your api key>
+    export __OW_API_HOST=<openwhisk API hostname>
+    export __OW_NAMESPACE=<openwhisk namespace>
+    export __OW_APIGW_TOKEN=<api gateway token>
 
-You can retrieve these settings using the `wsk` CLI:
-
-    wsk property get --all
+You can retrieve these settings from the `.wskprops` file.
 
 Further, you need to create the following seed artifacts.
 

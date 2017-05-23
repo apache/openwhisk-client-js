@@ -5,32 +5,26 @@ const Feeds = require('../../lib/feeds.js')
 const Triggers = require('../../lib/triggers.js')
 const Client = require('../../lib/client.js')
 
-const API_KEY = process.env.OW_API_KEY
-const API_URL = process.env.OW_API_URL
-const NAMESPACE = process.env['__OW_NAMESPACE']
+const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
-if (!API_KEY) {
-  throw new Error('Missing OW_API_KEY environment parameter')
-}
+// check that mandatory configuration properties are available
+envParams.forEach(key => {
+  const param = `__OW_${key}` 
+  if (!process.env.hasOwnProperty(param)) {
+    throw new Error(`Missing ${param} environment parameter`)
+  }
+})
 
-if (!API_URL) {
-  throw new Error('Missing OW_API_URL environment parameter')
-}
-
-if (!NAMESPACE) {
-  throw new Error('Missing OW_NAMESPACE environment parameter')
-}
+const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('create and delete a feed', t => {
-  const params = {api: API_URL, api_key: API_KEY, namespace: NAMESPACE}
-
   const errors = err => {
     console.log(err)
     t.fail()
   }
 
-  const feeds = new Feeds(new Client(params))
-  const triggers = new Triggers(new Client(params))
+  const feeds = new Feeds(new Client())
+  const triggers = new Triggers(new Client())
   const feed_params = {
     feedName: '/whisk.system/alarms/alarm',
     trigger: `/${NAMESPACE}/sample_feed_trigger`,
