@@ -1,3 +1,6 @@
+// Licensed to the Apache Software Foundation (ASF) under one or more contributor
+// license agreements; and to You under the Apache License, Version 2.0.
+
 'use strict'
 
 const test = require('ava')
@@ -9,7 +12,7 @@ const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
 // check that mandatory configuration properties are available
 envParams.forEach(key => {
-  const param = `__OW_${key}` 
+  const param = `__OW_${key}`
   if (!process.env.hasOwnProperty(param)) {
     throw new Error(`Missing ${param} environment parameter`)
   }

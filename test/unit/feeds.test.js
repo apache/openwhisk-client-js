@@ -1,3 +1,6 @@
+// Licensed to the Apache Software Foundation (ASF) under one or more contributor
+// license agreements; and to You under the Apache License, Version 2.0.
+
 'use strict'
 
 const test = require('ava')
@@ -8,7 +11,7 @@ test('should be able to delete feed', t => {
   const api_key = 'username:password'
   const trigger_name = '/trigger_ns/trigger_name'
   const client = {}
-  client.options = { api_key } 
+  client.options = { api_key }
 
   const ns = '_'
   const feeds = new Feeds(client)
@@ -30,7 +33,7 @@ test('should be able to delete feed using feedName with params', t => {
   const api_key = 'username:password'
   const trigger_name = 'trigger_name'
   const client = {}
-  client.options = { api_key } 
+  client.options = { api_key }
 
   const ns = '_'
   const feeds = new Feeds(client)
@@ -53,7 +56,7 @@ test('should be able to create feed', t => {
   const api_key = 'username:password'
   const trigger_name = '/trigger_ns/trigger_name'
   const client = {}
-  client.options = { api_key } 
+  client.options = { api_key }
 
   const ns = '_'
   const feeds = new Feeds(client)
@@ -75,7 +78,7 @@ test('should be able to create trigger ignoring global namespace', t => {
   const api_key = 'username:password'
   const trigger_name = '/a/trigger_name'
   const client = {}
-  client.options = { api_key, namespace: 'global_ns' } 
+  client.options = { api_key, namespace: 'global_ns' }
 
   const ns = 'global_ns'
   const feeds = new Feeds(client)
@@ -97,7 +100,7 @@ test('should be able to create trigger using global namespace', t => {
   const api_key = 'username:password'
   const trigger_name = 'trigger_name'
   const client = {}
-  client.options = { api_key, namespace: 'global_ns' } 
+  client.options = { api_key, namespace: 'global_ns' }
 
   const ns = 'global_ns'
   const feeds = new Feeds(client)
@@ -119,7 +122,7 @@ test('should be able to create trigger using options namespace', t => {
   const api_key = 'username:password'
   const trigger_name = 'trigger_name'
   const client = {}
-  client.options = { api_key } 
+  client.options = { api_key }
 
   const ns = 'custom'
   const feeds = new Feeds(client)
@@ -141,7 +144,7 @@ test('should be able to create trigger ignoring options namespace', t => {
   const api_key = 'username:password'
   const trigger_name = '/a/trigger_name'
   const client = {}
-  client.options = { api_key } 
+  client.options = { api_key }
 
   const ns = '_'
   const feeds = new Feeds(client)
@@ -163,7 +166,7 @@ test('should be able to create trigger from full qualified feed', t => {
   const api_key = 'username:password'
   const trigger_name = '/a/trigger_name'
   const client = {}
-  client.options = { api_key, namespace: 'global' } 
+  client.options = { api_key, namespace: 'global' }
 
   const ns = '_'
   const feeds = new Feeds(client)
@@ -185,7 +188,7 @@ test('should be able to create feed using feedName with params', t => {
   const api_key = 'username:password'
   const trigger_name = 'trigger_name'
   const client = {}
-  client.options = { api_key } 
+  client.options = { api_key }
 
   const ns = '_'
   const feeds = new Feeds(client)
