@@ -4,7 +4,7 @@ node_js:
   - "4"
 
 before_install:
-  - pip install --upgrade pip setuptools
+  - pip install --upgrade pip
 
 install:
   - ./tools/travis/setupscan.sh
