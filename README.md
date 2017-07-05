@@ -1,7 +1,10 @@
-# openwhisk-client-js
+# OpenWhisk Client for JavaScript
 
-JavaScript client library for the [OpenWhisk](https://github.com/openwhisk/openwhisk) platform.
-Provides a wrapper around the [OpenWhisk APIs](https://new-console.ng.bluemix.net/apidocs/98#introduction).
+[![Build Status](https://travis-ci.org/apache/incubator-openwhisk-client-js.svg?branch=master)](https://travis-ci.org/apache/incubator-openwhisk-client-js)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+
+JavaScript client library for the [Apache OpenWhisk](https://github.com/apache/incubator-openwhisk) platform.
+Provides a wrapper around the [OpenWhisk APIs](https://github.com/apache/incubator-openwhisk/blob/fb001afa237476eda0c0f6494ee92702e5986538/core/controller/src/main/resources/apiv1swagger.json) (Swagger JSON).
 
 ## installation
 
@@ -19,7 +22,7 @@ This client library can use environment parameters to automatically configure th
 var openwhisk = require('openwhisk');
 
 function action() {
-  var ow = openwhisk();  
+  var ow = openwhisk();
   return ow.actions.invoke('sample')
 }
 
@@ -39,9 +42,9 @@ _**Please note**: Due to [an issue](https://github.com/openwhisk/openwhisk/issue
 ```
 var openwhisk = require('openwhisk');
 // DOES NOT WORK! Environment parameters not set.
-var ow = openwhisk();  
+var ow = openwhisk();
 
-function action() {  
+function action() {
   return ow.actions.invoke('sample')
 }
 
@@ -146,7 +149,7 @@ ow.actions.retrieve({name}).then(action => {
 })
 ```
 
-### chaining calls 
+### chaining calls
 
 ```
 ow.actions.list()
@@ -198,13 +201,13 @@ ow.feeds.create({name, trigger, params}).then(package => {
 
 
 
-## API Details 
+## API Details
 
 ### resource identifiers + namespaces
 
-When passing resource identifiers as parameters you can either use a short name, without an explicit namespace, or a fully-qualified identifier, including namespace and package details. 
+When passing resource identifiers as parameters you can either use a short name, without an explicit namespace, or a fully-qualified identifier, including namespace and package details.
 
-If the namespace is missing from the resource identifier, the client will use the namespace from configuration options following this ordering. 
+If the namespace is missing from the resource identifier, the client will use the namespace from configuration options following this ordering.
 
 - `namespace` from method parameter options OR
 - `namespace` from options passed into client constructor OR
@@ -231,7 +234,7 @@ ow.actions.list({skip: 100, limit: 50})
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 
-### retrieve resource 
+### retrieve resource
 
 ```
 ow.actions.get({name: '...'})
@@ -258,7 +261,7 @@ If you pass in an array for the first parameter, the `get` call will be executed
 ow.actions.get(["a", {name: "b"}])
 ```
 
-### delete resource 
+### delete resource
 
 ```
 ow.actions.delete({name: '...'})
@@ -321,7 +324,7 @@ ow.actions.update({name: '...', action: 'function main() {};'})
 
 The following mandatory parameters are supported:
 - `name` - action identifier
-- `action` - String containing JS function source code, Buffer [containing package action zip file](https://github.com/openwhisk/openwhisk/blob/master/docs/actions.md#packaging-an-action-as-a-nodejs-module) or JSON object containing full parameters for the action body 
+- `action` - String containing JS function source code, Buffer [containing package action zip file](https://github.com/openwhisk/openwhisk/blob/master/docs/actions.md#packaging-an-action-as-a-nodejs-module) or JSON object containing full parameters for the action body
 
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
@@ -391,7 +394,7 @@ appended in the request, unless a fully qualified name is passed in
 (`/custom_ns/action_or_trigger_name`).
 
 The following optional parameters are supported:
-- `namespace` - set namespace for rule 
+- `namespace` - set namespace for rule
 
 ### enable & disable rule
 
@@ -427,7 +430,7 @@ ow.routes.list()
 The following optional parameters are supported to filter the result set:
 - `relpath` - relative URI path for endpoints
 - `basepath` - base URI path for endpoints
-- `operation` - HTTP methods 
+- `operation` - HTTP methods
 - `limit` - limit result set size
 - `skip` - skip results from index
 
@@ -441,7 +444,7 @@ ow.routes.delete({basepath: '...'})
 
 The following optional parameters are supported to filter the result set:
 - `relpath` - relative URI path for endpoints
-- `operation` - HTTP methods 
+- `operation` - HTTP methods
 
 ### add route
 ```
@@ -458,7 +461,7 @@ The following optional parameters are supported to filter the result set:
 Setting an environment parameter (`NODE_DEBUG=request`) will dump the HTTP requests from the client library and responses received to `stderr`.
 
 ```
-NODE_DEBUG=request node script.js 
+NODE_DEBUG=request node script.js
 ```
 
 This parameter can also be set dynamically at runtime, provided this happens before the `openwhisk` module is required.
