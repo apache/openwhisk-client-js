@@ -9,7 +9,7 @@ const Routes = require('../../lib/routes')
 test('should return experimental api path without api token', t => {
   const client = { options: {} }
   const routes = new Routes(client)
-  t.is(routes.routeMgmtApiPath('a'), 'experimental/web/whisk.system/routemgmt/a.json')
+  t.is(routes.routeMgmtApiPath('a'), 'web/whisk.system/routemgmt/a.json')
 })
 
 test('should return experimental api path with api token', t => {
