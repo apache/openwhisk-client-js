@@ -6,6 +6,8 @@
 const test = require('ava')
 const Namespaces = require('../../lib/namespaces.js')
 const Client = require('../../lib/client.js')
+const Utils = require('./utils.js')
+const options = Utils.autoOptions();
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
@@ -20,7 +22,7 @@ envParams.forEach(key => {
 const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('list all namespaces', t => {
-  const namespaces = new Namespaces(new Client())
+  const namespaces = new Namespaces(new Client(options))
   return namespaces.list().then(result => {
     t.true(Array.isArray(result))
     t.pass()
@@ -31,7 +33,7 @@ test('list all namespaces', t => {
 })
 
 test('retrieve individual namespaces', t => {
-  const namespaces = new Namespaces(new Client())
+  const namespaces = new Namespaces(new Client(options))
   return namespaces.list().then(result => {
     t.true(Array.isArray(result))
     return Promise.all(result.map(ns => namespaces.get({namespace: ns})))

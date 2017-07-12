@@ -6,8 +6,10 @@
 const test = require('ava')
 const Triggers = require('../../lib/triggers.js')
 const Client = require('../../lib/client.js')
+const Utils = require('./utils.js')
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
+const options = Utils.autoOptions();
 
 // check that mandatory configuration properties are available
 envParams.forEach(key => {
@@ -20,7 +22,7 @@ envParams.forEach(key => {
 const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('list all triggers using default namespace', t => {
-  const triggers = new Triggers(new Client())
+  const triggers = new Triggers(new Client(options))
   return triggers.list().then(result => {
     t.true(Array.isArray(result))
     result.forEach(trigger => {
@@ -34,7 +36,7 @@ test('list all triggers using default namespace', t => {
 })
 
 test('list all triggers using options namespace', t => {
-  const triggers = new Triggers(new Client())
+  const triggers = new Triggers(new Client(options))
   return triggers.list({namespace: NAMESPACE}).then(result => {
     t.true(Array.isArray(result))
     result.forEach(trigger => {
@@ -53,7 +55,7 @@ test('create, get and delete an trigger', t => {
     t.fail()
   }
 
-  const triggers = new Triggers(new Client())
+  const triggers = new Triggers(new Client(options))
   return triggers.create({triggerName: 'random_trigger_test'}).then(result => {
     t.is(result.name, 'random_trigger_test')
     t.is(result.namespace, NAMESPACE)
@@ -76,7 +78,7 @@ test('create and update an trigger', t => {
     t.fail()
   }
 
-  const triggers = new Triggers(new Client())
+  const triggers = new Triggers(new Client(options))
   return triggers.create({triggerName: 'random_create_update_test'}).then(result => {
     t.is(result.name, 'random_create_update_test')
     t.is(result.namespace, NAMESPACE)
@@ -97,7 +99,7 @@ test('fire a trigger', t => {
     t.fail()
   }
 
-  const triggers = new Triggers(new Client())
+  const triggers = new Triggers(new Client(options))
   return triggers.create({triggerName: 'random_fire_test'}).then(result => {
     return triggers.invoke({triggerName: 'random_fire_test'}).then(update_result => {
       t.true(update_result.hasOwnProperty('activationId'))

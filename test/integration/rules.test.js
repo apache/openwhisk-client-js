@@ -7,6 +7,8 @@ const test = require('ava')
 const Rules = require('../../lib/rules.js')
 const Triggers = require('../../lib/triggers.js')
 const Client = require('../../lib/client.js')
+const Utils = require('./utils.js')
+const options = Utils.autoOptions();
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
@@ -21,7 +23,7 @@ envParams.forEach(key => {
 const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('list all rules using default namespace', t => {
-  const rules = new Rules(new Client())
+  const rules = new Rules(new Client(options))
   return rules.list().then(result => {
     t.true(Array.isArray(result))
     result.forEach(rule => {
@@ -35,7 +37,7 @@ test('list all rules using default namespace', t => {
 })
 
 test('list all rules using options namespace', t => {
-  const rules = new Rules(new Client())
+  const rules = new Rules(new Client(options))
   return rules.list({namespace: NAMESPACE}).then(result => {
     t.true(Array.isArray(result))
     result.forEach(rule => {
@@ -55,8 +57,8 @@ test.serial('create, get and delete a rule', t => {
     t.fail()
   }
 
-  const rules = new Rules(new Client())
-  const triggers = new Triggers(new Client())
+  const rules = new Rules(new Client(options))
+  const triggers = new Triggers(new Client(options))
   return triggers.create({triggerName: 'sample_rule_trigger'}).then(() => {
     return rules.create({ruleName: 'random_rule_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample_rule_trigger`}).then(result => {
       t.is(result.name, 'random_rule_test')
@@ -81,8 +83,8 @@ test.serial('create and update a rule', t => {
     t.fail()
   }
 
-  const rules = new Rules(new Client())
-  const triggers = new Triggers(new Client())
+  const rules = new Rules(new Client(options))
+  const triggers = new Triggers(new Client(options))
   return triggers.create({triggerName: 'sample_rule_trigger'}).then(() => {
     return rules.create({ruleName: 'random_update_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample_rule_trigger`}).then(result => {
       t.is(result.name, 'random_update_test')

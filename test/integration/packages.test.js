@@ -6,6 +6,8 @@
 const test = require('ava')
 const Packages = require('../../lib/packages.js')
 const Client = require('../../lib/client.js')
+const Utils = require('./utils.js')
+const options = Utils.autoOptions();
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
@@ -20,7 +22,7 @@ envParams.forEach(key => {
 const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('list all packages using default namespace', t => {
-  const packages = new Packages(new Client())
+  const packages = new Packages(new Client(options))
   return packages.list().then(result => {
     t.true(Array.isArray(result))
     result.forEach(packageName => {
@@ -34,7 +36,7 @@ test('list all packages using default namespace', t => {
 })
 
 test('list all packages using options namespace', t => {
-  const packages = new Packages(new Client())
+  const packages = new Packages(new Client(options))
   return packages.list({namespace: NAMESPACE}).then(result => {
     t.true(Array.isArray(result))
     result.forEach(packageName => {
@@ -53,7 +55,7 @@ test('create, get and delete an package', t => {
     t.fail()
   }
 
-  const packages = new Packages(new Client())
+  const packages = new Packages(new Client(options))
   return packages.create({packageName: 'random_package_test'}).then(result => {
     t.is(result.name, 'random_package_test')
     t.is(result.namespace, NAMESPACE)
@@ -74,7 +76,7 @@ test('create and update an package', t => {
     t.fail()
   }
 
-  const packages = new Packages(new Client())
+  const packages = new Packages(new Client(options))
   return packages.create({packageName: 'random_package_update_test'}).then(result => {
     t.is(result.name, 'random_package_update_test')
     t.is(result.namespace, NAMESPACE)

@@ -11,7 +11,7 @@
   },
   "scripts": {
     "test": "ava test/unit",
-    "test-integration": "ava test/integration"
+    "test-integration": "ava test/integration/*.test.js"
   },
   "repository": {
     "type": "git",

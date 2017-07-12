@@ -7,6 +7,8 @@ const test = require('ava')
 const Feeds = require('../../lib/feeds.js')
 const Triggers = require('../../lib/triggers.js')
 const Client = require('../../lib/client.js')
+const Utils = require('./utils.js')
+const options = Utils.autoOptions();
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
@@ -26,8 +28,8 @@ test('create and delete a feed', t => {
     t.fail()
   }
 
-  const feeds = new Feeds(new Client())
-  const triggers = new Triggers(new Client())
+  const feeds = new Feeds(new Client(options))
+  const triggers = new Triggers(new Client(options))
   const feed_params = {
     feedName: '/whisk.system/alarms/alarm',
     trigger: `/${NAMESPACE}/sample_feed_trigger`,
