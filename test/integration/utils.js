@@ -10,6 +10,7 @@ function autoOptions(){
   var options = {};
   if(getInsecureFlag()){
     options.ignore_certs = true;
+    options.apigw_token = true;
   }
   return options;
 }

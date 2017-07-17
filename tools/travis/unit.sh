@@ -5,3 +5,4 @@ ROOTDIR="$SCRIPTDIR/../.."
 cd $ROOTDIR
 npm install
 npm run test
+exit $PIPESTATUS

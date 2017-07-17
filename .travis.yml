@@ -4,16 +4,21 @@ node_js:
 
 sudo: required
 
+services:
+ - docker
+
 before_install:
   - cd $TRAVIS_BUILD_DIR
 
 install:
   - ./tools/travis/setupscan.sh
   - cd $TRAVIS_BUILD_DIR
-  - ./tools/travis/unitsetup.sh
+  - ./tools/travis/setup.sh
   - cd $TRAVIS_BUILD_DIR
 
 script:
   - ./tools/travis/scancode.sh
   - cd $TRAVIS_BUILD_DIR
   - ./tools/travis/unit.sh
+  - cd $TRAVIS_BUILD_DIR
+  - ./tools/travis/integration.sh

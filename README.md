@@ -422,11 +422,11 @@ The following optional parameters are supported:
 
 ## api gateway
 
-OpenWhisk supports a [built-in API gateway service](https://github.com/apache/incubator-openwhisk/blob/master/docs/apigateway.md) and external third-party providers. 
+OpenWhisk supports a [built-in API gateway service](https://github.com/apache/incubator-openwhisk/blob/master/docs/apigateway.md) and external third-party providers.
 
-This client library defaults to using the platform service. If the `apigw_token` parameter is passed into the client constructor, the implementation will switch to the [IBM Bluemix API Gateway](https://console.ng.bluemix.net/docs/openwhisk/openwhisk_apigateway.html#openwhisk_apigateway). 
+This client library defaults to using the platform service. If the `apigw_token` parameter is passed into the client constructor, the implementation will switch to the [IBM Bluemix API Gateway](https://console.ng.bluemix.net/docs/openwhisk/openwhisk_apigateway.html#openwhisk_apigateway).
 
-*The interface for managing routes through the library does not change between providers.* 
+*The interface for managing routes through the library does not change between providers.*
 
 ### list routes
 
@@ -493,3 +493,21 @@ npm test
 ```
 npm run-script test-integration
 ```
+
+**Note:** The test integration runs in secure mode by default, which means that all trusted signers must be present and available to the client process.
+If your local environment is using self-signed certificates, you can use the following command to start the script in insecure mode:
+
+`npm run test-integration -i`
+
+This will disable SSL/TLS verification for all SSL communication.
+
+Alternatively, you can run the `prepIntegrationTests.sh` script using guest credentials or by specifying specific credentials.  
+Run the script with guest credentials:  
+```
+./test/integration/prepIntegrationTests.sh guest
+```  
+Run the script with specific credentials:  
+```
+./test/integration/prepIntegrationTests.sh <your key in the form of ABCD:EFGH> <openwhisk instance hostname> <openwhisk namespace> <api gatewaytoken>
+```  
+The `prepIntegrationTests.sh` script is designed to give you feedback if it detects a setting that is not correct on your machine. ex: `node 6 is not detected`
