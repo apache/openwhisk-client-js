@@ -7,6 +7,8 @@ const test = require('ava')
 const Actions = require('../../lib/actions.js')
 const Client = require('../../lib/client.js')
 const JSZip = require('jszip')
+const Utils = require('./utils.js')
+const options = Utils.autoOptions();
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
@@ -21,7 +23,7 @@ envParams.forEach(key => {
 const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('list all actions using default namespace', t => {
-  const actions = new Actions(new Client())
+  const actions = new Actions(new Client(options))
   return actions.list().then(result => {
     t.true(Array.isArray(result))
     result.forEach(action => {
@@ -35,7 +37,7 @@ test('list all actions using default namespace', t => {
 })
 
 test('list all actions using options namespace', t => {
-  const actions = new Actions(new Client())
+  const actions = new Actions(new Client(options))
   return actions.list({namespace: NAMESPACE}).then(result => {
     t.true(Array.isArray(result))
     result.forEach(action => {
@@ -54,7 +56,7 @@ test('create, get and delete an action', t => {
     t.fail()
   }
 
-  const actions = new Actions(new Client())
+  const actions = new Actions(new Client(options))
   return actions.create({actionName: 'random_action_test', action: 'function main() {return {payload:"testing"}}'}).then(result => {
     t.is(result.name, 'random_action_test')
     t.is(result.namespace, NAMESPACE)
@@ -75,7 +77,7 @@ test('create and update an action', t => {
     t.fail()
   }
 
-  const actions = new Actions(new Client())
+  const actions = new Actions(new Client(options))
   return actions.create({actionName: 'random_update_tested', action: 'function main() {return {payload:"testing"}}'}).then(result => {
     t.is(result.name, 'random_update_tested')
     t.is(result.namespace, NAMESPACE)
@@ -95,7 +97,7 @@ test('create, get and delete with parameters an action', t => {
     t.fail()
   }
 
-  const actions = new Actions(new Client())
+  const actions = new Actions(new Client(options))
   return actions.create({name: 'random_action_params_test', params: { hello: 'world' }, action: 'function main() {return {payload:"testing"}}'}).then(result => {
     t.is(result.name, 'random_action_params_test')
     t.is(result.namespace, NAMESPACE)
@@ -119,7 +121,7 @@ test('invoke action with fully-qualified name', t => {
     t.fail()
   }
 
-  const actions = new Actions(new Client())
+  const actions = new Actions(new Client(options))
   return actions.invoke({actionName: '/whisk.system/utils/sort', blocking: true}).then(invoke_result => {
     t.true(invoke_result.response.success)
     t.pass()
@@ -138,7 +140,7 @@ test('create, invoke and remove package action', t => {
   zip.file('index.js', 'function main(params) {return params};\nexports.main = main;')
 
   return zip.generateAsync({type: 'nodebuffer'}).then(content => {
-    const actions = new Actions(new Client())
+    const actions = new Actions(new Client(options))
     return actions.create({actionName: 'random_package_action_test', action: content}).then(result => {
       return actions.invoke({actionName: 'random_package_action_test', params: {hello: 'world'}, blocking: true}).then(invoke_result => {
         t.deepEqual(invoke_result.response.result, {hello: 'world'})

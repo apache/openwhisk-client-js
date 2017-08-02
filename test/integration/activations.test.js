@@ -6,6 +6,8 @@
 const test = require('ava')
 const Activations = require('../../lib/activations.js')
 const Client = require('../../lib/client.js')
+const Utils = require('./utils.js')
+const options = Utils.autoOptions();
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
@@ -20,7 +22,7 @@ envParams.forEach(key => {
 const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('list all activations', t => {
-  const activations = new Activations(new Client())
+  const activations = new Activations(new Client(options))
   return activations.list().then(result => {
     t.true(Array.isArray(result))
     result.forEach(r => t.is(r.namespace, NAMESPACE))
@@ -32,7 +34,7 @@ test('list all activations', t => {
 })
 
 test('retrieve individual activations', t => {
-  const activations = new Activations(new Client())
+  const activations = new Activations(new Client(options))
   return activations.list().then(result => {
     t.true(Array.isArray(result))
     return Promise.all(result.map(r => activations.get({activation: r.activationId})))
@@ -43,7 +45,7 @@ test('retrieve individual activations', t => {
 })
 
 test('retrieve individual activation logs', t => {
-  const activations = new Activations(new Client())
+  const activations = new Activations(new Client(options))
   return activations.list().then(result => {
     t.true(Array.isArray(result))
     return Promise.all(result.map(r => activations.logs({activation: r.activationId})))
@@ -54,7 +56,7 @@ test('retrieve individual activation logs', t => {
 })
 
 test('retrieve individual activation result', t => {
-  const activations = new Activations(new Client())
+  const activations = new Activations(new Client(options))
   return activations.list().then(result => {
     t.true(Array.isArray(result))
     return Promise.all(result.map(r => activations.result({activation: r.activationId})))
