@@ -510,4 +510,19 @@ Run the script with specific credentials:
 ```
 ./test/integration/prepIntegrationTests.sh <your key in the form of ABCD:EFGH> <openwhisk instance hostname> <openwhisk namespace> <api gatewaytoken>
 ```  
-The `prepIntegrationTests.sh` script is designed to give you feedback if it detects a setting that is not correct on your machine. ex: `node 6 is not detected`
+The `prepIntegrationTests.sh` script is designed to give you feedback if it detects a setting that is not correct on your machine. ex: `node 6 or above is not detected`
+
+## Code-Coverage:
+
+You can customize how comprehensive the tests are over the code, and generate reports to view the results by using
+the provided `code-coverage` commands below.  
+
+**Note:** Ensure that you use guest credentials with the wsk CLI.  
+
+To compile down to ECMA5 run the following command:  
+1 `npm run code-coverage-build`  
+
+To generate combined reports of both the unit and integration tests, run the following command:  
+2 `npm run code-coverage-run`  
+
+The report is viewable under `/coverage`. Click **`/coverage/index.html`** to view the full report.  
