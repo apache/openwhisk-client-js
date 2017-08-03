@@ -42,5 +42,6 @@ wsk property set --auth "$(cat $WHISKDIR/ansible/files/auth.guest)"
 
 # Test
 cd $ROOTDIR
-npm install
-./test/integration/prepIntegrationTests.sh guest
+npm install --dev
+npm run code-coverage-build
+npm run code-coverage-run travis

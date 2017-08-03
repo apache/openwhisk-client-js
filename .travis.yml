@@ -19,6 +19,4 @@ install:
 script:
   - ./tools/travis/scancode.sh
   - cd $TRAVIS_BUILD_DIR
-  - ./tools/travis/unit.sh
-  - cd $TRAVIS_BUILD_DIR
-  - ./tools/travis/integration.sh
+  - ./tools/travis/build.sh
