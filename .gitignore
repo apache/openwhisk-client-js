@@ -6,3 +6,4 @@ coverage
 ecma5
 .DS_STORE
 package-lock.json
+coverage.lcov
