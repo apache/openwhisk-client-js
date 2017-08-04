@@ -9,7 +9,7 @@ const Triggers = require('../../lib/triggers.js')
 const Actions = require('../../lib/actions.js')
 const Client = require('../../lib/client.js')
 const Utils = require('./utils.js')
-const options = Utils.autoOptions();
+const options = Utils.autoOptions()
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 

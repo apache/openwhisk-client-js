@@ -34,7 +34,6 @@ test('should list all routes with apigw_token', t => {
   return routes.list()
 })
 
-
 test('should list all routes with parameters', t => {
   t.plan(3)
   const client = { options: {} }
@@ -410,7 +409,6 @@ test('should create a route using action name with ns overriding defaults', t =>
   const routes = new Routes(client)
   return routes.create({relpath: '/hello', operation: 'GET', action: '/test/helloAction'})
 })
-
 
 test('create routes missing mandatory parameters', t => {
   const routes = new Routes()

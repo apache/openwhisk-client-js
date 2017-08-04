@@ -8,7 +8,7 @@ const Feeds = require('../../lib/feeds.js')
 const Triggers = require('../../lib/triggers.js')
 const Client = require('../../lib/client.js')
 const Utils = require('./utils.js')
-const options = Utils.autoOptions();
+const options = Utils.autoOptions()
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
@@ -21,7 +21,7 @@ envParams.forEach(key => {
 })
 
 const NAMESPACE = process.env.__OW_NAMESPACE
-var tempTest = Utils.getInsecureFlag() ? test.skip : test;
+var tempTest = Utils.getInsecureFlag() ? test.skip : test
 
 tempTest('create and delete a feed', t => {
   const errors = err => {

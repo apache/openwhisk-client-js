@@ -7,7 +7,7 @@ const test = require('ava')
 const Namespaces = require('../../lib/namespaces.js')
 const Client = require('../../lib/client.js')
 const Utils = require('./utils.js')
-const options = Utils.autoOptions();
+const options = Utils.autoOptions()
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 

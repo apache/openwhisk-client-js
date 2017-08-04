@@ -9,7 +9,7 @@ const Client = require('../../lib/client.js')
 const Utils = require('./utils.js')
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
-const options = Utils.autoOptions();
+const options = Utils.autoOptions()
 
 // check that mandatory configuration properties are available
 envParams.forEach(key => {

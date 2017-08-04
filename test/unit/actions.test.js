@@ -321,7 +321,8 @@ test('create a new action with default parameters', t => {
     t.is(path, `namespaces/${ns}/actions/12345`)
     t.deepEqual(options.qs, {})
     t.deepEqual(options.body, {
-      exec: {kind: 'nodejs:default', code: action}, parameters: [
+      exec: {kind: 'nodejs:default', code: action},
+      parameters: [
         {key: 'foo', value: 'bar'}
       ]
     })
