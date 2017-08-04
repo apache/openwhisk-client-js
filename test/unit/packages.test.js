@@ -173,7 +173,7 @@ test('should update an existing package', t => {
   client.request = (method, path, options) => {
     t.is(method, 'PUT')
     t.is(path, `namespaces/${ns}/packages/${id}`)
-    t.deepEqual(options.qs, { overwrite: true })
+    t.deepEqual(options.qs, {overwrite: true})
     t.deepEqual(options.body, {})
   }
 

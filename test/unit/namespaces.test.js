@@ -59,5 +59,7 @@ test('should retrieve namespace using namespace', t => {
 
 test('should throw error for missing namespace id', t => {
   const namespaces = new Namespaces()
-  return t.throws(() => { namespaces.get() }, /Missing mandatory parameter/)
+  return t.throws(() => {
+    namespaces.get()
+  }, /Missing mandatory parameter/)
 })

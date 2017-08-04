@@ -186,13 +186,13 @@ test('should invoke action to retrieve result', t => {
   const ns = '_'
   const client = {}
   const actions = new Actions(client)
-  const result = { hello: 'world' }
+  const result = {hello: 'world'}
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
     t.is(path, `namespaces/${ns}/actions/12345`)
     t.deepEqual(options.qs, {blocking: true})
-    return Promise.resolve({response: { result }})
+    return Promise.resolve({response: {result}})
   }
 
   return actions.invoke({name: '12345', result: true, blocking: true}).then(_result => {
@@ -205,17 +205,17 @@ test('should invoke action to retrieve result without blocking', t => {
   const ns = '_'
   const client = {}
   const actions = new Actions(client)
-  const result = { hello: 'world' }
+  const result = {hello: 'world'}
 
   client.request = (method, path, options) => {
     t.is(method, 'POST')
     t.is(path, `namespaces/${ns}/actions/12345`)
     t.deepEqual(options.qs, {})
-    return Promise.resolve({response: { result }})
+    return Promise.resolve({response: {result}})
   }
 
   return actions.invoke({name: '12345', result: true}).then(_result => {
-    t.deepEqual(_result, {response: { result } })
+    t.deepEqual(_result, {response: {result}})
   })
 })
 
@@ -320,9 +320,11 @@ test('create a new action with default parameters', t => {
     t.is(method, 'PUT')
     t.is(path, `namespaces/${ns}/actions/12345`)
     t.deepEqual(options.qs, {})
-    t.deepEqual(options.body, {exec: {kind: 'nodejs:default', code: action}, parameters: [
-      { key: 'foo', value: 'bar' }
-    ]})
+    t.deepEqual(options.body, {
+      exec: {kind: 'nodejs:default', code: action}, parameters: [
+        {key: 'foo', value: 'bar'}
+      ]
+    })
   }
 
   return actions.create({name: '12345', action, params})

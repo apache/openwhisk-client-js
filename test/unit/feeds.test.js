@@ -11,7 +11,7 @@ test('should be able to delete feed', t => {
   const api_key = 'username:password'
   const trigger_name = '/trigger_ns/trigger_name'
   const client = {}
-  client.options = { api_key }
+  client.options = {api_key}
 
   const ns = '_'
   const feeds = new Feeds(client)
@@ -20,7 +20,11 @@ test('should be able to delete feed', t => {
     t.is(method, 'POST')
     t.is(path, `namespaces/${ns}/actions/${feed_name}`)
     t.deepEqual(options.qs, {blocking: true})
-    t.deepEqual(options.body, {authKey: client.options.api_key, lifecycleEvent: 'DELETE', triggerName: `${trigger_name}`})
+    t.deepEqual(options.body, {
+      authKey: client.options.api_key,
+      lifecycleEvent: 'DELETE',
+      triggerName: `${trigger_name}`
+    })
   }
 
   t.plan(4)
@@ -33,7 +37,7 @@ test('should be able to delete feed using feedName with params', t => {
   const api_key = 'username:password'
   const trigger_name = 'trigger_name'
   const client = {}
-  client.options = { api_key }
+  client.options = {api_key}
 
   const ns = '_'
   const feeds = new Feeds(client)
@@ -42,7 +46,12 @@ test('should be able to delete feed using feedName with params', t => {
     t.is(method, 'POST')
     t.is(path, `namespaces/${ns}/actions/${feed_name}`)
     t.deepEqual(options.qs, {blocking: true})
-    t.deepEqual(options.body, {foo: 'bar', authKey: client.options.api_key, lifecycleEvent: 'DELETE', triggerName: `/_/${trigger_name}`})
+    t.deepEqual(options.body, {
+      foo: 'bar',
+      authKey: client.options.api_key,
+      lifecycleEvent: 'DELETE',
+      triggerName: `/_/${trigger_name}`
+    })
   }
 
   t.plan(4)
@@ -56,7 +65,7 @@ test('should be able to create feed', t => {
   const api_key = 'username:password'
   const trigger_name = '/trigger_ns/trigger_name'
   const client = {}
-  client.options = { api_key }
+  client.options = {api_key}
 
   const ns = '_'
   const feeds = new Feeds(client)
@@ -65,7 +74,11 @@ test('should be able to create feed', t => {
     t.is(method, 'POST')
     t.is(path, `namespaces/${ns}/actions/${feed_name}`)
     t.deepEqual(options.qs, {blocking: true})
-    t.deepEqual(options.body, {authKey: client.options.api_key, lifecycleEvent: 'CREATE', triggerName: `${trigger_name}`})
+    t.deepEqual(options.body, {
+      authKey: client.options.api_key,
+      lifecycleEvent: 'CREATE',
+      triggerName: `${trigger_name}`
+    })
   }
 
   t.plan(4)
@@ -78,7 +91,7 @@ test('should be able to create trigger ignoring global namespace', t => {
   const api_key = 'username:password'
   const trigger_name = '/a/trigger_name'
   const client = {}
-  client.options = { api_key, namespace: 'global_ns' }
+  client.options = {api_key, namespace: 'global_ns'}
 
   const ns = 'global_ns'
   const feeds = new Feeds(client)
@@ -87,7 +100,11 @@ test('should be able to create trigger ignoring global namespace', t => {
     t.is(method, 'POST')
     t.is(path, `namespaces/${ns}/actions/${feed_name}`)
     t.deepEqual(options.qs, {blocking: true})
-    t.deepEqual(options.body, {authKey: client.options.api_key, lifecycleEvent: 'CREATE', triggerName: `${trigger_name}`})
+    t.deepEqual(options.body, {
+      authKey: client.options.api_key,
+      lifecycleEvent: 'CREATE',
+      triggerName: `${trigger_name}`
+    })
   }
 
   t.plan(4)
@@ -100,7 +117,7 @@ test('should be able to create trigger using global namespace', t => {
   const api_key = 'username:password'
   const trigger_name = 'trigger_name'
   const client = {}
-  client.options = { api_key, namespace: 'global_ns' }
+  client.options = {api_key, namespace: 'global_ns'}
 
   const ns = 'global_ns'
   const feeds = new Feeds(client)
@@ -109,7 +126,11 @@ test('should be able to create trigger using global namespace', t => {
     t.is(method, 'POST')
     t.is(path, `namespaces/${ns}/actions/${feed_name}`)
     t.deepEqual(options.qs, {blocking: true})
-    t.deepEqual(options.body, {authKey: client.options.api_key, lifecycleEvent: 'CREATE', triggerName: `/global_ns/${trigger_name}`})
+    t.deepEqual(options.body, {
+      authKey: client.options.api_key,
+      lifecycleEvent: 'CREATE',
+      triggerName: `/global_ns/${trigger_name}`
+    })
   }
 
   t.plan(4)
@@ -122,7 +143,7 @@ test('should be able to create trigger using options namespace', t => {
   const api_key = 'username:password'
   const trigger_name = 'trigger_name'
   const client = {}
-  client.options = { api_key }
+  client.options = {api_key}
 
   const ns = 'custom'
   const feeds = new Feeds(client)
@@ -131,7 +152,11 @@ test('should be able to create trigger using options namespace', t => {
     t.is(method, 'POST')
     t.is(path, `namespaces/${ns}/actions/${feed_name}`)
     t.deepEqual(options.qs, {blocking: true})
-    t.deepEqual(options.body, {authKey: client.options.api_key, lifecycleEvent: 'CREATE', triggerName: `/_/${trigger_name}`})
+    t.deepEqual(options.body, {
+      authKey: client.options.api_key,
+      lifecycleEvent: 'CREATE',
+      triggerName: `/_/${trigger_name}`
+    })
   }
 
   t.plan(4)
@@ -144,7 +169,7 @@ test('should be able to create trigger ignoring options namespace', t => {
   const api_key = 'username:password'
   const trigger_name = '/a/trigger_name'
   const client = {}
-  client.options = { api_key }
+  client.options = {api_key}
 
   const ns = '_'
   const feeds = new Feeds(client)
@@ -153,7 +178,11 @@ test('should be able to create trigger ignoring options namespace', t => {
     t.is(method, 'POST')
     t.is(path, `namespaces/ns/actions/${feed_name}`)
     t.deepEqual(options.qs, {blocking: true})
-    t.deepEqual(options.body, {authKey: client.options.api_key, lifecycleEvent: 'CREATE', triggerName: `${trigger_name}`})
+    t.deepEqual(options.body, {
+      authKey: client.options.api_key,
+      lifecycleEvent: 'CREATE',
+      triggerName: `${trigger_name}`
+    })
   }
 
   t.plan(4)
@@ -166,7 +195,7 @@ test('should be able to create trigger from full qualified feed', t => {
   const api_key = 'username:password'
   const trigger_name = '/a/trigger_name'
   const client = {}
-  client.options = { api_key, namespace: 'global' }
+  client.options = {api_key, namespace: 'global'}
 
   const ns = '_'
   const feeds = new Feeds(client)
@@ -175,7 +204,11 @@ test('should be able to create trigger from full qualified feed', t => {
     t.is(method, 'POST')
     t.is(path, `namespaces/b/actions/c/feed_name`)
     t.deepEqual(options.qs, {blocking: true})
-    t.deepEqual(options.body, {authKey: client.options.api_key, lifecycleEvent: 'CREATE', triggerName: `${trigger_name}`})
+    t.deepEqual(options.body, {
+      authKey: client.options.api_key,
+      lifecycleEvent: 'CREATE',
+      triggerName: `${trigger_name}`
+    })
   }
 
   t.plan(4)
@@ -188,7 +221,7 @@ test('should be able to create feed using feedName with params', t => {
   const api_key = 'username:password'
   const trigger_name = 'trigger_name'
   const client = {}
-  client.options = { api_key }
+  client.options = {api_key}
 
   const ns = '_'
   const feeds = new Feeds(client)
@@ -197,7 +230,12 @@ test('should be able to create feed using feedName with params', t => {
     t.is(method, 'POST')
     t.is(path, `namespaces/${ns}/actions/${feed_name}`)
     t.deepEqual(options.qs, {blocking: true})
-    t.deepEqual(options.body, {foo: 'bar', authKey: client.options.api_key, lifecycleEvent: 'CREATE', triggerName: `/_/${trigger_name}`})
+    t.deepEqual(options.body, {
+      foo: 'bar',
+      authKey: client.options.api_key,
+      lifecycleEvent: 'CREATE',
+      triggerName: `/_/${trigger_name}`
+    })
   }
 
   t.plan(4)
@@ -208,14 +246,14 @@ test('should be able to create feed using feedName with params', t => {
 
 test('should throw errors without trigger parameter ', t => {
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const feeds = new Feeds(client)
   t.throws(() => feeds.feed('', {feedName: 'myFeed'}), /trigger/)
 })
 
 test('should throw errors without id parameter', t => {
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const feeds = new Feeds(client)
   t.throws(() => feeds.feed('', {trigger: 'myFeed'}), /feedName/)
 })

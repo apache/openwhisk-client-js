@@ -16,7 +16,14 @@ test('should use default constructor options', t => {
 })
 
 test('should support explicit constructor options', t => {
-  const client = new Client({namespace: 'ns', ignore_certs: true, api_key: 'aaa', api: 'my_host', apigw_token: 'oauth_token', apigw_space_guid: 'space_guid'})
+  const client = new Client({
+    namespace: 'ns',
+    ignore_certs: true,
+    api_key: 'aaa',
+    api: 'my_host',
+    apigw_token: 'oauth_token',
+    apigw_space_guid: 'space_guid'
+  })
   t.is(client.options.api, 'my_host')
   t.true(client.options.ignore_certs)
   t.is(client.options.namespace, 'ns')
@@ -25,7 +32,13 @@ test('should support explicit constructor options', t => {
 })
 
 test('should use uuid from auth key as space guid if apigw_token present', t => {
-  const client = new Client({namespace: 'ns', ignore_certs: true, api_key: 'uuid:pass', api: 'my_host', apigw_token: 'oauth_token'})
+  const client = new Client({
+    namespace: 'ns',
+    ignore_certs: true,
+    api_key: 'uuid:pass',
+    api: 'my_host',
+    apigw_token: 'oauth_token'
+  })
   t.is(client.options.apigw_space_guid, 'uuid')
 })
 
@@ -124,16 +137,35 @@ test('should generate auth header from API key', t => {
 test('should return path and status code in error message', t => {
   const client = new Client({api_key: true, api: true})
   const method = 'METHOD', url = 'https://blah.com/api/v1/actions/list', statusCode = 400
-  t.throws(() => client.handle_errors({options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "Response Missing Error Message."`)
+  t.throws(() => client.handle_errors({
+    options: {method, url},
+    statusCode
+  }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "Response Missing Error Message."`)
 })
 
 test('should return response error string in error message', t => {
   const client = new Client({api_key: true, api: true})
   const method = 'METHOD', url = 'https://blah.com/api/v1/actions/list', statusCode = 400
-  t.throws(() => client.handle_errors({error: { error: 'hello' }, options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
-  t.throws(() => client.handle_errors({error: { response: { result: { error: 'hello' } } }, options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
-  t.throws(() => client.handle_errors({error: { response: { result: { error: { error: 'hello' } } } }, options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
-  t.throws(() => client.handle_errors({error: { response: { result: { error: { statusCode: 404 } } } }, options: { method, url }, statusCode }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "application error, status code: ${404}"`)
+  t.throws(() => client.handle_errors({
+    error: {error: 'hello'},
+    options: {method, url},
+    statusCode
+  }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
+  t.throws(() => client.handle_errors({
+    error: {response: {result: {error: 'hello'}}},
+    options: {method, url},
+    statusCode
+  }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
+  t.throws(() => client.handle_errors({
+    error: {response: {result: {error: {error: 'hello'}}}},
+    options: {method, url},
+    statusCode
+  }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
+  t.throws(() => client.handle_errors({
+    error: {response: {result: {error: {statusCode: 404}}}},
+    options: {method, url},
+    statusCode
+  }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "application error, status code: ${404}"`)
 })
 
 test('should throw errors for non-HTTP response failures', t => {

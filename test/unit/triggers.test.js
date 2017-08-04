@@ -215,7 +215,7 @@ test('create a new trigger with custom body', t => {
   t.plan(4)
   const ns = '_'
   const client = {}
-  const trigger = { foo: 'bar' }
+  const trigger = {foo: 'bar'}
   const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {

@@ -57,7 +57,10 @@ test('create, get and delete an action', t => {
   }
 
   const actions = new Actions(new Client(options))
-  return actions.create({actionName: 'random_action_test', action: 'function main() {return {payload:"testing"}}'}).then(result => {
+  return actions.create({
+    actionName: 'random_action_test',
+    action: 'function main() {return {payload:"testing"}}'
+  }).then(result => {
     t.is(result.name, 'random_action_test')
     t.is(result.namespace, NAMESPACE)
     t.is(result.exec.kind, 'nodejs:6')
@@ -78,7 +81,10 @@ test('create and update an action', t => {
   }
 
   const actions = new Actions(new Client(options))
-  return actions.create({actionName: 'random_update_tested', action: 'function main() {return {payload:"testing"}}'}).then(result => {
+  return actions.create({
+    actionName: 'random_update_tested',
+    action: 'function main() {return {payload:"testing"}}'
+  }).then(result => {
     t.is(result.name, 'random_update_tested')
     t.is(result.namespace, NAMESPACE)
     t.is(result.exec.kind, 'nodejs:6')
@@ -98,13 +104,21 @@ test('create, get and delete with parameters an action', t => {
   }
 
   const actions = new Actions(new Client(options))
-  return actions.create({name: 'random_action_params_test', params: { hello: 'world' }, action: 'function main() {return {payload:"testing"}}'}).then(result => {
+  return actions.create({
+    name: 'random_action_params_test',
+    params: {hello: 'world'},
+    action: 'function main() {return {payload:"testing"}}'
+  }).then(result => {
     t.is(result.name, 'random_action_params_test')
     t.is(result.namespace, NAMESPACE)
     t.deepEqual(result.parameters, [{key: 'hello', value: 'world'}])
     t.is(result.exec.kind, 'nodejs:6')
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
-    return actions.update({actionName: 'random_action_params_test', params: { foo: 'bar' }, action: 'update test'}).then(update_result => {
+    return actions.update({
+      actionName: 'random_action_params_test',
+      params: {foo: 'bar'},
+      action: 'update test'
+    }).then(update_result => {
       t.is(update_result.name, 'random_action_params_test')
       t.is(update_result.namespace, NAMESPACE)
       t.deepEqual(update_result.parameters, [{key: 'foo', value: 'bar'}])
@@ -142,7 +156,11 @@ test('create, invoke and remove package action', t => {
   return zip.generateAsync({type: 'nodebuffer'}).then(content => {
     const actions = new Actions(new Client(options))
     return actions.create({actionName: 'random_package_action_test', action: content}).then(result => {
-      return actions.invoke({actionName: 'random_package_action_test', params: {hello: 'world'}, blocking: true}).then(invoke_result => {
+      return actions.invoke({
+        actionName: 'random_package_action_test',
+        params: {hello: 'world'},
+        blocking: true
+      }).then(invoke_result => {
         t.deepEqual(invoke_result.response.result, {hello: 'world'})
         t.true(invoke_result.response.success)
         t.pass()

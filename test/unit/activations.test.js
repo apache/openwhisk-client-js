@@ -32,7 +32,15 @@ test('list all activations', t => {
     t.deepEqual(options.qs, {name: 'Hello', limit: 100, skip: 100, upto: 100, docs: true, since: 100})
   }
 
-  return activations.list({namespace: 'options_namespace', name: 'Hello', limit: 100, skip: 100, since: 100, upto: 100, docs: true})
+  return activations.list({
+    namespace: 'options_namespace',
+    name: 'Hello',
+    limit: 100,
+    skip: 100,
+    since: 100,
+    upto: 100,
+    docs: true
+  })
 })
 
 test('should retrieve an activation', t => {
@@ -142,5 +150,7 @@ test('should retrieve an activation result', t => {
 
 test('should throw when retrieving activation without id', t => {
   const activations = new Activations()
-  return t.throws(() => { activations.get() }, /Missing mandatory/)
+  return t.throws(() => {
+    activations.get()
+  }, /Missing mandatory/)
 })
