@@ -9,7 +9,7 @@ Provides a wrapper around the [OpenWhisk APIs](https://github.com/apache/incubat
 
 ## installation
 
-```
+```bash
 $ npm install openwhisk
 ```
 
@@ -19,7 +19,7 @@ $ npm install openwhisk
 
 This client library can use environment parameters to automatically configure the authentication credentials, platform endpoint and namespace. These parameters are defined within the Node.js runtime environment in OpenWhisk. Unless you want to override these values, you can construct the client instance without further configuration.
 
-```
+```javascript
 var openwhisk = require('openwhisk');
 
 function action() {
@@ -32,7 +32,7 @@ exports.main = action
 
 _All methods return a Promise resolved asynchronously with the results. Failures are available through the catch method._
 
-```
+```javascript
 ow.resource.operation().then(function () { // success! }).catch(function (err) { // failed! })
 ```
 
@@ -40,7 +40,7 @@ Users can override default constructor parameters by passing in explicit options
 
 _**Please note**: Due to [an issue](https://github.com/openwhisk/openwhisk/issues/1751) with the Node.js runtime in OpenWhisk, environment variables used by the constructor are not available until the invocation function handler is called. If you want to define the client instance outside this function, you will need to manually pass in the constructor options ._
 
-```
+```javascript
 var openwhisk = require('openwhisk');
 // DOES NOT WORK! Environment parameters not set.
 var ow = openwhisk();
@@ -54,7 +54,7 @@ exports.main = action
 
 ### outside openwhisk platform
 
-```
+```javascript
 var openwhisk = require('openwhisk');
 var options = {apihost: 'openwhisk.ng.bluemix.net', api_key: '...'};
 var ow = openwhisk(options);
@@ -92,7 +92,7 @@ Client constructor will read values for the `apihost`, `namespace`, `api_key`, `
 
 ### invoke action, blocking for result
 
-```
+```javascript
 const name = 'reverseWords'
 const blocking = true, result = true
 const params = {msg: 'these are some words to reverse'}
@@ -106,7 +106,7 @@ ow.actions.invoke({name, blocking, result, params}).then(result => {
 
 ### fire trigger
 
-```
+```javascript
 const name = 'eventTrigger'
 const params = {msg: 'event trigger message string'}
 ow.triggers.invoke({name, params}).then(result => {
@@ -118,7 +118,7 @@ ow.triggers.invoke({name, params}).then(result => {
 
 ### create action from source file
 
-```
+```javascript
 const name = 'reverseWords'
 const action = fs.readFileSync('source.js', {encoding: 'utf8'})
 
@@ -131,7 +131,7 @@ ow.actions.create({name, action}).then(result => {
 
 ### create action from zip package
 
-```
+```javascript
 const name = 'reverseWords'
 const action = fs.readFileSync('package.zip')
 
@@ -144,7 +144,7 @@ ow.actions.create({name, action}).then(result => {
 
 ### retrieve action resource
 
-```
+```javascript
 const name = 'reverseWords'
 ow.actions.get(name).then(action => {
   console.log('action resource', action)
@@ -155,7 +155,7 @@ ow.actions.get(name).then(action => {
 
 ### chaining calls
 
-```
+```javascript
 ow.actions.list()
   .then(actions => ow.actions.invoke(actions))
   .then(result => ...)
@@ -163,7 +163,7 @@ ow.actions.list()
 
 ### list packages
 
-```
+```javascript
 ow.packages.list().then(packages => {
   packages.forEach(package => console.log(package.name))
 }).catch(err => {
@@ -173,7 +173,7 @@ ow.packages.list().then(packages => {
 
 ### update package parameters
 
-```
+```javascript
 const name = 'myPackage'
 const package = {
   parameters: [
@@ -191,7 +191,7 @@ ow.packages.update({name, package}).then(package => {
 
 ### create trigger feed from alarm package
 
-```
+```javascript
 // alarmTrigger MUST already exist in default namespace
 const params = {cron: '*/8 * * * * *', trigger_payload: {name: 'James'}}
 const name = '/whisk.system/alarms/alarm'
@@ -220,7 +220,7 @@ If the namespace is missing from the resource identifier, the client will use th
 
 ### list resources
 
-```
+```javascript
 ow.actions.list()
 ow.activations.list()
 ow.triggers.list()
@@ -231,7 +231,7 @@ ow.packages.list()
 
 Query parameters for the API calls are supported (e.g. limit, skip, etc.) by passing an object with the named parameters as the first argument.
 
-```
+```javascript
 ow.actions.list({skip: 100, limit: 50})
 ```
 
@@ -240,7 +240,7 @@ The following optional parameters are supported:
 
 ### retrieve resource
 
-```
+```javascript
 ow.actions.get({name: '...'})
 ow.activations.get({name: '...'})
 ow.triggers.get({name: '...'})
@@ -254,20 +254,20 @@ The following optional parameters are supported:
 
 This method also supports passing the `name` property directly without wrapping within an object.
 
-```
+```javascript
 const name = "actionName"
 ow.actions.get(name)
 ```
 
 If you pass in an array for the first parameter, the `get` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
 
-```
+```javascript
 ow.actions.get(["a", {name: "b"}])
 ```
 
 ### delete resource
 
-```
+```javascript
 ow.actions.delete({name: '...'})
 ow.triggers.delete({name: '...'})
 ow.rules.delete({name: '...'})
@@ -279,20 +279,20 @@ The following optional parameters are supported:
 
 This method also supports passing the `name` property directly without wrapping within an object.
 
-```
+```javascript
 const name = "actionName"
 ow.actions.delete(name)
 ```
 
 If you pass in an array for the first parameter, the `delete` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
 
-```
+```javascript
 ow.actions.delete(["a", {name: "b"}])
 ```
 
 ### invoke action
 
-```
+```javascript
 ow.actions.invoke({name: '...'})
 ```
 
@@ -308,20 +308,20 @@ The following optional parameters are supported:
 
 This method also supports passing the `name` property directly without wrapping within an object.
 
-```
+```javascript
 const name = "actionName"
 ow.actions.invoke(name)
 ```
 
 If you pass in an array for the first parameter, the `invoke` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
 
-```
+```javascript
 ow.actions.invoke(["a", {name: "b", blocking: true}])
 ```
 
 ### create & update action
 
-```
+```javascript
 ow.actions.create({name: '...', action: 'function main() {};'})
 ow.actions.update({name: '...', action: 'function main() {};'})
 ```
@@ -334,16 +334,17 @@ The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 - `params` - object containing default parameters for the action (default: `{}`)
 - `kind` - runtime environment parameter, ignored when `action` is an object (default: `nodejs:default`)
+- `version` - set semantic version of the action. If parameter is empty when create new action openwisk generate 0.0.1 value when update an action increase the patch version.
 
 If you pass in an array for the first parameter, the `create` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
 
-```
+```javascript
 ow.actions.create([{...}, {...}])
 ```
 
 ### fire trigger
 
-```
+```javascript
 ow.triggers.invoke({name: '...'})
 ```
 
@@ -353,20 +354,20 @@ The following optional parameters are supported:
 
 This method also supports passing the `name` property directly without wrapping within an object.
 
-```
+```javascript
 const name = "actionName"
 ow.triggers.invoke(name)
 ```
 
 If you pass in an array for the first parameter, the `invoke` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
 
-```
+```javascript
 ow.triggers.invoke(["a", {name: "b", blocking: true}])
 ```
 
 ### create & update trigger
 
-```
+```javascript
 ow.triggers.create({name: '...'})
 ow.triggers.update({name: '...'})
 ```
@@ -377,7 +378,7 @@ The following optional parameters are supported:
 
 ### create & update packages
 
-```
+```javascript
 ow.packages.create({name: '...'})
 ow.packages.update({name: '...'})
 ```
@@ -388,7 +389,7 @@ The following optional parameters are supported:
 
 ### create & update rule
 
-```
+```javascript
 ow.rules.create({name: '...', action: '...', trigger: '...'})
 ow.rules.update({name: '...', action: '...', trigger: '...'})
 ```
@@ -402,7 +403,7 @@ The following optional parameters are supported:
 
 ### enable & disable rule
 
-```
+```javascript
 ow.rules.enable({name: '...'})
 ow.rules.disable({name: '...'})
 ```
@@ -412,7 +413,7 @@ The following optional parameters are supported:
 
 ### create & delete feeds
 
-```
+```javascript
 ow.feeds.create({feedName: '...', trigger: '...'})
 ow.feeds.delete({feedName: '...', trigger: '...'})
 ```
@@ -431,7 +432,7 @@ This client library defaults to using the platform service. If the `apigw_token`
 
 ### list routes
 
-```
+```javascript
 ow.routes.list()
 ```
 
@@ -446,7 +447,7 @@ The following optional parameters are supported to filter the result set:
 
 ### delete routes
 
-```
+```javascript
 ow.routes.delete({basepath: '...'})
 ```
 
@@ -455,7 +456,7 @@ The following optional parameters are supported to filter the result set:
 - `operation` - HTTP methods
 
 ### add route
-```
+```javascript
 ow.routes.create({relpath: '...', operation: '...', action: '...'})
 ```
 
@@ -468,13 +469,13 @@ The following optional parameters are supported to filter the result set:
 
 Setting an environment parameter (`NODE_DEBUG=request`) will dump the HTTP requests from the client library and responses received to `stderr`.
 
-```
+```bash
 NODE_DEBUG=request node script.js
 ```
 
 This parameter can also be set dynamically at runtime, provided this happens before the `openwhisk` module is required.
 
-```
+```javascript
 process.env.NODE_DEBUG='request';
 var openwhisk = require('openwhisk');
 ```
@@ -483,16 +484,16 @@ var openwhisk = require('openwhisk');
 
 ### unit tests
 
-```
-npm test
+```bash
+$ npm test
 ```
 
 ### integration tests
 
 *Please [see the instructions](https://github.com/openwhisk/openwhisk-client-js/tree/master/test/integration) for setting up the integration test environment prior to running these tests.*
 
-```
-npm run-script test-integration
+```bash
+$ npm run-script test-integration
 ```
 
 **Note:** The test integration runs in secure mode by default, which means that all trusted signers must be present and available to the client process.
@@ -504,8 +505,8 @@ This will disable SSL/TLS verification for all SSL communication.
 
 Alternatively, you can run the `prepIntegrationTests.sh` script using guest credentials or by specifying specific credentials.  
 Run the script with openwhisk credentials:  
-```
-./test/integration/prepIntegrationTests.sh <your key in the form of ABCD:EFGH> <openwhisk instance hostname> <openwhisk namespace> <api gatewaytoken>
+```bash
+$ ./test/integration/prepIntegrationTests.sh <your key in the form of ABCD:EFGH> <openwhisk instance hostname> <openwhisk namespace> <api gatewaytoken>
 ```  
 The `prepIntegrationTests.sh` script is designed to give you feedback if it detects a setting that is not correct on your machine. ex: `node 6 or above is not detected`
 
@@ -517,9 +518,9 @@ the provided `code-coverage` commands below.
 **Note:** Ensure that you use guest credentials with the wsk CLI.  
 
 To compile down to ECMA5 run the following command:  
-1 `npm run code-coverage-build`  
+1 `$ npm run code-coverage-build`  
 
 To generate combined reports of both the unit and integration tests, run the following command:  
-2 `npm run code-coverage-run <key> <host> <namespace> <token> <options>`  
+2 `$ npm run code-coverage-run <key> <host> <namespace> <token> <options>`  
 
 The report is viewable under `/coverage`. Click **`/coverage/index.html`** to view the full report.  
