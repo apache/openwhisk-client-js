@@ -146,7 +146,7 @@ ow.actions.create({name, action}).then(result => {
 
 ```
 const name = 'reverseWords'
-ow.actions.retrieve({name}).then(action => {
+ow.actions.get(name).then(action => {
   console.log('action resource', action)
 }).catch(err => {
   console.error('failed to retrieve action', err)
