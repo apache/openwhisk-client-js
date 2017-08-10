@@ -503,11 +503,7 @@ If your local environment is using self-signed certificates, you can use the fol
 This will disable SSL/TLS verification for all SSL communication.
 
 Alternatively, you can run the `prepIntegrationTests.sh` script using guest credentials or by specifying specific credentials.  
-Run the script with guest credentials:  
-```
-./test/integration/prepIntegrationTests.sh guest
-```  
-Run the script with specific credentials:  
+Run the script with openwhisk credentials:  
 ```
 ./test/integration/prepIntegrationTests.sh <your key in the form of ABCD:EFGH> <openwhisk instance hostname> <openwhisk namespace> <api gatewaytoken>
 ```  
@@ -524,6 +520,6 @@ To compile down to ECMA5 run the following command:
 1 `npm run code-coverage-build`  
 
 To generate combined reports of both the unit and integration tests, run the following command:  
-2 `npm run code-coverage-run`  
+2 `npm run code-coverage-run <key> <host> <namespace> <token> <options>`  
 
 The report is viewable under `/coverage`. Click **`/coverage/index.html`** to view the full report.  

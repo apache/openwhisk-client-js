@@ -1,13 +1,7 @@
 #!/bin/bash
 #set -e
-#Usage: ./test/integration/prepIntegrationTests.sh <yourapikeyintheformofABCD:EFGH> <openwhis hostname> <openwhisk namespace> <api gatewaytoken>
+#Usage: ./test/integration/prepIntegrationTests.sh <yourapikeyintheformofABCD:EFGH> <openwhis hostname> <openwhisk namespace> <api gatewaytoken> <optional "insecure">
 # Run from the incubator-openwhisk-client-js
-
-# Make sure wsk is installed; exit if wsk is not available.
-if ! type "wsk" > /dev/null; then
-  echo "Exiting program; wsk is not installed on the system. Cannot preform tests"
-  exit 1
-fi
 
 # Assert NODEJS6/NPM3 or greater is default node/npm version
 NODE_VERSION_MAJOR=`node --version | awk -Fv '{print $2}' | awk -F. '{print $1}'`
@@ -21,31 +15,16 @@ override_key="$1"
 override_host="$2"
 override_namespace="$3"
 override_token="$4"
+insecurecred="$5"
 iflag=""
 kflag=""
 
-function getvalue {
-  content="$1"
-  search="$2"
-  result="$3"
-  result=$(echo "$content" | grep "$search" | awk '{print $NF}')
-  return 0
-}
-
-if [ $override_key == "guest" ]; then
-  echo "getting guest user credentials"
+if [ $insecurecred == "insecure" ]; then
+  echo "INSECURE MODE!"
   iflag="-i"
   kflag="-k"
-  propInfo=$(wsk -i property get)
-  getvalue "$propInfo" "whisk auth" "$result"
-  override_key="$result"
-  getvalue "$propInfo" "whisk API host" "$result"
-  override_host="$result"
   override_namespace="guest"
-  override_token=""
-
 fi
-
 
 #If they exist, export these values (tests use a global)
 if [ -n "$override_key" ] && [ -n "$override_host" ] && [ -n "$override_namespace" ] ; then
@@ -78,9 +57,9 @@ touch temp/tests.js
 echo "function main() {return {payload: 'Hello world'};}" > temp/tests.js
 
 echo "Create wsk actions and triggers for use by tests"
-wsk $iflag action update hello temp/tests.js
-wsk $iflag action update tests temp/tests.js
-wsk $iflag trigger update sample
+curl -s --output /dev/null $kflag -u $__OW_API_KEY  -d '{"namespace":"'"$__OW_NAMESPACE"'","name":"hello","exec":{"kind":"nodejs:6","code":"function main() { return {payload:\"Hello world\"}}"}}' -X PUT -H "Content-Type: application/json" https://$__OW_API_HOST/api/v1/namespaces/$__OW_NAMESPACE/actions/hello?overwrite=true
+curl -s --output /dev/null $kflag -u $__OW_API_KEY  -d '{"namespace":"'"$__OW_NAMESPACE"'","name":"tests","exec":{"kind":"nodejs:6","code":"function main() { return {payload:\"Hello world\"}}"}}' -X PUT -H "Content-Type: application/json" https://$__OW_API_HOST/api/v1/namespaces/$__OW_NAMESPACE/actions/tests?overwrite=true
+curl -s --output /dev/null $kflag -u $__OW_API_KEY -d '{"name":"sample"}' -X PUT -H "Content-Type: application/json"  https://192.168.99.100/api/v1/namespaces/_/triggers/sample?overwrite=true
 
 #run tests
 echo "running tests"
@@ -91,30 +70,32 @@ RUNSTAT=$PIPESTATUS
 function cleanresources {
   verb="$1"
   name="$2"
-  wsk $iflag $verb get $name -s &>/dev/null
-  if [[ $PIPESTATUS -eq 0 ]]; then
-    wsk $iflag $verb delete $name
+
+  curlstatus=$(curl -s -i $kflag -u $__OW_API_KEY -X GET -H "Content-Type: application/json" https://$__OW_API_HOST/api/v1/namespaces/$__OW_NAMESPACE/$verb/$name)
+  statusheader=$(echo "$curlstatus" | awk 'NR==1{print $0; exit}')
+  if [[ $statusheader == *"200"* ]]; then
+    echo "200 status code found; now deleteing"
+    curl -s -i $kflag -u $__OW_API_KEY -X DELETE -H "Content-Type: application/json" https://$__OW_API_HOST/api/v1/namespaces/$__OW_NAMESPACE/$verb/$name
   fi
 }
 
 #clean up artifacts generated during a bad-testRun
 echo "clean resources"
-cleanresources action routeAction
-cleanresources action random_package_action_test
-cleanresources action random_action_test
-cleanresources action random_action_params_test
-cleanresources action random_update_tested
-cleanresources trigger sample_feed_trigger
-cleanresources trigger sample_rule_trigger
-cleanresources trigger random_trigger_test
-cleanresources rule random_rule_test
-#wsk api delete /testing
+cleanresources actions routeAction
+cleanresources actions random_package_action_test
+cleanresources actions random_action_test
+cleanresources actions random_action_params_test
+cleanresources actions random_update_tested
+cleanresources triggers sample_feed_trigger
+cleanresources triggers sample_rule_trigger
+cleanresources triggers random_trigger_test
+cleanresources rules random_rule_test
 
 #cleanup workspace
 rm -rf temp
-wsk $iflag action delete hello
-wsk $iflag action delete tests
-wsk $iflag trigger delete sample
+curl -s --output /dev/null $kflag -u $__OW_API_KEY -X DELETE -H "Content-Type: application/json" https://$__OW_API_HOST/api/v1/namespaces/$__OW_NAMESPACE/actions/hello
+curl -s --output /dev/null $kflag -u $__OW_API_KEY -X DELETE -H "Content-Type: application/json" https://$__OW_API_HOST/api/v1/namespaces/$__OW_NAMESPACE/actions/tests
+curl -s --output /dev/null $kflag -u $__OW_API_KEY -X DELETE -H "Content-Type: application/json" https://$__OW_API_HOST/api/v1/namespaces/$__OW_NAMESPACE/triggers/sample
 
 echo "script finished"
 

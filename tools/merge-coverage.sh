@@ -1,5 +1,15 @@
 #!/bin/bash
-runningEnv="$1"
+key="$1"
+host="$2"
+namespace="$3"
+token="$4"
+runningEnv="$5"
+insecure=""
+
+if [[ "$runningEnv" == *"insecure"* ]] ; then
+  insecure="insecure"
+fi
+
 
 tempDir="coveragetemp"
 mkdir $tempDir
@@ -11,7 +21,7 @@ node ./node_modules/nyc/bin/nyc.js ava test/unit
 unitstatus="$PIPESTATUS"
 mv .nyc_output/* $tempDir/unit
 
-node ./node_modules/nyc/bin/nyc.js ./test/integration/prepIntegrationTests.sh guest
+node ./node_modules/nyc/bin/nyc.js ./test/integration/prepIntegrationTests.sh $key $host $namespace $token $insecure
 integrationstatus="$PIPESTATUS"
 mv .nyc_output/* $tempDir/integration
 
@@ -21,7 +31,7 @@ cp -a $tempDir/integration/. .nyc_output
 rm -rf $tempDir
 
 # generate the HTML report from the merged results
-if [ "$runningEnv" == "travis" ] ; then
+if [[ "$runningEnv" == *"travis"* ]] ; then
   npm run coverage
 fi
 
