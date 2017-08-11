@@ -95,10 +95,10 @@ Client constructor will read values for the `apihost`, `namespace`, `api_key`, `
 ```
 const name = 'reverseWords'
 const blocking = true, result = true
-const params = {msg: 'this is some words to reverse'}
+const params = {msg: 'these are some words to reverse'}
 
 ow.actions.invoke({name, blocking, result, params}).then(result => {
-  console.log('here's the reversed string', result.reversed)
+  console.log('here is the reversed string', result.reversed)
 }).catch(err => {
   console.error('failed to invoke actions', err)
 })
