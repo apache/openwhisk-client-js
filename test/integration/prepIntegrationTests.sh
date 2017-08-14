@@ -1,6 +1,6 @@
 #!/bin/bash
 #set -e
-#Usage: ./test/integration/prepIntegrationTests.sh <yourapikeyintheformofABCD:EFGH> <openwhis hostname> <openwhisk namespace> <api gatewaytoken> <optional "insecure">
+#Usage: ./test/integration/prepIntegrationTests.sh <apikeyintheformofABCD:EFGH> <openwhisk hostname> <openwhisk namespace> <api gatewaytoken> <optional "insecure">
 # Run from the incubator-openwhisk-client-js
 
 # Assert NODEJS6/NPM3 or greater is default node/npm version
@@ -48,19 +48,6 @@ if [[ $PIPESTATUS -eq 0 ]]; then
   exit 1;
 fi
 
-
-# make temporary files so that we can use the wsk cli to create actions and triggers.
-# in the instructions the contests of hello and tests are identical so we only make 1 version of the file, and then just create two actions from it.
-echo "Make temporary resource files"
-mkdir temp
-touch temp/tests.js
-echo "function main() {return {payload: 'Hello world'};}" > temp/tests.js
-
-echo "Create wsk actions and triggers for use by tests"
-curl -s --output /dev/null $kflag -u $__OW_API_KEY  -d '{"namespace":"'"$__OW_NAMESPACE"'","name":"hello","exec":{"kind":"nodejs:6","code":"function main() { return {payload:\"Hello world\"}}"}}' -X PUT -H "Content-Type: application/json" https://$__OW_API_HOST/api/v1/namespaces/$__OW_NAMESPACE/actions/hello?overwrite=true
-curl -s --output /dev/null $kflag -u $__OW_API_KEY  -d '{"namespace":"'"$__OW_NAMESPACE"'","name":"tests","exec":{"kind":"nodejs:6","code":"function main() { return {payload:\"Hello world\"}}"}}' -X PUT -H "Content-Type: application/json" https://$__OW_API_HOST/api/v1/namespaces/$__OW_NAMESPACE/actions/tests?overwrite=true
-curl -s --output /dev/null $kflag -u $__OW_API_KEY -d '{"name":"sample"}' -X PUT -H "Content-Type: application/json"  https://192.168.99.100/api/v1/namespaces/_/triggers/sample?overwrite=true
-
 #run tests
 echo "running tests"
 npm run test-integration $iflag
@@ -81,6 +68,8 @@ function cleanresources {
 
 #clean up artifacts generated during a bad-testRun
 echo "clean resources"
+cleanresources actions hello
+cleanresources actions tests
 cleanresources actions routeAction
 cleanresources actions random_package_action_test
 cleanresources actions random_action_test
@@ -90,12 +79,6 @@ cleanresources triggers sample_feed_trigger
 cleanresources triggers sample_rule_trigger
 cleanresources triggers random_trigger_test
 cleanresources rules random_rule_test
-
-#cleanup workspace
-rm -rf temp
-curl -s --output /dev/null $kflag -u $__OW_API_KEY -X DELETE -H "Content-Type: application/json" https://$__OW_API_HOST/api/v1/namespaces/$__OW_NAMESPACE/actions/hello
-curl -s --output /dev/null $kflag -u $__OW_API_KEY -X DELETE -H "Content-Type: application/json" https://$__OW_API_HOST/api/v1/namespaces/$__OW_NAMESPACE/actions/tests
-curl -s --output /dev/null $kflag -u $__OW_API_KEY -X DELETE -H "Content-Type: application/json" https://$__OW_API_HOST/api/v1/namespaces/$__OW_NAMESPACE/triggers/sample
 
 echo "script finished"
 
