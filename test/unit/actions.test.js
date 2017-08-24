@@ -332,3 +332,23 @@ test('create an action without providing an action body', t => {
   const actions = new Actions()
   t.throws(() => actions.create({name: '12345'}), /Missing mandatory action/)
 })
+
+test('create a new action with version parameter', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const action = 'function main() { // main function body};'
+  const version = '1.0.0'
+
+  const actions = new Actions(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {exec: {kind: 'nodejs:default', code: action}, version: '1.0.0'})
+  }
+
+  return actions.create({name: '12345', action, version})
+
+})
