@@ -6,20 +6,6 @@
 const test = require('ava')
 const Routes = require('../../lib/routes')
 
-test('should return experimental api path without api token', t => {
-  const client = { options: {} }
-  const routes = new Routes(client)
-  t.is(routes.routeMgmtApiPath('a'), 'experimental/web/whisk.system/routemgmt/a.json')
-})
-
-test('should return experimental api path with api token', t => {
-  const client = { options: {
-    apigw_token: true
-  }}
-  const routes = new Routes(client)
-  t.is(routes.routeMgmtApiPath('a'), 'web/whisk.system/apimgmt/a.http')
-})
-
 test('should list all routes', t => {
   t.plan(2)
   const client = { options: {} }
@@ -134,8 +120,8 @@ test('should create a route', t => {
       action: {
         name: 'helloAction',
         namespace: '_',
-        backendMethod: 'POST',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/_/actions/helloAction',
+        backendMethod: 'GET',
+        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/_/default/helloAction.http',
         authkey: api_key }
     }
   }
@@ -273,8 +259,8 @@ test('should create a route using global ns', t => {
       action: {
         name: 'helloAction',
         namespace: 'global_ns',
-        backendMethod: 'POST',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/global_ns/actions/helloAction',
+        backendMethod: 'GET',
+        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/global_ns/default/helloAction.http',
         authkey: api_key }
     }
   }
@@ -307,8 +293,8 @@ test('should create a route using basepath', t => {
       action: {
         name: 'helloAction',
         namespace: '_',
-        backendMethod: 'POST',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/_/actions/helloAction',
+        backendMethod: 'GET',
+        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/_/default/helloAction.http',
         authkey: api_key }
     }
   }
@@ -341,8 +327,8 @@ test('should create a route using fully-qualified action name', t => {
       action: {
         name: 'foo/helloAction',
         namespace: 'test',
-        backendMethod: 'POST',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/test/actions/foo/helloAction',
+        backendMethod: 'GET',
+        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/test/foo/helloAction.http',
         authkey: api_key }
     }
   }
@@ -375,8 +361,8 @@ test('should create a route using action name with ns', t => {
       action: {
         name: 'helloAction',
         namespace: 'test',
-        backendMethod: 'POST',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/test/actions/helloAction',
+        backendMethod: 'GET',
+        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/test/default/helloAction.http',
         authkey: api_key }
     }
   }
@@ -409,8 +395,8 @@ test('should create a route using action name with ns overriding defaults', t =>
       action: {
         name: 'helloAction',
         namespace: 'test',
-        backendMethod: 'POST',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/test/actions/helloAction',
+        backendMethod: 'GET',
+        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/test/default/helloAction.http',
         authkey: api_key }
     }
   }
