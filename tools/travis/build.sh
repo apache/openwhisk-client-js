@@ -35,5 +35,6 @@ key=$(cat $WHISKDIR/ansible/files/auth.guest)
 # Test
 cd $ROOTDIR
 npm install --dev
+npm run lint
 npm run code-coverage-build
 npm run code-coverage-run $key $edgehost guest true "travis,insecure"
