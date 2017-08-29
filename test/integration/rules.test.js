@@ -63,7 +63,11 @@ test.serial('create, get and delete a rule', t => {
   const actions = new Actions(new Client(options))
   return actions.create({actionName: 'hello', action: 'function main() {return {payload:"Hello world"}}'}).then(() => {
     return triggers.create({triggerName: 'sample_rule_trigger'}).then(() => {
-      return rules.create({ruleName: 'random_rule_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample_rule_trigger`}).then(result => {
+      return rules.create({
+        ruleName: 'random_rule_test',
+        action: `/${NAMESPACE}/hello`,
+        trigger: `/${NAMESPACE}/sample_rule_trigger`
+      }).then(result => {
         t.is(result.name, 'random_rule_test')
         t.is(result.namespace, NAMESPACE)
         t.deepEqual(result.action, {path: NAMESPACE, name: 'hello'})
@@ -92,16 +96,26 @@ test.serial('create and update a rule', t => {
   const triggers = new Triggers(new Client(options))
   const actions = new Actions(new Client(options))
   return actions.create({actionName: 'hello', action: 'function main() {return {payload:"Hello world"}}'}).then(() => {
-
-    return actions.create({actionName: 'tests', action: 'function main() {return {payload:"Hello world"}}' }).then(() => {
+    return actions.create({
+      actionName: 'tests',
+      action: 'function main() {return {payload:"Hello world"}}'
+    }).then(() => {
       return triggers.create({triggerName: 'sample_rule_trigger'}).then(() => {
-        return rules.create({ruleName: 'random_update_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample_rule_trigger`}).then(result => {
+        return rules.create({
+          ruleName: 'random_update_test',
+          action: `/${NAMESPACE}/hello`,
+          trigger: `/${NAMESPACE}/sample_rule_trigger`
+        }).then(result => {
           t.is(result.name, 'random_update_test')
           t.is(result.namespace, NAMESPACE)
           t.deepEqual(result.action, {path: NAMESPACE, name: 'hello'})
           t.deepEqual(result.trigger, {path: NAMESPACE, name: 'sample_rule_trigger'})
           return rules.disable({ruleName: 'random_update_test'}).then(() => {
-            return rules.update({ruleName: 'random_update_test', action: 'tests', trigger: 'sample_rule_trigger'}).then(update_result => {
+            return rules.update({
+              ruleName: 'random_update_test',
+              action: 'tests',
+              trigger: 'sample_rule_trigger'
+            }).then(update_result => {
               t.deepEqual(update_result.action, {path: NAMESPACE, name: 'tests'})
               t.pass()
               return rules.delete({ruleName: 'random_update_test'})
@@ -114,5 +128,5 @@ test.serial('create and update a rule', t => {
         }).catch(errors)
       })
     })
-  }).catch(errors);
+  }).catch(errors)
 })

@@ -136,7 +136,9 @@ test('should generate auth header from API key', t => {
 
 test('should return path and status code in error message', t => {
   const client = new Client({api_key: true, api: true})
-  const method = 'METHOD', url = 'https://blah.com/api/v1/actions/list', statusCode = 400
+  const method = 'METHOD'
+  const url = 'https://blah.com/api/v1/actions/list'
+  const statusCode = 400
   t.throws(() => client.handle_errors({
     options: {method, url},
     statusCode
@@ -145,7 +147,9 @@ test('should return path and status code in error message', t => {
 
 test('should return response error string in error message', t => {
   const client = new Client({api_key: true, api: true})
-  const method = 'METHOD', url = 'https://blah.com/api/v1/actions/list', statusCode = 400
+  const method = 'METHOD'
+  const url = 'https://blah.com/api/v1/actions/list'
+  const statusCode = 400
   t.throws(() => client.handle_errors({
     error: {error: 'hello'},
     options: {method, url},

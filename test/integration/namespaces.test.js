@@ -19,8 +19,6 @@ envParams.forEach(key => {
   }
 })
 
-const NAMESPACE = process.env.__OW_NAMESPACE
-
 test('list all namespaces', t => {
   const namespaces = new Namespaces(new Client(options))
   return namespaces.list().then(result => {

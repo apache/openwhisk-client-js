@@ -171,7 +171,6 @@ test('should be able to create trigger ignoring options namespace', t => {
   const client = {}
   client.options = {api_key}
 
-  const ns = '_'
   const feeds = new Feeds(client)
 
   client.request = (method, path, options) => {
@@ -197,7 +196,6 @@ test('should be able to create trigger from full qualified feed', t => {
   const client = {}
   client.options = {api_key, namespace: 'global'}
 
-  const ns = '_'
   const feeds = new Feeds(client)
 
   client.request = (method, path, options) => {
@@ -245,14 +243,12 @@ test('should be able to create feed using feedName with params', t => {
 })
 
 test('should throw errors without trigger parameter ', t => {
-  const ns = '_'
   const client = {options: {}}
   const feeds = new Feeds(client)
   t.throws(() => feeds.feed('', {feedName: 'myFeed'}), /trigger/)
 })
 
 test('should throw errors without id parameter', t => {
-  const ns = '_'
   const client = {options: {}}
   const feeds = new Feeds(client)
   t.throws(() => feeds.feed('', {trigger: 'myFeed'}), /feedName/)

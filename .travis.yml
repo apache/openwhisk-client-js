@@ -17,6 +17,7 @@ install:
   - cd $TRAVIS_BUILD_DIR
 
 script:
+  - npm run lint
   - ./tools/travis/scancode.sh
   - cd $TRAVIS_BUILD_DIR
   - ./tools/travis/build.sh

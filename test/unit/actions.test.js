@@ -353,5 +353,4 @@ test('create a new action with version parameter', t => {
   }
 
   return actions.create({name: '12345', action, version})
-
 })
