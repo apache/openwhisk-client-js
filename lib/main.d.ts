@@ -166,7 +166,7 @@ declare namespace openwhisk {
     interface Action extends ActionDesc {
         parameters?: KeyVal[];
         limits?: Limits;
-        exec: Exec;
+        exec: Exec | Sequence;
     }
 
     interface Activation<T extends Dict> extends ActivationDesc {
@@ -219,6 +219,11 @@ declare namespace openwhisk {
         kind: Kind;
         code: string;
         binary?: boolean
+    }
+
+    interface Sequence {
+        kind: "sequence";
+        components: string[];
     }
 
     type Kind =
