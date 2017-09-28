@@ -356,7 +356,7 @@ test('create a new action with limits', t => {
   const client = {}
   const action = 'function main() { // main function body};'
   const limits = {
-    timout: 300000
+    timeout: 300000
   }
   const actions = new Actions(client)
 
