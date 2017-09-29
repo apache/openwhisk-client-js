@@ -333,6 +333,8 @@ The following mandatory parameters are supported:
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 - `params` - object containing default parameters for the action (default: `{}`)
+- `annotations` - object containing annotations for the action (default: `{}`)
+- `limits` - object containing limits for the action (default: `{}`)
 - `kind` - runtime environment parameter, ignored when `action` is an object (default: `nodejs:default`)
 - `version` - set semantic version of the action. If parameter is empty when create new action openwisk generate 0.0.1 value when update an action increase the patch version.
 
