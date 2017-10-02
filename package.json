@@ -3,6 +3,7 @@
   "version": "3.6.0",
   "description": "JavaScript client library for the OpenWhisk platform",
   "main": "lib/main.js",
+  "typings": "lib/main.d.ts",
   "engines": {
     "node": ">=4.0.0"
   },
@@ -41,7 +42,9 @@
     "proxyquire": "1.7.4"
   },
   "dependencies": {
-    "request-promise": "^2.0.1"
+    "request-promise": "^2.0.1",
+    "@types/node": "^8.0.26",
+    "@types/swagger-schema-official": "^2.0.6"
   },
   "babel": {
     "presets": [
