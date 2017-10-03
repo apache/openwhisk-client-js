@@ -171,6 +171,41 @@ test('should create a route with apigw_token', t => {
   return routes.create({relpath: '/hello', operation: 'GET', action: 'helloAction'})
 })
 
+test('should create a route with response type', t => {
+  t.plan(4)
+  const path_url = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const api_key = 'username:password'
+  const client_options = { api_key }
+  const client = { path_url, options: client_options }
+  const options = {force: true, basepath: '/hello', relpath: '/bar/1', operation: 'GET'}
+
+  const body = {
+    apidoc: {
+      namespace: '_',
+      gatewayBasePath: '/',
+      gatewayPath: '/hello',
+      gatewayMethod: 'GET',
+      id: 'API:_:/',
+      action: {
+        name: 'helloAction',
+        namespace: '_',
+        backendMethod: 'GET',
+        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/_/default/helloAction.http',
+        authkey: api_key }
+    }
+  }
+
+  client.request = (method, path, _options) => {
+    t.is(method, 'POST')
+    t.is(path, routes.routeMgmtApiPath('createApi'))
+    t.deepEqual(_options.body, body)
+    t.deepEqual(_options.qs, { responsetype: 'http' })
+  }
+
+  const routes = new Routes(client)
+  return routes.create({relpath: '/hello', operation: 'GET', action: 'helloAction', responsetype: 'http'})
+})
+
 test('should create a route with apigw_token and action with package', t => {
   t.plan(4)
   const path_url = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
