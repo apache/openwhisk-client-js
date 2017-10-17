@@ -464,7 +464,8 @@ ow.routes.create({relpath: '...', operation: '...', action: '...'})
 
 *`action` supports normal (actionName) and fully-qualified (/namespace/actionName) formats.*
 
-The following optional parameters are supported to filter the result set:
+The following optional parameters are supported:
+- `responsetype` - content type returned by web action, possible values: `html`, `http`, `json`, `text` and `svg` (default: `json`).
 - `basepath` - base URI path for endpoints (default: `/`)
 
 ## Debugging
