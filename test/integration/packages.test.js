@@ -49,6 +49,13 @@ test('list all packages using options namespace', t => {
   })
 })
 
+test('get a non-existing package, expecting 404', async t => {
+  const packages = new Packages(new Client(options))
+  await packages.get({name: 'glorfindel'}).catch(err => {
+      t.is(err.statusCode, 404)
+  })
+})
+
 test('create, get and delete an package', t => {
   const errors = err => {
     console.log(err)
