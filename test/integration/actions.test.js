@@ -67,7 +67,7 @@ test('delete a non-existing action, expecting 404', async t => {
 test('create with an existing action, expecting 409', async t => {
   const actions = new Actions(new Client(options))
     await actions.create({name: 'glorfindel2', action: 'x=>x'})
-        .then(actions.create({name: 'glorfindel2', action: 'x=>x'}))
+        .then(() => actions.create({name: 'glorfindel2', action: 'x=>x'}))
         .catch(err => {
             t.is(err.statusCode, 409)
         })
