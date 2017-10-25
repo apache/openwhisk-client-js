@@ -247,6 +247,7 @@ ow.triggers.get({name: '...'})
 ow.rules.get({name: '...'})
 ow.namespaces.get({name: '...'})
 ow.packages.get({name: '...'})
+ow.feeds.get({name: '...'})
 ```
 
 The following optional parameters are supported:
