@@ -38,11 +38,14 @@ tempTest('create and delete a feed', t => {
   }
   return triggers.create({triggerName: 'sample_feed_trigger'}).then(() => feeds.create(feed_params)).then(result => {
     t.is(result.response.success, true)
-    return feeds.delete(feed_params).then(feed_result => {
-      t.is(feed_result.response.success, true)
-      return triggers.delete({triggerName: 'sample_feed_trigger'}).then(() => {
-        t.pass()
-      })
+    return feeds.get(feed_params).then(get_result => {
+      t.is(get_result.response.success, true)
+      return feeds.delete(feed_params).then(feed_result => {
+        t.is(feed_result.response.success, true)
+        return triggers.delete({triggerName: 'sample_feed_trigger'}).then(() => {
+          t.pass()
+        })
+      }).catch(errors)
     }).catch(errors)
   }).catch(errors)
 })
