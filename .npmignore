@@ -1,0 +1,5 @@
+tools/
+test/
+.gitignore
+.travis.yml
+CONTRIBUTIN.md
