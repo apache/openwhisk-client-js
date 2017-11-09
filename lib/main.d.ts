@@ -46,9 +46,9 @@ declare namespace openwhisk {
         invoke<In extends Dict, Out extends Dict>(options: { name: string; namespace?: string; blocking: true; params?: In; result: true; }): Promise<Out>;
         invoke<In extends Dict, Out extends Dict>(options: { name: string; namespace?: string; blocking: true; params?: In; result?: false; }): Promise<Activation<Out>>;
         invoke<In extends Dict, Out extends Dict>(options: { name: string; namespace?: string; blocking?: false; params?: In; result?: boolean; }): Promise<{ activationId: string }>;
-        create(options: { name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; overwrite?: boolean; params?: Dict; version?: string; }): Promise<Action>;
+        create(options: { name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; overwrite?: boolean; params?: Dict; annotations?: Dict; limits?: Limits; version?: string; }): Promise<Action>;
         //create(options: { name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; overwrite?: boolean; params?: Dict; version?: string; }[]): Promise<Action[]>;
-        update(options: { name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; params?: Dict; version?: string; }): Promise<Action>;
+        update(options: { name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; params?: Dict; annotations?: Dict; limits?: Limits; version?: string; }): Promise<Action>;
         //update(options: ({ name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; params?: Dict; version?: string; })[]): Promise<Action[]>;
         delete(options: string): Promise<Action>;
         delete(options: { name: string; namespace?: string; }): Promise<Action>;
@@ -239,9 +239,9 @@ declare namespace openwhisk {
         "php:7.1";
 
     interface Limits {
-        timeout: number;
-        memory: number;
-        logs: number;
+        timeout?: number;
+        memory?: number;
+        logs?: number;
     }
 
     interface Response<T extends Dict> {
