@@ -20,12 +20,20 @@ test('should parse namespace from resource without explicit ns', t => {
   t.is(names.parse_namespace('hello'), '_')
 })
 
+test('should parse namespace from package resource without explicit ns', t => {
+  t.is(names.parse_namespace('pkg/hello'), '_')
+})
+
 test('should parse namespace from resource with explicit ns', t => {
   t.is(names.parse_namespace('/ns/hello'), 'ns')
 })
 
-test('should parse namespace from resource with explicit ns and package', t => {
+test('should parse namespace from package resource with explicit ns', t => {
   t.is(names.parse_namespace('/ns/pkg/hello'), 'ns')
+})
+
+test('should parse namespace from resource with explicit ns and package but missing leading slash', t => {
+  t.is(names.parse_namespace('ns/pkg/hello'), 'ns')
 })
 
 test('should throw error for resource with only namespace', t => {
@@ -34,18 +42,31 @@ test('should throw error for resource with only namespace', t => {
 
 test('should throw error for resource with only extra paths', t => {
   t.throws(() => names.parse_namespace('/ns/pkg/action/extra'), /Invalid resource identifier/)
+  t.throws(() => names.parse_namespace('ns/pkg/action/extra'), /Invalid resource identifier/)
+})
+
+test('should throw error for resource with missing parts', t => {
+  t.throws(() => names.parse_namespace('/'), /Invalid resource identifier/)
 })
 
 test('should parse id from resource without explicit ns', t => {
   t.is(names.parse_id('hello'), 'hello')
 })
 
+test('should parse id from package resource without explicit ns', t => {
+  t.is(names.parse_id('pkg/hello'), 'pkg/hello')
+})
+
 test('should parse id from resource with explicit ns', t => {
   t.is(names.parse_id('/ns/hello'), 'hello')
 })
 
-test('should parse id from resource with explicit ns and package', t => {
+test('should parse id from package resource with explicit ns', t => {
   t.is(names.parse_id('/ns/pkg/hello'), 'pkg/hello')
+})
+
+test('should parse id from resource with explicit ns and package but missing leading slash', t => {
+  t.is(names.parse_id('ns/pkg/hello'), 'pkg/hello')
 })
 
 test('should throw error for resource with only namespace', t => {
@@ -54,4 +75,9 @@ test('should throw error for resource with only namespace', t => {
 
 test('should throw error for resource with only extra paths', t => {
   t.throws(() => names.parse_id('/ns/pkg/action/extra'), /Invalid resource identifier/)
+  t.throws(() => names.parse_id('ns/pkg/action/extra'), /Invalid resource identifier/)
+})
+
+test('should throw error for resource with missing parts', t => {
+  t.throws(() => names.parse_id('/'), /Invalid resource identifier/)
 })
