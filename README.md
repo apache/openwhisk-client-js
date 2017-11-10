@@ -273,6 +273,7 @@ ow.actions.delete({name: '...'})
 ow.triggers.delete({name: '...'})
 ow.rules.delete({name: '...'})
 ow.packages.delete({name: '...'})
+ow.feeds.delete({name: '...', trigger: '...'})
 ```
 
 The following optional parameters are supported:
@@ -414,11 +415,10 @@ ow.rules.disable({name: '...'})
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 
-### create & delete feeds
+### create feeds
 
 ```javascript
 ow.feeds.create({feedName: '...', trigger: '...'})
-ow.feeds.delete({feedName: '...', trigger: '...'})
 ```
 
 The following optional parameters are supported:
@@ -433,6 +433,15 @@ This client library defaults to using the platform service. If the `apigw_token`
 
 *The interface for managing routes through the library does not change between providers.*
 
+### retrieve route
+
+```javascript
+ow.routes.get({basepath: '...'})
+ow.routes.get({name: '...'})
+```
+
+*This method is a wrapper for the list method. It throws an error if the base path or name parameter is missing.*
+
 ### list routes
 
 ```javascript
@@ -442,16 +451,18 @@ ow.routes.list()
 The following optional parameters are supported to filter the result set:
 - `relpath` - relative URI path for endpoints
 - `basepath` - base URI path for endpoints
+- `name` - identifier for API
 - `operation` - HTTP methods
 - `limit` - limit result set size
 - `skip` - skip results from index
 
-*`relpath` is only valid when `basepath` is also specified.*
+*`relpath` is only valid when `basepath` is also specified. `name` and `basepath` cannot be used together.*
 
 ### delete routes
 
 ```javascript
 ow.routes.delete({basepath: '...'})
+ow.routes.delete({name: '...'})
 ```
 
 The following optional parameters are supported to filter the result set:
@@ -468,6 +479,17 @@ ow.routes.create({relpath: '...', operation: '...', action: '...'})
 The following optional parameters are supported:
 - `responsetype` - content type returned by web action, possible values: `html`, `http`, `json`, `text` and `svg` (default: `json`).
 - `basepath` - base URI path for endpoints (default: `/`)
+- `name` - identifier for API (default: `basepath`)
+
+### add route (swagger)
+
+```javascript
+ow.routes.create({swagger: '{...}'})
+```
+
+Swagger parameter must be a well-formed JSON string, containing a valid Swagger API definition, which follows the [OpenWhisk API Gateway route schema](https://github.com/apache/incubator-openwhisk-apigateway/blob/master/doc/v2/management_interface_v2.md#post-v2tenant_idapis).
+
+*No other parameters are supported when creating the route from a JSON Swagger document.*
 
 ## Debugging
 
@@ -511,7 +533,7 @@ Alternatively, you can run the `prepIntegrationTests.sh` script using guest cred
 Run the script with openwhisk credentials:  
 ```bash
 $ ./test/integration/prepIntegrationTests.sh <your key in the form of ABCD:EFGH> <openwhisk instance hostname> <openwhisk namespace> <api gatewaytoken>
-```  
+```
 The `prepIntegrationTests.sh` script is designed to give you feedback if it detects a setting that is not correct on your machine. ex: `node 6 or above is not detected`
 
 ## Code-Coverage:
