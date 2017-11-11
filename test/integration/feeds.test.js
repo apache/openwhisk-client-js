@@ -31,17 +31,17 @@ tempTest('create and delete a feed', t => {
 
   const feeds = new Feeds(new Client(options))
   const triggers = new Triggers(new Client(options))
-  const feed_params = {
+  const feedParams = {
     feedName: '/whisk.system/alarms/alarm',
     trigger: `/${NAMESPACE}/sample_feed_trigger`,
     params: {cron: '*/8 * * * * *', trigger_payload: {name: 'test', place: 'hello'}}
   }
-  return triggers.create({triggerName: 'sample_feed_trigger'}).then(() => feeds.create(feed_params)).then(result => {
+  return triggers.create({triggerName: 'sample_feed_trigger'}).then(() => feeds.create(feedParams)).then(result => {
     t.is(result.response.success, true)
-    return feeds.get(feed_params).then(get_result => {
-      t.is(get_result.response.success, true)
-      return feeds.delete(feed_params).then(feed_result => {
-        t.is(feed_result.response.success, true)
+    return feeds.get(feedParams).then(getResult => {
+      t.is(getResult.response.success, true)
+      return feeds.delete(feedParams).then(feedResult => {
+        t.is(feedResult.response.success, true)
         return triggers.delete({triggerName: 'sample_feed_trigger'}).then(() => {
           t.pass()
         })

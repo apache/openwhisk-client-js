@@ -79,9 +79,9 @@ test.serial('create, get and delete a rule', t => {
         t.is(result.namespace, NAMESPACE)
         t.deepEqual(result.action, {path: NAMESPACE, name: 'hello'})
         t.deepEqual(result.trigger, {path: NAMESPACE, name: 'sample_rule_trigger'})
-        return rules.get({ruleName: result.name}).then(rule_result => {
-          t.is(rule_result.name, result.name)
-          t.is(rule_result.namespace, NAMESPACE)
+        return rules.get({ruleName: result.name}).then(ruleResult => {
+          t.is(ruleResult.name, result.name)
+          t.is(ruleResult.namespace, NAMESPACE)
           t.pass()
           return rules.disable({ruleName: 'random_rule_test'})
             .then(() => rules.delete({ruleName: 'random_rule_test'}))
@@ -122,8 +122,8 @@ test.serial('create and update a rule', t => {
               ruleName: 'random_update_test',
               action: 'tests',
               trigger: 'sample_rule_trigger'
-            }).then(update_result => {
-              t.deepEqual(update_result.action, {path: NAMESPACE, name: 'tests'})
+            }).then(updateResult => {
+              t.deepEqual(updateResult.action, {path: NAMESPACE, name: 'tests'})
               t.pass()
               return rules.delete({ruleName: 'random_update_test'})
                 .then(() => triggers.delete({triggerName: 'sample_rule_trigger'}))

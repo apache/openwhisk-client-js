@@ -88,9 +88,9 @@ test('create, get and delete an action', t => {
     t.is(result.namespace, NAMESPACE)
     t.is(result.exec.kind, 'nodejs:6')
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
-    return actions.get({actionName: 'random_action_test'}).then(action_result => {
-      t.is(action_result.name, 'random_action_test')
-      t.is(action_result.namespace, NAMESPACE)
+    return actions.get({actionName: 'random_action_test'}).then(actionResult => {
+      t.is(actionResult.name, 'random_action_test')
+      t.is(actionResult.namespace, NAMESPACE)
       t.pass()
       return actions.delete({actionName: 'random_action_test'}).catch(errors)
     }).catch(errors)
@@ -112,8 +112,8 @@ test('create and update an action', t => {
     t.is(result.namespace, NAMESPACE)
     t.is(result.exec.kind, 'nodejs:6')
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
-    return actions.update({actionName: 'random_update_tested', action: 'update test'}).then(update_result => {
-      t.is(update_result.exec.code, 'update test')
+    return actions.update({actionName: 'random_update_tested', action: 'update test'}).then(updateResult => {
+      t.is(updateResult.exec.code, 'update test')
       t.pass()
       return actions.delete({actionName: 'random_update_tested'}).catch(errors)
     }).catch(errors)
@@ -141,10 +141,10 @@ test('create, get and delete with parameters an action', t => {
       actionName: 'random_action_params_test',
       params: {foo: 'bar'},
       action: 'update test'
-    }).then(update_result => {
-      t.is(update_result.name, 'random_action_params_test')
-      t.is(update_result.namespace, NAMESPACE)
-      t.deepEqual(update_result.parameters, [{key: 'foo', value: 'bar'}])
+    }).then(updateResult => {
+      t.is(updateResult.name, 'random_action_params_test')
+      t.is(updateResult.namespace, NAMESPACE)
+      t.deepEqual(updateResult.parameters, [{key: 'foo', value: 'bar'}])
       t.pass()
       return actions.delete({name: 'random_action_params_test'}).catch(errors)
     }).catch(errors)
@@ -159,8 +159,8 @@ test('invoke action with fully-qualified name', t => {
   }
 
   const actions = new Actions(new Client(options))
-  return actions.invoke({actionName: '/whisk.system/utils/sort', blocking: true}).then(invoke_result => {
-    t.true(invoke_result.response.success)
+  return actions.invoke({actionName: '/whisk.system/utils/sort', blocking: true}).then(invokeResult => {
+    t.true(invokeResult.response.success)
     t.pass()
   }).catch(errors)
 })
@@ -183,9 +183,9 @@ test('create, invoke and remove package action', t => {
         actionName: 'random_package_action_test',
         params: {hello: 'world'},
         blocking: true
-      }).then(invoke_result => {
-        t.deepEqual(invoke_result.response.result, {hello: 'world'})
-        t.true(invoke_result.response.success)
+      }).then(invokeResult => {
+        t.deepEqual(invokeResult.response.result, {hello: 'world'})
+        t.true(invokeResult.response.success)
         t.pass()
         return actions.delete({actionName: 'random_package_action_test'}).catch(errors)
       })

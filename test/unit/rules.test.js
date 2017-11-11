@@ -230,18 +230,18 @@ test('should parse correct namespace for actions names with no other namespaces'
   const client = {options: {}}
   const rules = new Rules(client)
 
-  t.is(rules.convert_to_fqn('simple'), '/_/simple')
-  t.is(rules.convert_to_fqn('simple', 'a'), '/a/simple')
-  t.is(rules.convert_to_fqn('/a/simple'), '/a/simple')
-  t.is(rules.convert_to_fqn('/a/simple', 'b'), '/a/simple')
+  t.is(rules.convertToFqn('simple'), '/_/simple')
+  t.is(rules.convertToFqn('simple', 'a'), '/a/simple')
+  t.is(rules.convertToFqn('/a/simple'), '/a/simple')
+  t.is(rules.convertToFqn('/a/simple', 'b'), '/a/simple')
 })
 
 test('should parse correct namespace for actions names with global namespace', t => {
   const client = {options: {namespace: 'global'}}
   const rules = new Rules(client)
 
-  t.is(rules.convert_to_fqn('simple'), '/global/simple')
-  t.is(rules.convert_to_fqn('simple', 'a'), '/a/simple')
-  t.is(rules.convert_to_fqn('/a/simple'), '/a/simple')
-  t.is(rules.convert_to_fqn('/a/simple', 'b'), '/a/simple')
+  t.is(rules.convertToFqn('simple'), '/global/simple')
+  t.is(rules.convertToFqn('simple', 'a'), '/a/simple')
+  t.is(rules.convertToFqn('/a/simple'), '/a/simple')
+  t.is(rules.convertToFqn('/a/simple', 'b'), '/a/simple')
 })

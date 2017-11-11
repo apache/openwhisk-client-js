@@ -68,9 +68,9 @@ test('create, get and delete an package', t => {
     t.is(result.namespace, NAMESPACE)
     t.deepEqual(result.annotations, [])
     t.is(result.version, '0.0.1')
-    return packages.get({packageName: 'random_package_test'}).then(package_result => {
-      t.is(package_result.name, 'random_package_test')
-      t.is(package_result.namespace, NAMESPACE)
+    return packages.get({packageName: 'random_package_test'}).then(packageResult => {
+      t.is(packageResult.name, 'random_package_test')
+      t.is(packageResult.namespace, NAMESPACE)
       t.pass()
       return packages.delete({packageName: 'random_package_test'}).catch(errors)
     }).catch(errors)
@@ -89,8 +89,8 @@ test('create and update an package', t => {
     t.is(result.namespace, NAMESPACE)
     t.deepEqual(result.annotations, [])
     t.is(result.version, '0.0.1')
-    return packages.update({packageName: 'random_package_update_test'}).then(update_result => {
-      t.is(update_result.version, '0.0.2')
+    return packages.update({packageName: 'random_package_update_test'}).then(updateResult => {
+      t.is(updateResult.version, '0.0.2')
       t.pass()
       return packages.delete({packageName: 'random_package_update_test'}).catch(errors)
     }).catch(errors)

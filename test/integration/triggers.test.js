@@ -70,9 +70,9 @@ test('create, get and delete an trigger', t => {
     t.is(result.version, '0.0.1')
     t.deepEqual(result.limits, {})
     t.pass()
-    return triggers.get({triggerName: result.name}).then(trigger_result => {
-      t.is(trigger_result.name, result.name)
-      t.is(trigger_result.namespace, NAMESPACE)
+    return triggers.get({triggerName: result.name}).then(triggerResult => {
+      t.is(triggerResult.name, result.name)
+      t.is(triggerResult.namespace, NAMESPACE)
       t.pass()
       return triggers.delete({triggerName: result.name}).catch(errors)
     }).catch(errors)
@@ -92,8 +92,8 @@ test('create and update an trigger', t => {
     t.deepEqual(result.annotations, [])
     t.is(result.version, '0.0.1')
     t.deepEqual(result.limits, {})
-    return triggers.update({triggerName: 'random_create_update_test'}).then(update_result => {
-      t.is(update_result.version, '0.0.2')
+    return triggers.update({triggerName: 'random_create_update_test'}).then(updateResult => {
+      t.is(updateResult.version, '0.0.2')
       t.pass()
       return triggers.delete({triggerName: 'random_create_update_test'}).catch(errors)
     }).catch(errors)
@@ -108,8 +108,8 @@ test('fire a trigger', t => {
 
   const triggers = new Triggers(new Client(options))
   return triggers.create({triggerName: 'random_fire_test'}).then(result => {
-    return triggers.invoke({triggerName: 'random_fire_test'}).then(update_result => {
-      t.true(update_result.hasOwnProperty('activationId'))
+    return triggers.invoke({triggerName: 'random_fire_test'}).then(updateResult => {
+      t.true(updateResult.hasOwnProperty('activationId'))
       t.pass()
       return triggers.delete({triggerName: 'random_fire_test'}).catch(errors)
     }).catch(errors)

@@ -9,8 +9,8 @@ function getInsecureFlag () {
 function autoOptions () {
   var options = {}
   if (getInsecureFlag()) {
-    options.ignore_certs = true
-    options.apigw_token = true
+    options.ignoreCerts = true
+    options.apigwToken = true
   }
   return options
 }

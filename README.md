@@ -57,7 +57,7 @@ exports.main = action
 
 ```javascript
 var openwhisk = require('openwhisk');
-var options = {apihost: 'openwhisk.ng.bluemix.net', api_key: '...'};
+var options = {apihost: 'openwhisk.ng.bluemix.net', apiKey: '...'};
 var ow = openwhisk(options);
 ow.actions.invoke('sample').then(result => console.log(result))
 ```
@@ -67,19 +67,19 @@ ow.actions.invoke('sample').then(result => console.log(result))
 _Client constructor supports the following mandatory parameters:_
 
 - **apihost.** Hostname and optional port for openwhisk platform, e.g. `openwhisk.ng.bluemix.net` or `my_whisk_host:80`. Used with API URL template `${protocol}://${apihost}/api/v1/`. If port is missing or port value is 443 in the apihost string, protocol is HTTPS. Otherwise, protocol is HTTP.
-- **api_key.** Authorisation key for user account registered with OpenWhisk platform.
+- **apiKey.** Authorisation key for user account registered with OpenWhisk platform.
 
 *Client constructor supports the following optional parameters:*
 
 - **api.** Full API URL for OpenWhisk platform, e.g. `https://openwhisk.ng.bluemix.net/api/v1/`. This value overrides `apihost` if both are present.
 - **namespace**. Namespace for resource requests, defaults to `_`.
-- **ignore_certs**. Turns off server SSL/TLS certificate verification. This allows the client to be used against local deployments of OpenWhisk with a self-signed certificate. Defaults to false.
-- **apigw_token**. API Gateway service authentication token. This is mandatory for using an external API Gateway service, rather than the built-in api gateway.
-- **apigw_space_guid**. API Gateway space identifier. This is optional when using an API gateway service, defaults to the authentication uuid.
+- **ignoreCerts**. Turns off server SSL/TLS certificate verification. This allows the client to be used against local deployments of OpenWhisk with a self-signed certificate. Defaults to false.
+- **apigwToken**. API Gateway service authentication token. This is mandatory for using an external API Gateway service, rather than the built-in api gateway.
+- **apigwSpaceGuid**. API Gateway space identifier. This is optional when using an API gateway service, defaults to the authentication uuid.
 
 ### environment variables
 
-Client constructor will read values for the `apihost`, `namespace`, `api_key`, `apigw_token` and `apigw_space_guid` options from the environment if the following parameters are set. Explicit options have precedence over environment values.
+Client constructor will read values for the `apihost`, `namespace`, `apiKey`, `apigwToken` and `apigwSpaceGuid` options from the environment if the following parameters are set. Explicit options have precedence over environment values.
 
 - *__OW_API_HOST*
 - *__OW_NAMESPACE*
@@ -430,7 +430,7 @@ The following optional parameters are supported:
 
 OpenWhisk supports a [built-in API gateway service](https://github.com/apache/incubator-openwhisk/blob/master/docs/apigateway.md) and external third-party providers.
 
-This client library defaults to using the platform service. If the `apigw_token` parameter is passed into the client constructor, the implementation will switch to the [IBM Bluemix API Gateway](https://console.ng.bluemix.net/docs/openwhisk/openwhisk_apigateway.html#openwhisk_apigateway).
+This client library defaults to using the platform service. If the `apigwToken` parameter is passed into the client constructor, the implementation will switch to the [IBM Bluemix API Gateway](https://console.ng.bluemix.net/docs/openwhisk/openwhisk_apigateway.html#openwhisk_apigateway).
 
 *The interface for managing routes through the library does not change between providers.*
 
