@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/apache/incubator-openwhisk-client-js.svg?branch=master)](https://travis-ci.org/apache/incubator-openwhisk-client-js)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![codecov](https://codecov.io/gh/apache/incubator-openwhisk-client-js/branch/master/graph/badge.svg)](https://codecov.io/gh/apache/incubator-openwhisk-client-js)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 JavaScript client library for the [Apache OpenWhisk](https://github.com/apache/incubator-openwhisk) platform.
 Provides a wrapper around the [OpenWhisk APIs](https://github.com/apache/incubator-openwhisk/blob/fb001afa237476eda0c0f6494ee92702e5986538/core/controller/src/main/resources/apiv1swagger.json) (Swagger JSON).
