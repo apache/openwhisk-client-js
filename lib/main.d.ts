@@ -10,12 +10,12 @@ declare function openwhisk(options?: openwhisk.Options): openwhisk.Client;
 declare namespace openwhisk {
     interface Options {
         api?: string;
-        api_key?: string;
+        apiKey?: string;
         apihost?: string;
         namespace?: string;
-        ignore_certs?: boolean;
-        apigw_token?: string;
-        apigw_space_guid?: string;
+        ignoreCerts?: boolean;
+        apigwToken?: string;
+        apigwSpaceGuid?: string;
     }
 
     // Client
