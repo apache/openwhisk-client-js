@@ -331,6 +331,49 @@ test('create a new action with default parameters', t => {
   return actions.create({name: '12345', action, params})
 })
 
+test('create a new action with annotations', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const action = 'function main() { // main function body};'
+  const annotations = {
+    foo: 'bar'
+  }
+  const actions = new Actions(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {exec: {kind: 'nodejs:default', code: action},
+      annotations: [
+      { key: 'foo', value: 'bar' }
+      ]})
+  }
+
+  return actions.create({name: '12345', action, annotations})
+})
+
+test('create a new action with limits', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const action = 'function main() { // main function body};'
+  const limits = {
+    timeout: 300000
+  }
+  const actions = new Actions(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {exec: {kind: 'nodejs:default', code: action}, limits: {timeout: 300000}})
+  }
+
+  return actions.create({name: '12345', action, limits})
+})
+
 test('create an action without providing an action body', t => {
   const actions = new Actions()
   t.throws(() => actions.create({name: '12345'}), /Missing mandatory action/)

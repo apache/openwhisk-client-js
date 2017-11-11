@@ -49,6 +49,13 @@ test('list all triggers using options namespace', t => {
   })
 })
 
+test('get a non-existing trigger, expecting 404', async t => {
+  const triggers = new Triggers(new Client(options))
+  await triggers.get({name: 'glorfindel'}).catch(err => {
+    t.is(err.statusCode, 404)
+  })
+})
+
 test('create, get and delete an trigger', t => {
   const errors = err => {
     console.log(err)

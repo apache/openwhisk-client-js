@@ -1,22 +1,25 @@
 language: node_js
 node_js:
-  - "6"
-
+- '6'
 sudo: required
-
 services:
- - docker
-
+- docker
 before_install:
-  - cd $TRAVIS_BUILD_DIR
-
+- cd $TRAVIS_BUILD_DIR
 install:
-  - ./tools/travis/setupscan.sh
-  - cd $TRAVIS_BUILD_DIR
-  - ./tools/travis/setup.sh
-  - cd $TRAVIS_BUILD_DIR
-
+- "./tools/travis/setupscan.sh"
+- cd $TRAVIS_BUILD_DIR
+- "./tools/travis/setup.sh"
+- cd $TRAVIS_BUILD_DIR
 script:
-  - ./tools/travis/scancode.sh
-  - cd $TRAVIS_BUILD_DIR
-  - ./tools/travis/build.sh
+- "./tools/travis/scancode.sh"
+- cd $TRAVIS_BUILD_DIR
+- "./tools/travis/build.sh"
+deploy:
+  provider: npm
+  email: apacheopenwhisk@gmail.com
+  api_key:
+    secure: KGzgdBzEAm3hqascSOdu+V9NbTSPo+DxWblIXuAPxXhWb4s/Fej+FFd/WwHIlt8P1+n6azUcJqOACihtIe53Wvwvof4yPItBornHJifnQdSlPcjjOGPm5eldfqao4ubzx2V78yI92vwPad0KPEMvEjr2pa/ZTcsT7T67OaN89Swib2XS+pNOmTK3b8dcUOAKon6UkSz4/ssE0VLclaUwL54sEntQxhnM+OU1B5/4Ky9mwi8kkGlC9T4zS71e0kO9WKSvfMF31kpHF1EFsUHFdo8z1DsPoxD3z4oNHJCq4GOGeGUmIzGoI/WZYtod0gcCVfdE0/2JVaaegrO6jerntj90JXCX6HJgIVBUqJrOroooaniEB/oNNp8MmrNywHMRLIXNoC5mrv47KfFNB51OW6rHQVsre3rW86lpG0T5Q4B2CFZTEvGeTQbRUptiecPHuAlMc/qzR2wwzvPgyjGtDMFbeaEdvUoErFOf4KAisI3oM46/JO8h4DRhZ0HvJXdfWXN9GigWGwVATkifdIQ5XCONjdznDNJ73BEhpaRRtGn69hBgSQuu/0W+0sAo91U2u9jwusRMwHIVodX7BCXKSO4//4O9xXOap/AmlZrLMgbHHL0ULhoR/ow/PuwqgBI6SdjiH0Kz3WR+0JuJ1kOwSGxdJn/HrQbXNJ4J6ucKpec=
+  on:
+    tags: true
+    repo: apache/incubator-openwhisk-client-js

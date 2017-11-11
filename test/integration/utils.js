@@ -1,4 +1,4 @@
-function getInsecureFlag() {
+function getInsecureFlag () {
   let npmConfigArgObj = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv) : null
   if (npmConfigArgObj) {
     return npmConfigArgObj.original && npmConfigArgObj.original[2] === '-i'
@@ -6,7 +6,7 @@ function getInsecureFlag() {
   return false
 }
 
-function autoOptions() {
+function autoOptions () {
   var options = {}
   if (getInsecureFlag()) {
     options.ignore_certs = true

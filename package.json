@@ -1,8 +1,9 @@
 {
   "name": "openwhisk",
-  "version": "3.6.0",
+  "version": "3.10.0",
   "description": "JavaScript client library for the OpenWhisk platform",
   "main": "lib/main.js",
+  "typings": "lib/main.d.ts",
   "engines": {
     "node": ">=4.0.0"
   },
@@ -10,17 +11,17 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "ava test/unit",
+    "test": "standard && ava test/unit",
     "test-integration": "ava test/integration/*.test.js",
     "code-coverage-build": "babel --out-dir=ecma5 lib",
     "code-coverage-run": "./tools/merge-coverage.sh",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "lint": "eslint test/** lib/**",
-    "pre-commit-message": "Pre-commit tasks running ... & exit 0"
+    "pre-commit-message": "Pre-commit tasks running ... & exit 0",
+    "standard-fix": "standard --fix"
   },
   "pre-commit": [
     "pre-commit-message",
-    "lint"
+    "standard-fix"
   ],
   "repository": {
     "type": "git",
@@ -47,10 +48,13 @@
     "jszip": "^3.1.3",
     "nyc": "^11.0.3",
     "pre-commit": "^1.2.2",
-    "proxyquire": "1.7.4"
+    "proxyquire": "1.7.4",
+    "standard": "^10.0.3"
   },
   "dependencies": {
-    "request-promise": "^2.0.1"
+    "needle": "^2.0.1",
+    "@types/node": "^8.0.26",
+    "@types/swagger-schema-official": "^2.0.6"
   },
   "babel": {
     "presets": [

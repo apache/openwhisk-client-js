@@ -51,6 +51,13 @@ test('list all rules using options namespace', t => {
   })
 })
 
+test('get a non-existing rule, expecting 404', async t => {
+  const rules = new Rules(new Client(options))
+  await rules.get({name: 'glorfindel'}).catch(err => {
+    t.is(err.statusCode, 404)
+  })
+})
+
 // Running update tests conconcurrently leads to resource conflict errors.
 test.serial('create, get and delete a rule', t => {
   const errors = err => {

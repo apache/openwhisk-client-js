@@ -50,6 +50,29 @@ test('list all actions using options namespace', t => {
   })
 })
 
+test('get a non-existing action, expecting 404', async t => {
+  const actions = new Actions(new Client(options))
+  await actions.get({name: 'glorfindel'}).catch(err => {
+    t.is(err.statusCode, 404)
+  })
+})
+
+test('delete a non-existing action, expecting 404', async t => {
+  const actions = new Actions(new Client(options))
+  await actions.delete({name: 'glorfindel'}).catch(err => {
+    t.is(err.statusCode, 404)
+  })
+})
+
+test('create with an existing action, expecting 409', async t => {
+  const actions = new Actions(new Client(options))
+  await actions.create({name: 'glorfindel2', action: 'x=>x'})
+        .then(() => actions.create({name: 'glorfindel2', action: 'x=>x'}))
+        .catch(err => {
+          t.is(err.statusCode, 409)
+        })
+})
+
 test('create, get and delete an action', t => {
   const errors = err => {
     console.log(err)
