@@ -10,11 +10,27 @@ declare function openwhisk(options?: openwhisk.Options): openwhisk.Client;
 declare namespace openwhisk {
     interface Options {
         api?: string;
+        /**
+         * @Deprecated use apiKey
+         */
+        api_key?: string;
         apiKey?: string;
         apihost?: string;
         namespace?: string;
+        /**
+         * @Deprecated use ignoreCerts
+         */
+        ignore_certs?: boolean;
         ignoreCerts?: boolean;
+        /**
+         * @Deprecated use apigwToken
+         */
+        apigw_token?: string;
         apigwToken?: string;
+        /**
+         * @Deprecated use apigwSpaceGuid
+         */
+        apigw_space_guid?: string;
         apigwSpaceGuid?: string;
     }
 

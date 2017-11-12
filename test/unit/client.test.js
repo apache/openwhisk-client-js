@@ -31,6 +31,22 @@ test('should support explicit constructor options', t => {
   t.is(client.options.apigwSpaceGuid, 'space_guid')
 })
 
+test('should support deprecated explicit constructor options', t => {
+  const client = new Client({
+    namespace: 'ns',
+    ignore_certs: true,
+    api_key: 'aaa',
+    api: 'my_host',
+    apigw_token: 'oauth_token',
+    apigw_space_guid: 'space_guid'
+  })
+  t.is(client.options.api, 'my_host')
+  t.true(client.options.ignoreCerts)
+  t.is(client.options.namespace, 'ns')
+  t.is(client.options.apigwToken, 'oauth_token')
+  t.is(client.options.apigwSpaceGuid, 'space_guid')
+})
+
 test('should use uuid from auth key as space guid if apigwToken present', t => {
   const client = new Client({
     namespace: 'ns',
