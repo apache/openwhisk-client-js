@@ -247,7 +247,7 @@ ow.triggers.get({name: '...'})
 ow.rules.get({name: '...'})
 ow.namespaces.get({name: '...'})
 ow.packages.get({name: '...'})
-ow.feeds.get({name: '...'})
+ow.feeds.get({name: '...', trigger: '...'})
 ```
 
 The following optional parameters are supported:
@@ -415,10 +415,11 @@ ow.rules.disable({name: '...'})
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 
-### create feeds
+### create & update feeds
 
 ```javascript
 ow.feeds.create({feedName: '...', trigger: '...'})
+ow.feeds.update({feedName: '...', trigger: '...'})
 ```
 
 The following optional parameters are supported:

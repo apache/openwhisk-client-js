@@ -42,9 +42,12 @@ tempTest('create and delete a feed', t => {
       t.is(get_result.response.success, true)
       return feeds.delete(feed_params).then(feed_result => {
         t.is(feed_result.response.success, true)
-        return triggers.delete({triggerName: 'sample_feed_trigger'}).then(() => {
-          t.pass()
-        })
+        return feeds.update(feed_params).then(update_result => {
+          t.is(feed_result.response.success, false) // alarms does not currently support update, hence should fail
+          return triggers.delete({triggerName: 'sample_feed_trigger'}).then(() => {
+            t.pass()
+          })
+        }).catch(errors)
       }).catch(errors)
     }).catch(errors)
   }).catch(errors)
