@@ -23,7 +23,7 @@ envParams.forEach(key => {
 const NAMESPACE = process.env.__OW_NAMESPACE
 var tempTest = Utils.getInsecureFlag() ? test.skip : test;
 
-tempTest('create and delete a feed', t => {
+tempTest('create, get, update, and delete a feed', t => {
   const errors = err => {
     console.log(err)
     t.fail()
