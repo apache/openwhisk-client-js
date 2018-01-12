@@ -18,46 +18,17 @@ test('should list all namespaces', t => {
   return namespaces.list()
 })
 
-test('should retrieve namespace using id', t => {
-  t.plan(2)
+test('should retrieve namespace entities', t => {
+  t.plan(16)
   const client = {}
-  const id = 'custom_ns'
   client.request = (method, path, options) => {
     t.is(method, 'GET')
-    t.is(path, `namespaces/${id}`)
+    let parts = path.split('/')
+    t.is(parts[0], 'namespaces')
+    t.is(parts[1], '_')
+    t.is(["actions", "triggers", "rules", "packages"].indexOf(parts[2]) > -1, true)
   }
 
   const namespaces = new Namespaces(client)
-  return namespaces.get({name: id})
-})
-
-test('should retrieve namespace using string id', t => {
-  t.plan(2)
-  const client = {}
-  const id = 'custom_ns'
-  client.request = (method, path, options) => {
-    t.is(method, 'GET')
-    t.is(path, `namespaces/${id}`)
-  }
-
-  const namespaces = new Namespaces(client)
-  return namespaces.get(id)
-})
-
-test('should retrieve namespace using namespace', t => {
-  t.plan(2)
-  const client = {}
-  const id = 'custom_ns'
-  client.request = (method, path, options) => {
-    t.is(method, 'GET')
-    t.is(path, `namespaces/${id}`)
-  }
-
-  const namespaces = new Namespaces(client)
-  return namespaces.get({namespace: id})
-})
-
-test('should throw error for missing namespace id', t => {
-  const namespaces = new Namespaces()
-  return t.throws(() => { namespaces.get() }, /Missing mandatory parameter/)
+  return namespaces.get()
 })
