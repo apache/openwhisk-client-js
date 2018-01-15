@@ -245,7 +245,6 @@ ow.actions.get({name: '...'})
 ow.activations.get({name: '...'})
 ow.triggers.get({name: '...'})
 ow.rules.get({name: '...'})
-ow.namespaces.get({name: '...'})
 ow.packages.get({name: '...'})
 ow.feeds.get({name: '...', trigger: '...'})
 ```
