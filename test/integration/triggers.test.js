@@ -5,11 +5,12 @@
 
 const test = require('ava')
 const Triggers = require('../../lib/triggers.js')
+const Rules = require('../../lib/rules.js')
 const Client = require('../../lib/client.js')
 const Utils = require('./utils.js')
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
-const options = Utils.autoOptions();
+const options = Utils.autoOptions()
 
 // check that mandatory configuration properties are available
 envParams.forEach(key => {
@@ -52,7 +53,7 @@ test('list all triggers using options namespace', t => {
 test('get a non-existing trigger, expecting 404', async t => {
   const triggers = new Triggers(new Client(options))
   await triggers.get({name: 'glorfindel'}).catch(err => {
-      t.is(err.statusCode, 404)
+    t.is(err.statusCode, 404)
   })
 })
 
@@ -107,11 +108,16 @@ test('fire a trigger', t => {
   }
 
   const triggers = new Triggers(new Client(options))
+  const rules = new Rules(new Client(options))
+
   return triggers.create({triggerName: 'random_fire_test'}).then(result => {
-    return triggers.invoke({triggerName: 'random_fire_test'}).then(update_result => {
-      t.true(update_result.hasOwnProperty('activationId'))
-      t.pass()
-      return triggers.delete({triggerName: 'random_fire_test'}).catch(errors)
+    return rules.create({ruleName: 'echo_rule', action: `/whisk.system/utils/echo`, trigger: `/${NAMESPACE}/random_fire_test`}).then(rule_result => {
+      return triggers.invoke({triggerName: 'random_fire_test'}).then(update_result => {
+        t.true(update_result.hasOwnProperty('activationId'))
+        t.pass()
+        return triggers.delete({triggerName: 'random_fire_test'})
+          .then(() => rules.delete({ruleName: 'echo_rule'}))
+      }).catch(errors)
     }).catch(errors)
   }).catch(errors)
 })
