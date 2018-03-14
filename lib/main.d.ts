@@ -131,7 +131,7 @@ declare namespace openwhisk {
     // Descriptions
 
     interface ShortDesc {
-        name: string;
+        name?: string;
         annotations?: KeyVal[];
         version?: string;
     }

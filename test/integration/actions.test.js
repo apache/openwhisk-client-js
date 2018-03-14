@@ -137,6 +137,38 @@ test('create, get and delete with parameters an action', t => {
   }).catch(errors)
 })
 
+test('get an action with and without its code', t => {
+  const errors = err => {
+    console.log(err)
+    t.fail()
+  }
+
+  const actions = new Actions(new Client(options))
+  return actions.create({actionName: 'random_action_get_test', action: 'function main() {return {payload:"testing"}}'}).then(result => {
+    t.is(result.name, 'random_action_get_test')
+    t.is(result.namespace, NAMESPACE)
+    t.is(result.exec.kind, 'nodejs:6')
+    t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
+    return actions.get({actionName: 'random_action_get_test', code: false}).then(action_result => {
+      t.is(action_result.name, 'random_action_get_test')
+      t.is(action_result.namespace, NAMESPACE)
+      t.is(action_result.exec.code, undefined)
+      return actions.get({actionName: 'random_action_get_test', code: true}).then(action_result => {
+        t.is(action_result.name, 'random_action_get_test')
+        t.is(action_result.namespace, NAMESPACE)
+        t.is(action_result.exec.code, 'function main() {return {payload:"testing"}}')
+        return actions.get({actionName: 'random_action_get_test'}).then(action_result => {
+          t.is(action_result.name, 'random_action_get_test')
+          t.is(action_result.namespace, NAMESPACE)
+          t.is(action_result.exec.code, 'function main() {return {payload:"testing"}}')
+          t.pass()
+          return actions.delete({actionName: 'random_action_get_test'}).catch(errors)
+        }).catch(errors)
+      }).catch(errors)
+    }).catch(errors)
+  }).catch(errors)
+})
+
 test('invoke action with fully-qualified name', t => {
   const errors = err => {
     console.log(err)
