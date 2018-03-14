@@ -49,6 +49,25 @@ test('should retrieve action from identifier', t => {
   return actions.get({name: '12345'})
 })
 
+
+test('should retrieve action from identifier with code query parameter', t => {
+  t.plan(3)
+  const ns = '_'
+  const client = {}
+  const actions = new Actions(client)
+  const code = {
+    code: false
+  }
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+    t.deepEqual(options.qs, code)
+  }
+
+  return actions.get({name: '12345', code: false})
+})
+
 test('should retrieve action from string identifier', t => {
   t.plan(2)
   const ns = '_'
@@ -60,7 +79,7 @@ test('should retrieve action from string identifier', t => {
     t.is(path, `namespaces/${ns}/actions/12345`)
   }
 
-  return actions.get('12345')
+  return actions.get({name: '12345'})
 })
 
 test('should delete action from identifier', t => {
