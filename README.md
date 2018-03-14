@@ -252,6 +252,12 @@ ow.feeds.get({name: '...', trigger: '...'})
 The following optional parameters are supported for all resource retrievals:
 - `namespace` - set custom namespace for endpoint
 
+This method also supports passing the `name` property directly without wrapping within an object.
+```javascript
+const name = "actionName"
+ow.actions.get(name)
+```
+
 Optional parameters for action resource retrievals are shown below:
 - `code` - set to `true` or `false` depending on whether action code should be included or excluded respectively
 

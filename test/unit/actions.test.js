@@ -79,7 +79,7 @@ test('should retrieve action from string identifier', t => {
     t.is(path, `namespaces/${ns}/actions/12345`)
   }
 
-  return actions.get({name: '12345'})
+  return actions.get('12345')
 })
 
 test('should delete action from identifier', t => {
