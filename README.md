@@ -229,10 +229,15 @@ ow.namespaces.list()
 ow.packages.list()
 ```
 
-Query parameters for the API calls are supported (e.g. limit, skip, etc.) by passing an object with the named parameters as the first argument.
+Query parameters for the API calls are supported (e.g. limit, skip, count etc.) by passing an object with the named parameters as the first argument.
 
 ```javascript
 ow.actions.list({skip: 100, limit: 50})
+```
+
+To count the number of resources without retrieving the resources you can use `count` query parameter.
+```javascript
+ow.actions.list({count:true})
 ```
 
 The following optional parameters are supported:
