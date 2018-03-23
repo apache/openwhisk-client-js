@@ -36,6 +36,21 @@ test('should list all triggers with parameters', t => {
   return triggers.list({namespace: 'custom', skip: 100, limit: 100})
 })
 
+test('should list all triggers with parameter count', t => {
+  t.plan(3)
+  const ns = '_'
+  const client = {}
+  const triggers = new Triggers(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/custom/triggers`)
+    t.deepEqual(options.qs, {count: true})
+  }
+
+  return triggers.list({namespace: 'custom', count: true})
+})
+
 test('should retrieve trigger from identifier', t => {
   t.plan(2)
   const ns = '_'
