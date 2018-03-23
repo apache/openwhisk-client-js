@@ -236,8 +236,8 @@ ow.actions.list({skip: 100, limit: 50})
 ```
 
 To count the number of resources without retrieving the resources you can use `count` query parameter.
-```
-ow.actions.list({count:true}).then(a => console.log(a)) //prints {"actions": 42}
+```javascript
+ow.actions.list({count:true})
 ```
 
 The following optional parameters are supported:
