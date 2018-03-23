@@ -35,6 +35,20 @@ test('should list all packages with parameters', t => {
   return packages.list({namespace: 'custom', skip: 100, limit: 100})
 })
 
+test('should list all packages with parameter count', t => {
+  t.plan(3)
+  const client = {}
+  const packages = new Packages(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/custom/packages`)
+    t.deepEqual(options.qs, {count: true})
+  }
+
+  return packages.list({namespace: 'custom', count: true})
+})
+
 test('should retrieve package from string identifier', t => {
   t.plan(2)
   const ns = '_'

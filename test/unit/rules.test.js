@@ -35,6 +35,20 @@ test('should list all rules with parameters', t => {
   return rules.list({namespace: 'custom', skip: 100, limit: 100})
 })
 
+test('should list all rules with parameter count', t => {
+  t.plan(3)
+  const client = { options: {} }
+  const rules = new Rules(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/custom/rules`)
+    t.deepEqual(options.qs, {count: true})
+  }
+
+  return rules.list({namespace: 'custom', count: true})
+})
+
 test('should retrieve rule from identifier', t => {
   t.plan(2)
   const ns = '_'
