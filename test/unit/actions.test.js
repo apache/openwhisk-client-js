@@ -63,7 +63,6 @@ test('should retrieve action from identifier', t => {
   return actions.get({name: '12345'})
 })
 
-
 test('should retrieve action from identifier with code query parameter', t => {
   t.plan(3)
   const ns = '_'
@@ -380,7 +379,7 @@ test('create a new action with annotations', t => {
     t.deepEqual(options.qs, {})
     t.deepEqual(options.body, {exec: {kind: 'nodejs:default', code: action},
       annotations: [
-      { key: 'foo', value: 'bar' }
+        { key: 'foo', value: 'bar' }
       ]})
   }
 

@@ -37,7 +37,6 @@ test('should list all triggers with parameters', t => {
 
 test('should list all triggers with parameter count', t => {
   t.plan(3)
-  const ns = '_'
   const client = {}
   const triggers = new Triggers(client)
 

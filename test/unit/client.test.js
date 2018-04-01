@@ -8,7 +8,7 @@ const Client = require('../../lib/client')
 const http = require('http')
 
 test('should use default constructor options', t => {
-  const client = new Client({apiKey: 'aaa', apihost: 'my_host'})
+  const client = new Client({api_key: 'aaa', apihost: 'my_host'})
   t.false(client.options.ignoreCerts)
   t.is(client.options.apiKey, 'aaa')
   t.is(client.options.api, 'https://my_host/api/v1/')
@@ -18,11 +18,11 @@ test('should use default constructor options', t => {
 test('should support explicit constructor options', t => {
   const client = new Client({
     namespace: 'ns',
-    ignoreCerts: true,
-    apiKey: 'aaa',
+    ignore_certs: true,
+    api_key: 'aaa',
     api: 'my_host',
-    apigwToken: 'oauth_token',
-    apigwSpaceGuid: 'space_guid'
+    apigw_token: 'oauth_token',
+    apigw_space_guid: 'space_guid'
   })
   t.is(client.options.api, 'my_host')
   t.true(client.options.ignoreCerts)
@@ -47,13 +47,13 @@ test('should support deprecated explicit constructor options', t => {
   t.is(client.options.apigwSpaceGuid, 'space_guid')
 })
 
-test('should use uuid from auth key as space guid if apigwToken present', t => {
+test('should use uuid from auth key as space guid if apigw_token present', t => {
   const client = new Client({
     namespace: 'ns',
-    ignoreCerts: true,
-    apiKey: 'uuid:pass',
+    ignore_certs: true,
+    api_key: 'uuid:pass',
     api: 'my_host',
-    apigwToken: 'oauth_token'
+    apigw_token: 'oauth_token'
   })
   t.is(client.options.apigwSpaceGuid, 'uuid')
 })
@@ -79,7 +79,7 @@ test('should use options for parameters even if environment parameters are avail
   process.env['__OW_API_HOST'] = 'mywhiskhost'
   process.env['__OW_APIGW_TOKEN'] = 'my-token'
   process.env['__OW_APIGW_SPACE_GUID'] = 'my-space'
-  const client = new Client({apihost: 'openwhisk', apiKey: 'mykey', apigwToken: 'token', apigwSpaceGuid: 'guid'})
+  const client = new Client({apihost: 'openwhisk', api_key: 'mykey', apigw_token: 'token', apigw_space_guid: 'guid'})
   t.is(client.options.apiKey, 'mykey')
   t.is(client.options.api, 'https://openwhisk/api/v1/')
   t.is(client.options.apigwToken, 'token')
@@ -91,22 +91,22 @@ test('should use options for parameters even if environment parameters are avail
 })
 
 test('should throw error when missing API key option.', t => {
-  t.throws(() => new Client({api: true}), /Missing apiKey parameter./)
+  t.throws(() => new Client({api: true}), /Missing api_key parameter./)
 })
 
 test('should throw error when missing both API and API Host options.', t => {
-  t.throws(() => new Client({apiKey: true}), /Missing either api or apihost parameters/)
+  t.throws(() => new Client({api_key: true}), /Missing either api or apihost parameters/)
 })
 
 test('should handle multiple api parameter formats', t => {
-  const client = new Client({apiKey: true, apihost: 'blah'})
+  const client = new Client({api_key: true, apihost: 'blah'})
   t.is(client.urlFromApihost('my_host'), 'https://my_host/api/v1/')
   t.is(client.urlFromApihost('https://my_host:80'), 'https://my_host:80/api/v1/')
   t.is(client.urlFromApihost('http://my_host:80'), 'http://my_host:80/api/v1/')
 })
 
 test('should return default request parameters without options', t => {
-  const client = new Client({apiKey: 'username:password', apihost: 'blah'})
+  const client = new Client({api_key: 'username:password', apihost: 'blah'})
   const METHOD = 'get'
   const PATH = 'some/path/to/resource'
 
@@ -119,7 +119,7 @@ test('should return default request parameters without options', t => {
 })
 
 test('should return request parameters with merged options', t => {
-  const client = new Client({apiKey: 'username:password', apihost: 'blah'})
+  const client = new Client({api_key: 'username:password', apihost: 'blah'})
   const METHOD = 'get'
   const PATH = 'some/path/to/resource'
   const OPTIONS = {b: {bar: 'foo'}, a: {foo: 'bar'}}
@@ -135,7 +135,7 @@ test('should return request parameters with merged options', t => {
 })
 
 test('should return request parameters with explicit api option', t => {
-  const client = new Client({apiKey: 'username:password', api: 'https://api.com/api/v1'})
+  const client = new Client({api_key: 'username:password', api: 'https://api.com/api/v1'})
   const METHOD = 'get'
   const PATH = 'some/path/to/resource'
 
@@ -146,12 +146,12 @@ test('should return request parameters with explicit api option', t => {
 
 test('should generate auth header from API key', t => {
   const apiKey = 'some sample api key'
-  const client = new Client({api: true, apiKey: apiKey})
+  const client = new Client({api: true, api_key: apiKey})
   t.is(client.authHeader(), `Basic ${Buffer.from(apiKey).toString('base64')}`)
 })
 
 test('should return path and status code in error message', t => {
-  const client = new Client({apiKey: true, api: true})
+  const client = new Client({api_key: true, api: true})
   const method = 'METHOD'
   const url = 'https://blah.com/api/v1/actions/list'
   const statusCode = 400
@@ -162,7 +162,7 @@ test('should return path and status code in error message', t => {
 })
 
 test('should return response error string in error message', t => {
-  const client = new Client({apiKey: true, api: true})
+  const client = new Client({api_key: true, api: true})
   const method = 'METHOD'
   const url = 'https://blah.com/api/v1/actions/list'
   const statusCode = 400
@@ -189,6 +189,6 @@ test('should return response error string in error message', t => {
 })
 
 test('should throw errors for non-HTTP response failures', t => {
-  const client = new Client({apiKey: true, api: true})
+  const client = new Client({api_key: true, api: true})
   t.throws(() => client.handleErrors({message: 'error message'}), /error message/)
 })

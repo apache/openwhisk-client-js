@@ -67,10 +67,10 @@ test('delete a non-existing action, expecting 404', async t => {
 test('create with an existing action, expecting 409', async t => {
   const actions = new Actions(new Client(options))
   await actions.create({name: 'glorfindel2', action: 'x=>x'})
-        .then(() => actions.create({name: 'glorfindel2', action: 'x=>x'}))
-        .catch(err => {
-          t.is(err.statusCode, 409)
-        })
+    .then(() => actions.create({name: 'glorfindel2', action: 'x=>x'}))
+    .catch(err => {
+      t.is(err.statusCode, 409)
+    })
 })
 
 test('create, get and delete an action', t => {
@@ -163,18 +163,18 @@ test('get an action with and without its code', t => {
     t.is(result.namespace, NAMESPACE)
     t.is(result.exec.kind, 'nodejs:6')
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
-    return actions.get({actionName: 'random_action_get_test', code: false}).then(action_result => {
-      t.is(action_result.name, 'random_action_get_test')
-      t.is(action_result.namespace, NAMESPACE)
-      t.is(action_result.exec.code, undefined)
-      return actions.get({actionName: 'random_action_get_test', code: true}).then(action_result => {
-        t.is(action_result.name, 'random_action_get_test')
-        t.is(action_result.namespace, NAMESPACE)
-        t.is(action_result.exec.code, 'function main() {return {payload:"testing"}}')
-        return actions.get({actionName: 'random_action_get_test'}).then(action_result => {
-          t.is(action_result.name, 'random_action_get_test')
-          t.is(action_result.namespace, NAMESPACE)
-          t.is(action_result.exec.code, 'function main() {return {payload:"testing"}}')
+    return actions.get({actionName: 'random_action_get_test', code: false}).then(actionResult => {
+      t.is(actionResult.name, 'random_action_get_test')
+      t.is(actionResult.namespace, NAMESPACE)
+      t.is(actionResult.exec.code, undefined)
+      return actions.get({actionName: 'random_action_get_test', code: true}).then(actionResult => {
+        t.is(actionResult.name, 'random_action_get_test')
+        t.is(actionResult.namespace, NAMESPACE)
+        t.is(actionResult.exec.code, 'function main() {return {payload:"testing"}}')
+        return actions.get({actionName: 'random_action_get_test'}).then(actionTesult => {
+          t.is(actionTesult.name, 'random_action_get_test')
+          t.is(actionTesult.namespace, NAMESPACE)
+          t.is(actionTesult.exec.code, 'function main() {return {payload:"testing"}}')
           t.pass()
           return actions.delete({actionName: 'random_action_get_test'}).catch(errors)
         }).catch(errors)
