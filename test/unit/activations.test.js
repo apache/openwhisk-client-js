@@ -43,6 +43,20 @@ test('list all activations', t => {
   })
 })
 
+test('list all activations with count parameter', t => {
+  t.plan(3)
+  const client = {}
+  const activations = new Activations(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/options_namespace/activations`)
+    t.deepEqual(options.qs, {name: 'Hello', count: true})
+  }
+
+  return activations.list({namespace: 'options_namespace', name: 'Hello', count: true})
+})
+
 test('should retrieve an activation', t => {
   t.plan(2)
   const ns = '_'

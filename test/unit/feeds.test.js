@@ -264,6 +264,28 @@ test('should be able to get feed', t => {
   return feeds.get({name: feedName, trigger: triggerName})
 })
 
+test('should be able to update feed', t => {
+  const feed_name = 'feed_name'
+  const api_key = 'username:password'
+  const trigger_name = '/trigger_ns/trigger_name'
+  const client = {}
+  client.options = { api_key }
+
+  const ns = '_'
+  const feeds = new Feeds(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespaces/${ns}/actions/${feed_name}`)
+    t.deepEqual(options.qs, {blocking: true})
+    t.deepEqual(options.body, {authKey: client.options.api_key, lifecycleEvent: 'UPDATE', triggerName: `${trigger_name}`})
+  }
+
+  t.plan(4)
+
+  return feeds.update({name: feed_name, trigger: trigger_name})
+})
+
 test('should throw errors without trigger parameter ', t => {
   const client = {options: {}}
   const feeds = new Feeds(client)

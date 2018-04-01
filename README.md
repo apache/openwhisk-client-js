@@ -230,10 +230,15 @@ ow.namespaces.list()
 ow.packages.list()
 ```
 
-Query parameters for the API calls are supported (e.g. limit, skip, etc.) by passing an object with the named parameters as the first argument.
+Query parameters for the API calls are supported (e.g. limit, skip, count etc.) by passing an object with the named parameters as the first argument.
 
 ```javascript
 ow.actions.list({skip: 100, limit: 50})
+```
+
+To count the number of resources without retrieving the resources you can use `count` query parameter.
+```javascript
+ow.actions.list({count:true})
 ```
 
 The following optional parameters are supported:
@@ -246,16 +251,17 @@ ow.actions.get({name: '...'})
 ow.activations.get({name: '...'})
 ow.triggers.get({name: '...'})
 ow.rules.get({name: '...'})
-ow.namespaces.get({name: '...'})
 ow.packages.get({name: '...'})
-ow.feeds.get({name: '...'})
+ow.feeds.get({name: '...', trigger: '...'})
 ```
 
-The following optional parameters are supported:
+The following optional parameters are supported for all resource retrievals:
 - `namespace` - set custom namespace for endpoint
 
-This method also supports passing the `name` property directly without wrapping within an object.
+Optional parameters for action resource retrievals are shown below:
+- `code` - set to `true` or `false` depending on whether action code should be included or excluded respectively
 
+This method also supports passing the `name` property directly without wrapping within an object.
 ```javascript
 const name = "actionName"
 ow.actions.get(name)
@@ -416,10 +422,11 @@ ow.rules.disable({name: '...'})
 The following optional parameters are supported:
 - `namespace` - set custom namespace for endpoint
 
-### create feeds
+### create & update feeds
 
 ```javascript
 ow.feeds.create({feedName: '...', trigger: '...'})
+ow.feeds.update({feedName: '...', trigger: '...'})
 ```
 
 The following optional parameters are supported:
@@ -494,16 +501,16 @@ Swagger parameter must be a well-formed JSON string, containing a valid Swagger 
 
 ## Debugging
 
-Setting an environment parameter (`NODE_DEBUG=request`) will dump the HTTP requests from the client library and responses received to `stderr`.
+Setting an environment parameter (`DEBUG=needle`) will dump the HTTP requests from the client library and responses received to `stderr`.
 
 ```bash
-NODE_DEBUG=request node script.js
+DEBUG=needle node script.js
 ```
 
 This parameter can also be set dynamically at runtime, provided this happens before the `openwhisk` module is required.
 
 ```javascript
-process.env.NODE_DEBUG='request';
+process.env.DEBUG='needle';
 var openwhisk = require('openwhisk');
 ```
 

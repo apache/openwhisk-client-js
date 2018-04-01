@@ -1,6 +1,6 @@
 {
   "name": "openwhisk",
-  "version": "3.10.0",
+  "version": "3.14.0",
   "description": "JavaScript client library for the OpenWhisk platform",
   "main": "lib/main.js",
   "typings": "lib/main.d.ts",
@@ -11,19 +11,12 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "standard && ava test/unit",
+    "test": "ava test/unit",
     "test-integration": "ava test/integration/*.test.js",
     "code-coverage-build": "babel --out-dir=ecma5 lib",
     "code-coverage-run": "./tools/merge-coverage.sh",
-    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "pre-commit-message": "Pre-commit tasks running ... & exit 0",
-    "lint": "standard",
-    "standard-fix": "standard --fix"
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
-  "pre-commit": [
-    "pre-commit-message",
-    "standard-fix"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/openwhisk/openwhisk-client-js.git"
@@ -40,20 +33,19 @@
   },
   "homepage": "https://github.com/openwhisk/openwhisk-client-js#readme",
   "devDependencies": {
-    "ava": "^0.15.2",
-    "babel": "^6.23.0",
-    "babel-cli": "^6.24.1",
-    "codecov": "^2.3.0",
+    "@types/node": "^9.6.0",
+    "@types/swagger-schema-official": "^2.0.6",
+    "ava": "^0.25.0",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "codecov": "^3.0.0",
     "jszip": "^3.1.3",
     "nyc": "^11.0.3",
-    "pre-commit": "^1.2.2",
-    "proxyquire": "1.7.4",
-    "standard": "^10.0.3"
+    "proxyquire": "2.0.1"
   },
   "dependencies": {
-    "needle": "^2.0.1",
-    "@types/node": "^8.0.26",
-    "@types/swagger-schema-official": "^2.0.6"
+    "needle": "^2.1.0"
   },
   "babel": {
     "presets": [
