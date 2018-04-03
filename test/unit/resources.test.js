@@ -149,7 +149,7 @@ test('should send multiple requests for array parameters', t => {
     return Promise.resolve()
   }
 
-  return resources.operation_with_id('GET', [name, {name}, name, {name}, name])
+  return resources.operationWithId('GET', [name, {name}, name, {name}, name])
     .then(result => {
       t.is(result.length, 5)
     })
@@ -168,25 +168,25 @@ test('should throw errors when missing resource identifier', t => {
 test('should parse action name from identifier', t => {
   const resources = new Resources()
   const id = '12345'
-  const ns_id = '/ns/12345'
-  const ns_package_id = '/ns/package/12345'
+  const nsId = '/ns/12345'
+  const nsPackageId = '/ns/package/12345'
 
-  t.is(resources.parse_id({name: id}), id)
-  t.is(resources.parse_id({name: ns_id}), id)
-  t.is(resources.parse_id({name: ns_package_id}), `package/12345`)
-  t.throws(() => resources.parse_id({name: '/ns'}), /Invalid resource/)
+  t.is(resources.parseId({name: id}), id)
+  t.is(resources.parseId({name: nsId}), id)
+  t.is(resources.parseId({name: nsPackageId}), `package/12345`)
+  t.throws(() => resources.parseId({name: '/ns'}), /Invalid resource/)
 })
 
 test('should parse namespace from identifier and options', t => {
   const resources = new Resources()
   const name = '12345'
-  const ns_name = '/ns/12345'
-  const ns_package_name = '/ns/package/12345'
+  const nsName = '/ns/12345'
+  const nsPackageName = '/ns/package/12345'
 
-  t.falsy(resources.parse_namespace({name}))
-  t.is(resources.parse_namespace({name: ns_name}), 'ns')
-  t.is(resources.parse_namespace({name: ns_package_name}), 'ns')
-  t.is(resources.parse_namespace({name, namespace: 'custom'}), 'custom')
-  t.is(resources.parse_namespace({name: ns_name, namespace: 'custom'}), 'ns')
-  t.is(resources.parse_namespace({name: ns_package_name, namespace: 'custom'}), 'ns')
+  t.falsy(resources.parseNamespace({name}))
+  t.is(resources.parseNamespace({name: nsName}), 'ns')
+  t.is(resources.parseNamespace({name: nsPackageName}), 'ns')
+  t.is(resources.parseNamespace({name, namespace: 'custom'}), 'custom')
+  t.is(resources.parseNamespace({name: nsName, namespace: 'custom'}), 'ns')
+  t.is(resources.parseNamespace({name: nsPackageName, namespace: 'custom'}), 'ns')
 })

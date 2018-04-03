@@ -23,7 +23,6 @@ test('should list all triggers without parameters', t => {
 
 test('should list all triggers with parameters', t => {
   t.plan(3)
-  const ns = '_'
   const client = {}
   const triggers = new Triggers(client)
 
@@ -38,7 +37,6 @@ test('should list all triggers with parameters', t => {
 
 test('should list all triggers with parameter count', t => {
   t.plan(3)
-  const ns = '_'
   const client = {}
   const triggers = new Triggers(client)
 
@@ -152,7 +150,6 @@ test('should invoke trigger from string identifier', t => {
 
 test('should invoke fully qualified trigger', t => {
   t.plan(3)
-  const ns = '_'
   const client = {}
   const triggers = new Triggers(client)
 
@@ -167,7 +164,6 @@ test('should invoke fully qualified trigger', t => {
 
 test('should invoke fully qualified trigger with package', t => {
   t.plan(3)
-  const ns = '_'
   const client = {}
   const triggers = new Triggers(client)
 
@@ -230,7 +226,7 @@ test('create a new trigger with custom body', t => {
   t.plan(4)
   const ns = '_'
   const client = {}
-  const trigger = { foo: 'bar' }
+  const trigger = {foo: 'bar'}
   const triggers = new Triggers(client)
 
   client.request = (method, path, options) => {
