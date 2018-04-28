@@ -7,7 +7,7 @@ const test = require('ava')
 const Namespaces = require('../../lib/namespaces.js')
 const Client = require('../../lib/client.js')
 const Utils = require('./utils.js')
-const options = Utils.autoOptions();
+const options = Utils.autoOptions()
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
@@ -18,8 +18,6 @@ envParams.forEach(key => {
     throw new Error(`Missing ${param} environment parameter`)
   }
 })
-
-const NAMESPACE = process.env.__OW_NAMESPACE
 
 test('list all namespaces', t => {
   const namespaces = new Namespaces(new Client(options))

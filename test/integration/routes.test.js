@@ -8,7 +8,7 @@ const Actions = require('../../lib/actions.js')
 const Routes = require('../../lib/routes.js')
 const Client = require('../../lib/client.js')
 const Utils = require('./utils.js')
-const options = Utils.autoOptions();
+const options = Utils.autoOptions()
 
 const envParams = ['API_KEY', 'API_HOST', 'APIGW_TOKEN']
 
@@ -25,7 +25,12 @@ test.serial('create, retrieve and delete action route using token', t => {
   const actions = new Actions(new Client(options))
 
   return actions.create({actionName: 'routeAction', action: ''}).then(() => {
-    return routes.create({action: 'routeAction', basepath: '/testing', relpath: '/foo/bar', operation: 'POST'}).then(() => {
+    return routes.create({
+      action: 'routeAction',
+      basepath: '/testing',
+      relpath: '/foo/bar',
+      operation: 'POST'
+    }).then(() => {
       return routes.list({basepath: '/testing'}).then(results => {
         t.is(results.apis.length, 1)
         const apidoc = results.apis[0].value.apidoc

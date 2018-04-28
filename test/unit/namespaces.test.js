@@ -26,7 +26,7 @@ test('should retrieve namespace entities', t => {
     let parts = path.split('/')
     t.is(parts[0], 'namespaces')
     t.is(parts[1], '_')
-    t.is(["actions", "triggers", "rules", "packages"].indexOf(parts[2]) > -1, true)
+    t.is(['actions', 'triggers', 'rules', 'packages'].indexOf(parts[2]) > -1, true)
   }
 
   const namespaces = new Namespaces(client)

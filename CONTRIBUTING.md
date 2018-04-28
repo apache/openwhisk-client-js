@@ -65,3 +65,4 @@ code base. Some basic rules include:
 
  - all files must have the Apache license in the header.
  - all PRs must have passing builds for all operating systems.
+ - follow the [standard](https://standardjs.com) style rules. Linter run on CI and automatically as [pre-commit hook](http://githooks.com/). For automatic fixing run `npm run standard-fix`.  

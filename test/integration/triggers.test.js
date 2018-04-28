@@ -71,9 +71,9 @@ test('create, get and delete an trigger', t => {
     t.is(result.version, '0.0.1')
     t.deepEqual(result.limits, {})
     t.pass()
-    return triggers.get({triggerName: result.name}).then(trigger_result => {
-      t.is(trigger_result.name, result.name)
-      t.is(trigger_result.namespace, NAMESPACE)
+    return triggers.get({triggerName: result.name}).then(triggerResult => {
+      t.is(triggerResult.name, result.name)
+      t.is(triggerResult.namespace, NAMESPACE)
       t.pass()
       return triggers.delete({triggerName: result.name}).catch(errors)
     }).catch(errors)
@@ -93,8 +93,8 @@ test('create and update an trigger', t => {
     t.deepEqual(result.annotations, [])
     t.is(result.version, '0.0.1')
     t.deepEqual(result.limits, {})
-    return triggers.update({triggerName: 'random_create_update_test'}).then(update_result => {
-      t.is(update_result.version, '0.0.2')
+    return triggers.update({triggerName: 'random_create_update_test'}).then(updateResult => {
+      t.is(updateResult.version, '0.0.2')
       t.pass()
       return triggers.delete({triggerName: 'random_create_update_test'}).catch(errors)
     }).catch(errors)
@@ -110,10 +110,10 @@ test('fire a trigger', t => {
   const triggers = new Triggers(new Client(options))
   const rules = new Rules(new Client(options))
 
-  return triggers.create({triggerName: 'random_fire_test'}).then(result => {
-    return rules.create({ruleName: 'echo_rule', action: `/whisk.system/utils/echo`, trigger: `/${NAMESPACE}/random_fire_test`}).then(rule_result => {
-      return triggers.invoke({triggerName: 'random_fire_test'}).then(update_result => {
-        t.true(update_result.hasOwnProperty('activationId'))
+  return triggers.create({triggerName: 'random_fire_test'}).then(() => {
+    return rules.create({ruleName: 'echo_rule', action: `/whisk.system/utils/echo`, trigger: `/${NAMESPACE}/random_fire_test`}).then(() => {
+      return triggers.invoke({triggerName: 'random_fire_test'}).then(updateResult => {
+        t.true(updateResult.hasOwnProperty('activationId'))
         t.pass()
         return triggers.delete({triggerName: 'random_fire_test'})
           .then(() => rules.delete({ruleName: 'echo_rule'}))

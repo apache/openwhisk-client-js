@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/apache/incubator-openwhisk-client-js.svg?branch=master)](https://travis-ci.org/apache/incubator-openwhisk-client-js)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![codecov](https://codecov.io/gh/apache/incubator-openwhisk-client-js/branch/master/graph/badge.svg)](https://codecov.io/gh/apache/incubator-openwhisk-client-js)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 JavaScript client library for the [Apache OpenWhisk](https://github.com/apache/incubator-openwhisk) platform.
 Provides a wrapper around the [OpenWhisk APIs](https://github.com/apache/incubator-openwhisk/blob/fb001afa237476eda0c0f6494ee92702e5986538/core/controller/src/main/resources/apiv1swagger.json) (Swagger JSON).
@@ -33,7 +34,9 @@ exports.main = action
 _All methods return a Promise resolved asynchronously with the results. Failures are available through the catch method._
 
 ```javascript
-ow.resource.operation().then(function () { // success! }).catch(function (err) { // failed! })
+ow.resource.operation()
+  .then(function () { /* success! */ })
+  .catch(function (err) { /* failed! */ })
 ```
 
 Users can override default constructor parameters by passing in explicit options as shown in the example below.
@@ -159,7 +162,7 @@ ow.actions.get(name).then(action => {
 ```javascript
 ow.actions.list()
   .then(actions => ow.actions.invoke(actions))
-  .then(result => ...)
+  .then(result => { /* ... */ })
 ```
 
 ### list packages
@@ -488,6 +491,7 @@ The following optional parameters are supported:
 - `responsetype` - content type returned by web action, possible values: `html`, `http`, `json`, `text` and `svg` (default: `json`).
 - `basepath` - base URI path for endpoints (default: `/`)
 - `name` - identifier for API (default: `basepath`)
+- `secure_key` - auth key for secure web action
 
 ### add route (swagger)
 
