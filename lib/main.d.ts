@@ -34,7 +34,7 @@ declare namespace openwhisk {
     // Ressources
 
     interface Actions {
-        list(options?: { namespace?: string; skip?: number; limit?: number; }): Promise<ActionDesc[]>;
+        list(options?: { namespace?: string; skip?: number; limit?: number; count?: boolean; }): Promise<ActionDesc[]>;
         get(options: string): Promise<Action>
         get(options: { name: string; namespace?: string }): Promise<Action>;
         get(options: (string | { name: string; namespace?: string })[]): Promise<Action[]>;
@@ -56,7 +56,7 @@ declare namespace openwhisk {
     }
 
     interface Activations {
-        list(options?: { namespace?: string; name?: string; skip?: number; limit?: number; upto?: number; docs?: boolean; since?: number }): Promise<ActivationDesc[]>;
+        list(options?: { namespace?: string; name?: string; skip?: number; limit?: number; upto?: number; docs?: boolean; since?: number; count?: boolean; }): Promise<ActivationDesc[]>;
         get<T extends Dict>(options: string): Promise<Activation<T>>;
         get<T extends Dict>(options: { name: string; namespace?: string }): Promise<Activation<T>>;
         get(options: string): Promise<Activation<Dict>>;
@@ -75,7 +75,7 @@ declare namespace openwhisk {
     }
 
     interface Packages {
-        list(options?: { namespace?: string; skip?: number; limit?: number; public?: boolean; }): Promise<PackageDesc[]>;
+        list(options?: { namespace?: string; skip?: number; limit?: number; public?: boolean; count?: boolean; }): Promise<PackageDesc[]>;
         get(options: string): Promise<Package>
         get(options: { name: string; namespace?: string }): Promise<Package>;
         get(options: (string | { name: string; namespace?: string })[]): Promise<Package[]>;
@@ -87,7 +87,7 @@ declare namespace openwhisk {
     }
 
     interface Rules {
-        list(options?: { namespace?: string; skip?: number; limit?: number; }): Promise<RuleDesc[]>;
+        list(options?: { namespace?: string; skip?: number; limit?: number; count?: boolean; }): Promise<RuleDesc[]>;
         get(options: string): Promise<Rule>;
         get(options: { name: string; namespace?: string; }): Promise<Rule>;
         get(options: (string | { name: string; namespace?: string; })[]): Promise<Rule[]>;
@@ -101,7 +101,7 @@ declare namespace openwhisk {
     }
 
     interface Triggers {
-        list(options?: { namespace?: string; skip?: number; limit?: number; }): Promise<TriggerDesc[]>;
+        list(options?: { namespace?: string; skip?: number; limit?: number; count?: boolean; }): Promise<TriggerDesc[]>;
         get(options: string): Promise<Trigger>
         get(options: { name: string; namespace?: string; }): Promise<Trigger>;
         get(options: (string | { name: string; namespace?: string; })[]): Promise<Trigger[]>;
@@ -228,13 +228,16 @@ declare namespace openwhisk {
 
     type Kind =
         "" |
+        "java" |
         "nodejs:default" |
         "nodejs:6" |
+        "nodejs:8" |
         "python:default" |
         "python:3" |
         "python:2" |
         "swift:default" |
         "swift:3.1.1" |
+        "swift:4.1" |
         "php:default" |
         "php:7.1";
 

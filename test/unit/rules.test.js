@@ -9,7 +9,7 @@ const Rules = require('../../lib/rules')
 test('should list all rules without parameters', t => {
   t.plan(3)
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
   client.request = (method, path, options) => {
@@ -23,7 +23,7 @@ test('should list all rules without parameters', t => {
 
 test('should list all rules with parameters', t => {
   t.plan(3)
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
   client.request = (method, path, options) => {
@@ -52,7 +52,7 @@ test('should list all rules with parameter count', t => {
 test('should retrieve rule from identifier', t => {
   t.plan(2)
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
   client.request = (method, path, options) => {
@@ -66,7 +66,7 @@ test('should retrieve rule from identifier', t => {
 test('should retrieve rule from ruleName identifier', t => {
   t.plan(2)
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
   client.request = (method, path, options) => {
@@ -80,7 +80,7 @@ test('should retrieve rule from ruleName identifier', t => {
 test('should retrieve rule from string identifier', t => {
   t.plan(2)
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
   client.request = (method, path, options) => {
@@ -94,7 +94,7 @@ test('should retrieve rule from string identifier', t => {
 test('should delete rule from identifier', t => {
   t.plan(2)
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
   client.request = (method, path, options) => {
@@ -108,7 +108,7 @@ test('should delete rule from identifier', t => {
 test('should delete rule from string identifier', t => {
   t.plan(2)
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
   client.request = (method, path, options) => {
@@ -127,7 +127,7 @@ test('should throw error trying to invoke rule', t => {
 test('create a new rule', t => {
   t.plan(4)
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
   const name = '12345'
@@ -138,7 +138,7 @@ test('create a new rule', t => {
     t.is(method, 'PUT')
     t.is(path, `namespaces/${ns}/rules/${name}`)
     t.deepEqual(options.qs, {})
-    t.deepEqual(options.body, { action: `/_/${action}`, trigger: `/_/${trigger}` })
+    t.deepEqual(options.body, {action: `/_/${action}`, trigger: `/_/${trigger}`})
   }
 
   return rules.create({name, action, trigger})
@@ -147,7 +147,7 @@ test('create a new rule', t => {
 test('create a new rule using fully qualified names', t => {
   t.plan(4)
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
   const name = '12345'
@@ -158,32 +158,38 @@ test('create a new rule using fully qualified names', t => {
     t.is(method, 'PUT')
     t.is(path, `namespaces/${ns}/rules/${name}`)
     t.deepEqual(options.qs, {})
-    t.deepEqual(options.body, { action, trigger })
+    t.deepEqual(options.body, {action, trigger})
   }
 
   return rules.create({name, action, trigger})
 })
 
 test('create a rule without providing a rule name', t => {
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
-  return t.throws(() => { rules.create({action: '', trigger: ''}) }, /name, ruleName/)
+  return t.throws(() => {
+    rules.create({action: '', trigger: ''})
+  }, /name, ruleName/)
 })
 
 test('create a rule without providing an action name', t => {
   const rules = new Rules()
-  return t.throws(() => { rules.create({name: '', trigger: ''}) }, /Missing mandatory action parameter/)
+  return t.throws(() => {
+    rules.create({name: '', trigger: ''})
+  }, /Missing mandatory action parameter/)
 })
 
 test('create a rule without providing a trigger name', t => {
   const rules = new Rules()
-  return t.throws(() => { rules.create({name: '', action: ''}) }, /Missing mandatory trigger parameter/)
+  return t.throws(() => {
+    rules.create({name: '', action: ''})
+  }, /Missing mandatory trigger parameter/)
 })
 
 test('update existing rule', t => {
   t.plan(4)
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
   const name = '12345'
@@ -194,7 +200,7 @@ test('update existing rule', t => {
     t.is(method, 'PUT')
     t.is(path, `namespaces/${ns}/rules/${name}`)
     t.deepEqual(options.qs, {overwrite: true})
-    t.deepEqual(options.body, { action: `/_/${action}`, trigger: `/_/${trigger}` })
+    t.deepEqual(options.body, {action: `/_/${action}`, trigger: `/_/${trigger}`})
   }
 
   return rules.update({name, action, trigger})
@@ -203,7 +209,7 @@ test('update existing rule', t => {
 test('should enable rule', t => {
   t.plan(3)
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
   const name = '12345'
@@ -220,7 +226,7 @@ test('should enable rule', t => {
 test('should disable rule', t => {
   t.plan(3)
   const ns = '_'
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
   const name = '12345'
@@ -235,21 +241,21 @@ test('should disable rule', t => {
 })
 
 test('should parse correct namespace for actions names with no other namespaces', t => {
-  const client = { options: {} }
+  const client = {options: {}}
   const rules = new Rules(client)
 
-  t.is(rules.convert_to_fqn('simple'), '/_/simple')
-  t.is(rules.convert_to_fqn('simple', 'a'), '/a/simple')
-  t.is(rules.convert_to_fqn('/a/simple'), '/a/simple')
-  t.is(rules.convert_to_fqn('/a/simple', 'b'), '/a/simple')
+  t.is(rules.convertToFqn('simple'), '/_/simple')
+  t.is(rules.convertToFqn('simple', 'a'), '/a/simple')
+  t.is(rules.convertToFqn('/a/simple'), '/a/simple')
+  t.is(rules.convertToFqn('/a/simple', 'b'), '/a/simple')
 })
 
 test('should parse correct namespace for actions names with global namespace', t => {
-  const client = { options: { namespace: 'global' } }
+  const client = {options: {namespace: 'global'}}
   const rules = new Rules(client)
 
-  t.is(rules.convert_to_fqn('simple'), '/global/simple')
-  t.is(rules.convert_to_fqn('simple', 'a'), '/a/simple')
-  t.is(rules.convert_to_fqn('/a/simple'), '/a/simple')
-  t.is(rules.convert_to_fqn('/a/simple', 'b'), '/a/simple')
+  t.is(rules.convertToFqn('simple'), '/global/simple')
+  t.is(rules.convertToFqn('simple', 'a'), '/a/simple')
+  t.is(rules.convertToFqn('/a/simple'), '/a/simple')
+  t.is(rules.convertToFqn('/a/simple', 'b'), '/a/simple')
 })

@@ -9,7 +9,7 @@ const Triggers = require('../../lib/triggers.js')
 const Actions = require('../../lib/actions.js')
 const Client = require('../../lib/client.js')
 const Utils = require('./utils.js')
-const options = Utils.autoOptions();
+const options = Utils.autoOptions()
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
@@ -54,7 +54,7 @@ test('list all rules using options namespace', t => {
 test('get a non-existing rule, expecting 404', async t => {
   const rules = new Rules(new Client(options))
   await rules.get({name: 'glorfindel'}).catch(err => {
-      t.is(err.statusCode, 404)
+    t.is(err.statusCode, 404)
   })
 })
 
@@ -70,14 +70,18 @@ test.serial('create, get and delete a rule', t => {
   const actions = new Actions(new Client(options))
   return actions.create({actionName: 'hello', action: 'function main() {return {payload:"Hello world"}}'}).then(() => {
     return triggers.create({triggerName: 'sample_rule_trigger'}).then(() => {
-      return rules.create({ruleName: 'random_rule_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample_rule_trigger`}).then(result => {
+      return rules.create({
+        ruleName: 'random_rule_test',
+        action: `/${NAMESPACE}/hello`,
+        trigger: `/${NAMESPACE}/sample_rule_trigger`
+      }).then(result => {
         t.is(result.name, 'random_rule_test')
         t.is(result.namespace, NAMESPACE)
         t.deepEqual(result.action, {path: NAMESPACE, name: 'hello'})
         t.deepEqual(result.trigger, {path: NAMESPACE, name: 'sample_rule_trigger'})
-        return rules.get({ruleName: result.name}).then(rule_result => {
-          t.is(rule_result.name, result.name)
-          t.is(rule_result.namespace, NAMESPACE)
+        return rules.get({ruleName: result.name}).then(ruleResult => {
+          t.is(ruleResult.name, result.name)
+          t.is(ruleResult.namespace, NAMESPACE)
           t.pass()
           return rules.disable({ruleName: 'random_rule_test'})
             .then(() => rules.delete({ruleName: 'random_rule_test'}))
@@ -99,17 +103,27 @@ test.serial('create and update a rule', t => {
   const triggers = new Triggers(new Client(options))
   const actions = new Actions(new Client(options))
   return actions.create({actionName: 'hello', action: 'function main() {return {payload:"Hello world"}}'}).then(() => {
-
-    return actions.create({actionName: 'tests', action: 'function main() {return {payload:"Hello world"}}' }).then(() => {
+    return actions.create({
+      actionName: 'tests',
+      action: 'function main() {return {payload:"Hello world"}}'
+    }).then(() => {
       return triggers.create({triggerName: 'sample_rule_trigger'}).then(() => {
-        return rules.create({ruleName: 'random_update_test', action: `/${NAMESPACE}/hello`, trigger: `/${NAMESPACE}/sample_rule_trigger`}).then(result => {
+        return rules.create({
+          ruleName: 'random_update_test',
+          action: `/${NAMESPACE}/hello`,
+          trigger: `/${NAMESPACE}/sample_rule_trigger`
+        }).then(result => {
           t.is(result.name, 'random_update_test')
           t.is(result.namespace, NAMESPACE)
           t.deepEqual(result.action, {path: NAMESPACE, name: 'hello'})
           t.deepEqual(result.trigger, {path: NAMESPACE, name: 'sample_rule_trigger'})
           return rules.disable({ruleName: 'random_update_test'}).then(() => {
-            return rules.update({ruleName: 'random_update_test', action: 'tests', trigger: 'sample_rule_trigger'}).then(update_result => {
-              t.deepEqual(update_result.action, {path: NAMESPACE, name: 'tests'})
+            return rules.update({
+              ruleName: 'random_update_test',
+              action: 'tests',
+              trigger: 'sample_rule_trigger'
+            }).then(updateResult => {
+              t.deepEqual(updateResult.action, {path: NAMESPACE, name: 'tests'})
               t.pass()
               return rules.delete({ruleName: 'random_update_test'})
                 .then(() => triggers.delete({triggerName: 'sample_rule_trigger'}))
@@ -121,5 +135,5 @@ test.serial('create and update a rule', t => {
         }).catch(errors)
       })
     })
-  }).catch(errors);
+  }).catch(errors)
 })
