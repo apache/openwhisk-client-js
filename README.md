@@ -490,6 +490,7 @@ The following optional parameters are supported:
 - `responsetype` - content type returned by web action, possible values: `html`, `http`, `json`, `text` and `svg` (default: `json`).
 - `basepath` - base URI path for endpoints (default: `/`)
 - `name` - identifier for API (default: `basepath`)
+- `secure_key` - auth key for secure web action
 
 ### add route (swagger)
 
