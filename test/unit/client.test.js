@@ -61,15 +61,18 @@ test('should use uuid from auth key as space guid if apigw_token present', t => 
 test('should use environment parameters for options if not set explicitly.', t => {
   process.env['__OW_API_KEY'] = 'some_user:some_pass'
   process.env['__OW_API_HOST'] = 'mywhiskhost'
+  process.env['__OW_IGNORE_CERTS'] = 'true'
   process.env['__OW_APIGW_TOKEN'] = 'my-token'
   process.env['__OW_APIGW_SPACE_GUID'] = 'my-space'
   const client = new Client()
   t.is(client.options.apiKey, process.env['__OW_API_KEY'])
   t.is(client.options.api, 'https://mywhiskhost/api/v1/')
+  t.is(client.options.ignoreCerts, true)
   t.is(client.options.apigwToken, 'my-token')
   t.is(client.options.apigwSpaceGuid, 'my-space')
   delete process.env['__OW_API_KEY']
   delete process.env['__OW_API_HOST']
+  delete process.env['__OW_IGNORE_CERTS']
   delete process.env['__OW_APIGW_TOKEN']
   delete process.env['__OW_APIGW_SPACE_GUID']
 })
