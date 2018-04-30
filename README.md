@@ -81,11 +81,12 @@ _Client constructor supports the following mandatory parameters:_
 
 ### environment variables
 
-Client constructor will read values for the `apihost`, `namespace`, `api_key`, `apigw_token` and `apigw_space_guid` options from the environment if the following parameters are set. Explicit options have precedence over environment values.
+Client constructor will read values for the `apihost`, `namespace`, `api_key`, `ignore_certs`, `apigw_token` and `apigw_space_guid` options from the environment if the following parameters are set. Explicit options have precedence over environment values.
 
 - *__OW_API_HOST*
 - *__OW_NAMESPACE*
 - *__OW_API_KEY*
+- *__OW_IGNORE_CERTS*
 - *__OW_APIGW_TOKEN*
 - *__OW_APIGW_SPACE_SUID*
 
@@ -540,8 +541,8 @@ If your local environment is using self-signed certificates, you can use the fol
 
 This will disable SSL/TLS verification for all SSL communication.
 
-Alternatively, you can run the `prepIntegrationTests.sh` script using guest credentials or by specifying specific credentials.  
-Run the script with openwhisk credentials:  
+Alternatively, you can run the `prepIntegrationTests.sh` script using guest credentials or by specifying specific credentials.
+Run the script with openwhisk credentials:
 ```bash
 $ ./test/integration/prepIntegrationTests.sh <your key in the form of ABCD:EFGH> <openwhisk instance hostname> <openwhisk namespace> <api gatewaytoken>
 ```
@@ -550,14 +551,14 @@ The `prepIntegrationTests.sh` script is designed to give you feedback if it dete
 ## Code-Coverage:
 
 You can customize how comprehensive the tests are over the code, and generate reports to view the results by using
-the provided `code-coverage` commands below.  
+the provided `code-coverage` commands below.
 
-**Note:** Ensure that you use guest credentials with the wsk CLI.  
+**Note:** Ensure that you use guest credentials with the wsk CLI.
 
-To compile down to ECMA5 run the following command:  
-1 `$ npm run code-coverage-build`  
+To compile down to ECMA5 run the following command:
+1 `$ npm run code-coverage-build`
 
-To generate combined reports of both the unit and integration tests, run the following command:  
-2 `$ npm run code-coverage-run <key> <host> <namespace> <token> <options>`  
+To generate combined reports of both the unit and integration tests, run the following command:
+2 `$ npm run code-coverage-run <key> <host> <namespace> <token> <options>`
 
-The report is viewable under `/coverage`. Click **`/coverage/index.html`** to view the full report.  
+The report is viewable under `/coverage`. Click **`/coverage/index.html`** to view the full report.
