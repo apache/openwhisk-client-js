@@ -90,7 +90,20 @@ Client constructor will read values for the `apihost`, `namespace`, `api_key`, `
 - *__OW_APIGW_TOKEN*
 - *__OW_APIGW_SPACE_SUID*
 
+### User-Agent
 
+A User-Agent header may be specified to be passed along with all calls
+to OpenWhisk. This can be helpful, if you wish to discriminate client
+traffic to your OpenWhisk backend. By default, the header will have
+the value `openwhisk-client-js`. You may override this by passing
+along a `'User-Agent'` field in the options structure of any API
+calls; note that this is *not* a constructor argument, but rather an
+option to the API calls themselves. For example, one might specify a
+`myClient` user agent to an action invocation as follows:
+
+```javascript
+ow.actions.invoke({ 'User-Agent': 'myClient', name, params })
+```
 
 ## Examples
 
