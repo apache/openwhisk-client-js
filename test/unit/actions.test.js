@@ -429,3 +429,18 @@ test('create a new action with version parameter', t => {
 
   return actions.create({name: '12345', action, version})
 })
+
+test('should pass through requested User-Agent header', t => {
+  t.plan(1)
+  const userAgent = 'userAgentShouldPassThroughPlease'
+  const client = {}
+  const actions = new Actions(client)
+  const action = 'function main() { // main function body};'
+  const version = '1.0.0'
+
+  client.request = (method, path, options) => {
+    t.is(options['User-Agent'], userAgent)
+  }
+
+  return actions.create({name: '12345', action, version, 'User-Agent': userAgent})
+})
