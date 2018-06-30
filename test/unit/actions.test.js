@@ -455,8 +455,7 @@ test('should pass through exec.image parameter', t => {
   const version = '1.0.0'
 
   client.request = (method, path, options) => {
-    t.is(options.exec.image, image)
-    t.is(options.kind, 'blackbox')
+    t.is(options.body.exec.image, image)
   }
 
   return actions.create({name: '12345', action, version, exec, kind: 'blackbox'})
