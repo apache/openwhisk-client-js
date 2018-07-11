@@ -444,3 +444,51 @@ test('should pass through requested User-Agent header', t => {
 
   return actions.create({name: '12345', action, version, 'User-Agent': userAgent})
 })
+
+test('should pass through exec.image parameter', t => {
+  t.plan(1)
+  const image = 'openwhisk/action-nodejs-v8:latest'
+  const exec = { image: image }
+  const client = {}
+  const actions = new Actions(client)
+  const action = 'function main() { // main function body};'
+  const version = '1.0.0'
+
+  client.request = (method, path, options) => {
+    t.is(options.body.exec.image, image)
+  }
+
+  return actions.create({name: '12345', action, version, exec, kind: 'blackbox'})
+})
+
+test('should pass through exec.image parameter (for all kinds)', t => {
+  t.plan(1)
+  const image = 'openwhisk/action-nodejs-v8:latest'
+  const exec = { image: image }
+  const client = {}
+  const actions = new Actions(client)
+  const action = 'function main() { // main function body};'
+  const version = '1.0.0'
+
+  client.request = (method, path, options) => {
+    t.is(options.body.exec.image, image)
+  }
+
+  return actions.create({name: '12345', action, version, exec, kind: 'xyz'})
+})
+
+test('should not reset kind parameter when passing through exec.image parameter', t => {
+  t.plan(1)
+  const image = 'openwhisk/action-nodejs-v8:latest'
+  const exec = { image: image }
+  const client = {}
+  const actions = new Actions(client)
+  const action = 'function main() { // main function body};'
+  const version = '1.0.0'
+
+  client.request = (method, path, options) => {
+    t.is(options.body.exec.kind, 'xyz')
+  }
+
+  return actions.create({name: '12345', action, version, exec, kind: 'xyz'})
+})
