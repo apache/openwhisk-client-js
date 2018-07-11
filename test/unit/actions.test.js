@@ -477,7 +477,6 @@ test('should pass through exec.image parameter (for all kinds)', t => {
   return actions.create({name: '12345', action, version, exec, kind: 'xyz'})
 })
 
-
 test('should not reset kind parameter when passing through exec.image parameter', t => {
   t.plan(1)
   const image = 'openwhisk/action-nodejs-v8:latest'
