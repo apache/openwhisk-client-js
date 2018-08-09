@@ -64,6 +64,41 @@ var ow = openwhisk(options);
 ow.actions.invoke('sample').then(result => console.log(result))
 ```
 
+### Using 3rd party Authentication Handler
+You can specify an authentication handler in `options.authHandler` this is a an object that provides a function `getAuthHeader` that returns a Promise or String to be used in the `Authorization` header for every http request.
+```javascript
+const authHandler = {
+  getAuthHeader: ()=>{
+    return Promise.resolve('Basic user:password')
+  }
+}
+var openwhisk = require('openwhisk');
+var options = {
+                 apihost: 'openwhisk.ng.bluemix.net',
+                 authHandler: authHandler
+              }
+var ow = openwhisk(options)
+ow.actions.invoke('sample').then(result => console.log(result))
+``` 
+
+### Example Using a Authentication Handler with IBM IAM
+For example IBM Functions namespaces that required IAM authentcation use the following:
+```javascript
+const IAM_API_KEY = 'secretkey' //required
+const IAM_API_URL = 'https://iam.bluemix.net/identity/token' //optional
+var openwhisk = require('openwhisk')
+var authHandler = require('@ibm-functions/iam-token-manager')
+var options = {
+                 apihost: 'openwhisk.ng.bluemix.net',
+                 authHandler: new authHandler({
+                   iamApiKey: IAM_API_KEY,
+                   iamUrl: IAM_API_URL
+                 })
+              }
+var ow = openwhisk(options)
+ow.actions.invoke('sample').then(result => console.log(result))
+```
+
 ### constructor options
 
 _Client constructor supports the following mandatory parameters:_
