@@ -64,6 +64,24 @@ var ow = openwhisk(options);
 ow.actions.invoke('sample').then(result => console.log(result))
 ```
 
+#### using 3rd party authentication handler
+You can specify an authentication handler in `options.auth_handler` this is a an object that provides a function `getAuthHeader` that returns a Promise or String to be used in the `Authorization` http header for every http request.
+```javascript
+const authHandler = {
+  getAuthHeader: ()=>{
+    return Promise.resolve('Basic user:password')
+  }
+}
+var openwhisk = require('openwhisk');
+var options = {
+                 apihost: 'openwhisk.ng.bluemix.net',
+                 auth_handler: authHandler
+              }
+var ow = openwhisk(options)
+ow.actions.invoke('sample').then(result => console.log(result))
+``` 
+
+
 ### constructor options
 
 _Client constructor supports the following mandatory parameters:_
