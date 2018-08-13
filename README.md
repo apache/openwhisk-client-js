@@ -84,8 +84,8 @@ ow.actions.invoke('sample').then(result => console.log(result))
 ### Example Using a Authentication Handler with IBM IAM
 For example IBM Functions namespaces that required IAM authentcation use the following:
 ```javascript
-const IAM_API_KEY = 'secretkey' //required
-const IAM_API_URL = 'https://iam.bluemix.net/identity/token' //optional
+const IAM_API_KEY = 'secretkey' //required if environment variable __OW_IAM_NAMESPACE_API_KEY not set
+const IAM_API_URL = 'https://iam.bluemix.net/identity/token' //optional or set environment variable __OW_IAM_API_HOST
 var openwhisk = require('openwhisk')
 var authHandler = require('@ibm-functions/iam-token-manager')
 var options = {
