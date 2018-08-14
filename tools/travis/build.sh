@@ -16,7 +16,7 @@ $ANSIBLE_CMD setup.yml
 $ANSIBLE_CMD prereq.yml
 $ANSIBLE_CMD couchdb.yml
 $ANSIBLE_CMD initdb.yml
-$ANSIBLE_CMD apigateway.yml
+
 
 cd $WHISKDIR
  ./gradlew  -PdockerImagePrefix=openwhisk
@@ -24,6 +24,9 @@ cd $WHISKDIR/ansible
 
 $ANSIBLE_CMD wipe.yml
 $ANSIBLE_CMD openwhisk.yml  -e '{"openwhisk_cli":{"installation_mode":"remote","remote":{"name":"OpenWhisk_CLI","dest_name":"OpenWhisk_CLI","location":"https://github.com/apache/incubator-openwhisk-cli/releases/download/latest"}}}'
+$ANSIBLE_CMD apigateway.yml
+$ANSIBLE_CMD properties.yml # required for to run before routemgmt.yml
+$ANSIBLE_CMD routemgmt.yml
 $ANSIBLE_CMD postdeploy.yml
 
 cd $WHISKDIR
