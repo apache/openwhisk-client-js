@@ -39,13 +39,13 @@ declare namespace openwhisk {
         get(options: { name: string; namespace?: string }): Promise<Action>;
         get(options: (string | { name: string; namespace?: string })[]): Promise<Action[]>;
         invoke(options: string): Promise<{ activationId: string }>
-        invoke(options: { name: string; namespace?: string; blocking: true; params?: Dict; result: true; }): Promise<Dict>;
-        invoke(options: { name: string; namespace?: string; blocking: true; params?: Dict; result?: false; }): Promise<Activation<Dict>>;
-        invoke(options: { name: string; namespace?: string; blocking?: false; params?: Dict; result?: boolean; }): Promise<{ activationId: string }>;
+        invoke(options: { name: string; namespace?: string; blocking: boolean; params?: Dict; result: boolean; }): Promise<Dict>;
+        invoke(options: { name: string; namespace?: string; blocking: boolean; params?: Dict; result?: boolean; }): Promise<Activation<Dict>>;
+        invoke(options: { name: string; namespace?: string; blocking?: boolean; params?: Dict; result?: boolean; }): Promise<{ activationId: string }>;
         invoke(options: (string | { name: string; namespace?: string; blocking?: boolean; params?: Dict; result?: boolean; })[]): Promise<{ activationId: string }[]>;
-        invoke<In extends Dict, Out extends Dict>(options: { name: string; namespace?: string; blocking: true; params?: In; result: true; }): Promise<Out>;
-        invoke<In extends Dict, Out extends Dict>(options: { name: string; namespace?: string; blocking: true; params?: In; result?: false; }): Promise<Activation<Out>>;
-        invoke<In extends Dict, Out extends Dict>(options: { name: string; namespace?: string; blocking?: false; params?: In; result?: boolean; }): Promise<{ activationId: string }>;
+        invoke<In extends Dict, Out extends Dict>(options: { name: string; namespace?: string; blocking: boolean; params?: In; result: boolean; }): Promise<Out>;
+        invoke<In extends Dict, Out extends Dict>(options: { name: string; namespace?: string; blocking: boolean; params?: In; result?: boolean; }): Promise<Activation<Out>>;
+        invoke<In extends Dict, Out extends Dict>(options: { name: string; namespace?: string; blocking?: boolean; params?: In; result?: boolean; }): Promise<{ activationId: string }>;
         create(options: { name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; overwrite?: boolean; params?: Dict; annotations?: Dict; limits?: Limits; version?: string; }): Promise<Action>;
         //create(options: { name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; overwrite?: boolean; params?: Dict; version?: string; }[]): Promise<Action[]>;
         update(options: { name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; params?: Dict; annotations?: Dict; limits?: Limits; version?: string; }): Promise<Action>;
