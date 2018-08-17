@@ -108,12 +108,12 @@ test('should handle multiple api parameter formats', t => {
   t.is(client.urlFromApihost('http://my_host:80'), 'http://my_host:80/api/v1/')
 })
 
-test('should return default request parameters without options', t => {
+test('should return default request parameters without options', async t => {
   const client = new Client({api_key: 'username:password', apihost: 'blah'})
   const METHOD = 'get'
   const PATH = 'some/path/to/resource'
 
-  const params = client.params(METHOD, PATH)
+  const params = await client.params(METHOD, PATH)
   t.is(params.url, 'https://blah/api/v1/some/path/to/resource')
   t.is(params.method, METHOD)
   t.true(params.json)
@@ -121,13 +121,13 @@ test('should return default request parameters without options', t => {
   t.true(params.headers.hasOwnProperty('Authorization'))
 })
 
-test('should return request parameters with merged options', t => {
+test('should return request parameters with merged options', async t => {
   const client = new Client({api_key: 'username:password', apihost: 'blah'})
   const METHOD = 'get'
   const PATH = 'some/path/to/resource'
   const OPTIONS = {b: {bar: 'foo'}, a: {foo: 'bar'}}
 
-  const params = client.params(METHOD, PATH, OPTIONS)
+  const params = await client.params(METHOD, PATH, OPTIONS)
   t.is(params.url, 'https://blah/api/v1/some/path/to/resource')
   t.is(params.method, METHOD)
   t.true(params.json)
@@ -137,20 +137,30 @@ test('should return request parameters with merged options', t => {
   t.deepEqual(params.b, {bar: 'foo'})
 })
 
-test('should return request parameters with explicit api option', t => {
+test('should return request parameters with explicit api option', async t => {
   const client = new Client({api_key: 'username:password', api: 'https://api.com/api/v1'})
   const METHOD = 'get'
   const PATH = 'some/path/to/resource'
 
-  t.is(client.params(METHOD, PATH).url, 'https://api.com/api/v1/some/path/to/resource')
+  t.is((await client.params(METHOD, PATH)).url, 'https://api.com/api/v1/some/path/to/resource')
   client.options.api += '/'
-  t.is(client.params(METHOD, PATH).url, 'https://api.com/api/v1/some/path/to/resource')
+  t.is((await client.params(METHOD, PATH)).url, 'https://api.com/api/v1/some/path/to/resource')
 })
 
-test('should generate auth header from API key', t => {
+test('should generate auth header from API key', async t => {
   const apiKey = 'some sample api key'
   const client = new Client({api: true, api_key: apiKey})
-  t.is(client.authHeader(), `Basic ${Buffer.from(apiKey).toString('base64')}`)
+  t.is(await client.authHeader(), `Basic ${Buffer.from(apiKey).toString('base64')}`)
+})
+
+test('should generate auth header from 3rd party authHandler plugin', async t => {
+  const authHandler = {
+    getAuthHeader: () => {
+      return Promise.resolve('Basic user:password')
+    }
+  }
+  const client = new Client({api: true, auth_handler: authHandler})
+  t.is(await client.authHeader(), `Basic user:password`)
 })
 
 test('should return path and status code in error message', t => {
