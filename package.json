@@ -1,6 +1,6 @@
 {
   "name": "openwhisk",
-  "version": "3.16.0",
+  "version": "3.17.0",
   "description": "JavaScript client library for the OpenWhisk platform",
   "main": "lib/main.js",
   "typings": "lib/main.d.ts",
