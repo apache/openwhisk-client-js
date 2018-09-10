@@ -123,6 +123,14 @@ option to the API calls themselves. For example, one might specify a
 ow.actions.invoke({ 'User-Agent': 'myClient', name, params })
 ```
 
+In some cases, you may need to have *no* User-Agent header. To
+override the default header behavior, you may pass `noUserAgent: true`
+in your options structure, e.g.
+
+```javascript
+ow.actions.invoke({ noUserAgent: true, name, params })
+```
+
 ## Examples
 
 ### invoke action, blocking for result
