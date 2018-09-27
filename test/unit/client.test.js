@@ -205,3 +205,30 @@ test('should throw errors for non-HTTP response failures', t => {
   const client = new Client({api_key: true, api: true})
   t.throws(() => client.handleErrors({message: 'error message'}), /error message/)
 })
+
+test('should contain x-namespace-id header when namespace in contructor options', async t => {
+  const authHandler = {
+    getAuthHeader: () => {
+      return Promise.resolve('Bearer access_token')
+    }
+  }
+  const client = new Client({apihost: 'my_host', namespace: 'ns', auth_handler: authHandler})
+  const METHOD = 'POST'
+  const PATH = '/publicnamespace/path/to/resource'
+  let params = await client.params(METHOD, PATH, {})
+  t.is(client.options.namespace, 'ns')
+  t.is(params.headers['x-namespace-id'], client.options.namespace)
+})
+
+test('should not contain x-namespace-id header when namespace is not in contructor options', async t => {
+  const authHandler = {
+    getAuthHeader: () => {
+      return Promise.resolve('Bearer access_token')
+    }
+  }
+  const client = new Client({apihost: 'my_host', auth_handler: authHandler})
+  const METHOD = 'POST'
+  const PATH = '/publicnamespace/path/to/resource'
+  let params = await client.params(METHOD, PATH, {})
+  t.is(params.headers['x-namespace-id'], undefined)
+})
