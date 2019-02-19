@@ -54,7 +54,8 @@
     "standard": "^11.0.1"
   },
   "dependencies": {
-    "needle": "^2.1.0"
+    "needle": "^2.1.0",
+    "proxy-agent": "^3.0.3"
   },
   "babel": {
     "presets": [
