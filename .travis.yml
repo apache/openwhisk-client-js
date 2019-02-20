@@ -23,5 +23,3 @@ deploy:
   on:
     tags: true
     repo: apache/incubator-openwhisk-client-js
- 
-
