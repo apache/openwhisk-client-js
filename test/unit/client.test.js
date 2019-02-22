@@ -6,6 +6,7 @@
 const test = require('ava')
 const Client = require('../../lib/client')
 const http = require('http')
+const ProxyAgent = require('proxy-agent')
 
 test('should use default constructor options', t => {
   const client = new Client({api_key: 'aaa', apihost: 'my_host'})
@@ -135,6 +136,22 @@ test('should return request parameters with merged options', async t => {
   t.true(params.headers.hasOwnProperty('Authorization'))
   t.deepEqual(params.a, {foo: 'bar'})
   t.deepEqual(params.b, {bar: 'foo'})
+})
+
+test('should be able to use proxy options leveraging the proxy agent.', async t => {
+  process.env['proxy'] = 'http://some_proxy'
+  const client = new Client({api_key: 'username:password', apihost: 'blah'})
+  const METHOD = 'get'
+  const PATH = 'some/path/to/resource'
+  const OPTIONS = {agent: new ProxyAgent(process.env['proxy'])}
+
+  const params = await client.params(METHOD, PATH, OPTIONS)
+  t.is(params.method, METHOD)
+  t.true(params.json)
+  t.true(params.rejectUnauthorized)
+  t.true(params.headers.hasOwnProperty('Authorization'))
+  t.deepEqual(params.agent.proxyUri, 'http://some_proxy')
+  delete process.env['proxy']
 })
 
 test('should return request parameters with explicit api option', async t => {
