@@ -12,6 +12,7 @@ test('should use default constructor options', t => {
   const client = new Client({api_key: 'aaa', apihost: 'my_host'})
   t.false(client.options.ignoreCerts)
   t.is(client.options.apiKey, 'aaa')
+  t.is(client.options.apiVersion, 'v1')
   t.is(client.options.api, 'https://my_host/api/v1/')
   t.falsy(client.options.namespace)
 })
@@ -22,14 +23,26 @@ test('should support explicit constructor options', t => {
     ignore_certs: true,
     api_key: 'aaa',
     api: 'my_host',
+    apiversion: 'v2',
     apigw_token: 'oauth_token',
     apigw_space_guid: 'space_guid'
   })
   t.is(client.options.api, 'my_host')
+  t.is(client.options.apiVersion, 'v2')
   t.true(client.options.ignoreCerts)
   t.is(client.options.namespace, 'ns')
   t.is(client.options.apigwToken, 'oauth_token')
   t.is(client.options.apigwSpaceGuid, 'space_guid')
+})
+
+test('apihost and apiversion set', t => {
+  const client = new Client({
+    api_key: 'aaa',
+    apihost: 'https://my_host',
+    apiversion: 'v2'
+  })
+  t.is(client.options.api, 'https://my_host/api/v2/')
+  t.is(client.options.apiVersion, 'v2')
 })
 
 test('should support deprecated explicit constructor options', t => {
