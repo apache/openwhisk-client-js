@@ -96,6 +96,9 @@ _Client constructor supports the following mandatory parameters:_
 - **ignore_certs**. Turns off server SSL/TLS certificate verification. This allows the client to be used against local deployments of OpenWhisk with a self-signed certificate. Defaults to false.
 - **apigw_token**. API Gateway service authentication token. This is mandatory for using an external API Gateway service, rather than the built-in api gateway.
 - **apigw_space_guid**. API Gateway space identifier. This is optional when using an API gateway service, defaults to the authentication uuid.
+- **cert**. Client cert to use when connecting to the `apihost` (if `nginx_ssl_verify_client` is turned on in your apihost)
+- **key**. Client key to use when connecting to the `apihost` (if `nginx_ssl_verify_client` is turned on in your apihost)
+
 
 ### environment variables
 
