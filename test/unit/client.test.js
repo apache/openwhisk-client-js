@@ -14,6 +14,8 @@ test('should use default constructor options', t => {
   t.is(client.options.apiKey, 'aaa')
   t.is(client.options.api, 'https://my_host/api/v1/')
   t.falsy(client.options.namespace)
+  t.falsy(client.options.cert)
+  t.falsy(client.options.key)
 })
 
 test('should support explicit constructor options', t => {
@@ -23,13 +25,17 @@ test('should support explicit constructor options', t => {
     api_key: 'aaa',
     api: 'my_host',
     apigw_token: 'oauth_token',
-    apigw_space_guid: 'space_guid'
+    apigw_space_guid: 'space_guid',
+    cert: 'mycert=',
+    key: 'mykey='
   })
   t.is(client.options.api, 'my_host')
   t.true(client.options.ignoreCerts)
   t.is(client.options.namespace, 'ns')
   t.is(client.options.apigwToken, 'oauth_token')
   t.is(client.options.apigwSpaceGuid, 'space_guid')
+  t.is(client.options.cert, 'mycert=')
+  t.is(client.options.key, 'mykey=')
 })
 
 test('should support deprecated explicit constructor options', t => {
@@ -120,6 +126,8 @@ test('should return default request parameters without options', async t => {
   t.true(params.json)
   t.true(params.rejectUnauthorized)
   t.true(params.headers.hasOwnProperty('Authorization'))
+  t.falsy(params.cert)
+  t.falsy(params.key)
 })
 
 test('should return request parameters with merged options', async t => {
@@ -136,6 +144,19 @@ test('should return request parameters with merged options', async t => {
   t.true(params.headers.hasOwnProperty('Authorization'))
   t.deepEqual(params.a, {foo: 'bar'})
   t.deepEqual(params.b, {bar: 'foo'})
+})
+
+test('should return request parameters with cert and key client options', async t => {
+  const client = new Client({api_key: 'username:password', apihost: 'blah', cert: 'mycert=', key: 'mykey='})
+  const METHOD = 'get'
+  const PATH = 'some/path/to/resource'
+  const OPTIONS = { myoption: true }
+
+  const params = await client.params(METHOD, PATH, OPTIONS)
+  t.is(params.url, 'https://blah/api/v1/some/path/to/resource')
+  t.is(params.method, METHOD)
+  t.is(params.cert, 'mycert=')
+  t.is(params.key, 'mykey=')
 })
 
 test('should be able to use proxy options leveraging the proxy agent.', async t => {
