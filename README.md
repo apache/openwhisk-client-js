@@ -110,6 +110,7 @@ _Client constructor supports the following mandatory parameters:_
 *Client constructor supports the following optional parameters:*
 
 - **api.** Full API URL for OpenWhisk platform, e.g. `https://openwhisk.ng.bluemix.net/api/v1/`. This value overrides `apihost` if both are present.
+- **apiversion** Api version for the OpenWhisk platform, e.g. the `v1` in `https://openwhisk.ng.bluemix.net/api/v1/`, when used with `apihost` (and `api` is not set)
 - **namespace**. Namespace for resource requests, defaults to `_`.
 - **ignore_certs**. Turns off server SSL/TLS certificate verification. This allows the client to be used against local deployments of OpenWhisk with a self-signed certificate. Defaults to false.
 - **apigw_token**. API Gateway service authentication token. This is mandatory for using an external API Gateway service, rather than the built-in api gateway.
