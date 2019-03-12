@@ -1,3 +1,21 @@
+<!--
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+-->
 # OpenWhisk Client for JavaScript
 
 [![Build Status](https://travis-ci.org/apache/incubator-openwhisk-client-js.svg?branch=master)](https://travis-ci.org/apache/incubator-openwhisk-client-js)
@@ -79,7 +97,7 @@ var options = {
 }
 var ow = openwhisk(options)
 ow.actions.invoke('sample').then(result => console.log(result))
-``` 
+```
 
 
 ### constructor options
@@ -97,6 +115,9 @@ _Client constructor supports the following mandatory parameters:_
 - **ignore_certs**. Turns off server SSL/TLS certificate verification. This allows the client to be used against local deployments of OpenWhisk with a self-signed certificate. Defaults to false.
 - **apigw_token**. API Gateway service authentication token. This is mandatory for using an external API Gateway service, rather than the built-in api gateway.
 - **apigw_space_guid**. API Gateway space identifier. This is optional when using an API gateway service, defaults to the authentication uuid.
+- **cert**. Client cert to use when connecting to the `apihost` (if `nginx_ssl_verify_client` is turned on in your apihost)
+- **key**. Client key to use when connecting to the `apihost` (if `nginx_ssl_verify_client` is turned on in your apihost)
+
 
 ### environment variables
 
@@ -139,7 +160,7 @@ ow.actions.invoke({ noUserAgent: true, name, params })
  - *http_proxy/HTTP_PROXY*
 - *https_proxy/HTTPS_proxy*
 
- The openwhisk-client-js SDK supports the use of above mentioned proxies through third-party 
+ The openwhisk-client-js SDK supports the use of above mentioned proxies through third-party
  HTTP agent such as [proxy-agent](https://github.com/TooTallNate/node-proxy-agent "proxy-agent Github page")
 
 ## Examples
