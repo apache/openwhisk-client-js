@@ -72,6 +72,23 @@ test('should retrieve an activation', t => {
   return activations.get({name: activationId})
 })
 
+test('should retrieve an activation passing through user-agent header', t => {
+  t.plan(3)
+  const ns = '_'
+  const client = {}
+  const activations = new Activations(client)
+  const activationId = 'random_id'
+  const userAgent = 'userAgentShouldPassThroughPlease'
+
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces/${ns}/activations/${activationId}`)
+    t.is(options['User-Agent'], userAgent)
+  }
+
+  return activations.get({name: activationId, 'User-Agent': userAgent})
+})
+
 test('should retrieve an activation using alt id parameter', t => {
   t.plan(2)
   const ns = '_'

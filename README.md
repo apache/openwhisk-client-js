@@ -1,3 +1,21 @@
+<!--
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+-->
 # OpenWhisk Client for JavaScript
 
 [![Build Status](https://travis-ci.org/apache/incubator-openwhisk-client-js.svg?branch=master)](https://travis-ci.org/apache/incubator-openwhisk-client-js)
@@ -64,6 +82,24 @@ var ow = openwhisk(options);
 ow.actions.invoke('sample').then(result => console.log(result))
 ```
 
+#### using 3rd party authentication handler
+You can specify an authentication handler in `options.auth_handler` this is an object that provides a function `getAuthHeader` that returns a Promise or String to be used in the `Authorization` http header for every http request.
+```javascript
+const authHandler = {
+  getAuthHeader: ()=>{
+    return Promise.resolve('Basic user:password')
+  }
+}
+var openwhisk = require('openwhisk');
+var options = {
+  apihost: 'openwhisk.ng.bluemix.net',
+  auth_handler: authHandler
+}
+var ow = openwhisk(options)
+ow.actions.invoke('sample').then(result => console.log(result))
+```
+
+
 ### constructor options
 
 _Client constructor supports the following mandatory parameters:_
@@ -74,10 +110,14 @@ _Client constructor supports the following mandatory parameters:_
 *Client constructor supports the following optional parameters:*
 
 - **api.** Full API URL for OpenWhisk platform, e.g. `https://openwhisk.ng.bluemix.net/api/v1/`. This value overrides `apihost` if both are present.
+- **apiversion** Api version for the OpenWhisk platform, e.g. the `v1` in `https://openwhisk.ng.bluemix.net/api/v1/`, when used with `apihost` (and `api` is not set)
 - **namespace**. Namespace for resource requests, defaults to `_`.
 - **ignore_certs**. Turns off server SSL/TLS certificate verification. This allows the client to be used against local deployments of OpenWhisk with a self-signed certificate. Defaults to false.
 - **apigw_token**. API Gateway service authentication token. This is mandatory for using an external API Gateway service, rather than the built-in api gateway.
 - **apigw_space_guid**. API Gateway space identifier. This is optional when using an API gateway service, defaults to the authentication uuid.
+- **cert**. Client cert to use when connecting to the `apihost` (if `nginx_ssl_verify_client` is turned on in your apihost)
+- **key**. Client key to use when connecting to the `apihost` (if `nginx_ssl_verify_client` is turned on in your apihost)
+
 
 ### environment variables
 
@@ -104,6 +144,24 @@ option to the API calls themselves. For example, one might specify a
 ```javascript
 ow.actions.invoke({ 'User-Agent': 'myClient', name, params })
 ```
+
+In some cases, you may need to have *no* User-Agent header. To
+override the default header behavior, you may pass `noUserAgent: true`
+in your options structure, e.g.
+
+```javascript
+ow.actions.invoke({ noUserAgent: true, name, params })
+```
+
+### Working with a Proxy
+
+ If you are working behind a firewall, you could use the following environment variables to proxy your HTTP/HTTPS requests
+
+ - *http_proxy/HTTP_PROXY*
+- *https_proxy/HTTPS_proxy*
+
+ The openwhisk-client-js SDK supports the use of above mentioned proxies through third-party
+ HTTP agent such as [proxy-agent](https://github.com/TooTallNate/node-proxy-agent "proxy-agent Github page")
 
 ## Examples
 

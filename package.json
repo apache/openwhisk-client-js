@@ -1,6 +1,6 @@
 {
   "name": "openwhisk",
-  "version": "3.16.0",
+  "version": "3.18.0",
   "description": "JavaScript client library for the OpenWhisk platform",
   "main": "lib/main.js",
   "typings": "lib/main.d.ts",
@@ -54,7 +54,8 @@
     "standard": "^11.0.1"
   },
   "dependencies": {
-    "needle": "^2.1.0"
+    "needle": "^2.1.0",
+    "proxy-agent": "^3.0.3"
   },
   "babel": {
     "presets": [

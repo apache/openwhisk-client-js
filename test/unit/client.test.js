@@ -6,13 +6,17 @@
 const test = require('ava')
 const Client = require('../../lib/client')
 const http = require('http')
+const ProxyAgent = require('proxy-agent')
 
 test('should use default constructor options', t => {
   const client = new Client({api_key: 'aaa', apihost: 'my_host'})
   t.false(client.options.ignoreCerts)
   t.is(client.options.apiKey, 'aaa')
+  t.is(client.options.apiVersion, 'v1')
   t.is(client.options.api, 'https://my_host/api/v1/')
   t.falsy(client.options.namespace)
+  t.falsy(client.options.cert)
+  t.falsy(client.options.key)
 })
 
 test('should support explicit constructor options', t => {
@@ -21,14 +25,30 @@ test('should support explicit constructor options', t => {
     ignore_certs: true,
     api_key: 'aaa',
     api: 'my_host',
+    apiversion: 'v2',
     apigw_token: 'oauth_token',
-    apigw_space_guid: 'space_guid'
+    apigw_space_guid: 'space_guid',
+    cert: 'mycert=',
+    key: 'mykey='
   })
   t.is(client.options.api, 'my_host')
+  t.is(client.options.apiVersion, 'v2')
   t.true(client.options.ignoreCerts)
   t.is(client.options.namespace, 'ns')
   t.is(client.options.apigwToken, 'oauth_token')
   t.is(client.options.apigwSpaceGuid, 'space_guid')
+  t.is(client.options.cert, 'mycert=')
+  t.is(client.options.key, 'mykey=')
+})
+
+test('apihost and apiversion set', t => {
+  const client = new Client({
+    api_key: 'aaa',
+    apihost: 'https://my_host',
+    apiversion: 'v2'
+  })
+  t.is(client.options.api, 'https://my_host/api/v2/')
+  t.is(client.options.apiVersion, 'v2')
 })
 
 test('should support deprecated explicit constructor options', t => {
@@ -108,26 +128,28 @@ test('should handle multiple api parameter formats', t => {
   t.is(client.urlFromApihost('http://my_host:80'), 'http://my_host:80/api/v1/')
 })
 
-test('should return default request parameters without options', t => {
+test('should return default request parameters without options', async t => {
   const client = new Client({api_key: 'username:password', apihost: 'blah'})
   const METHOD = 'get'
   const PATH = 'some/path/to/resource'
 
-  const params = client.params(METHOD, PATH)
+  const params = await client.params(METHOD, PATH)
   t.is(params.url, 'https://blah/api/v1/some/path/to/resource')
   t.is(params.method, METHOD)
   t.true(params.json)
   t.true(params.rejectUnauthorized)
   t.true(params.headers.hasOwnProperty('Authorization'))
+  t.falsy(params.cert)
+  t.falsy(params.key)
 })
 
-test('should return request parameters with merged options', t => {
+test('should return request parameters with merged options', async t => {
   const client = new Client({api_key: 'username:password', apihost: 'blah'})
   const METHOD = 'get'
   const PATH = 'some/path/to/resource'
   const OPTIONS = {b: {bar: 'foo'}, a: {foo: 'bar'}}
 
-  const params = client.params(METHOD, PATH, OPTIONS)
+  const params = await client.params(METHOD, PATH, OPTIONS)
   t.is(params.url, 'https://blah/api/v1/some/path/to/resource')
   t.is(params.method, METHOD)
   t.true(params.json)
@@ -137,20 +159,59 @@ test('should return request parameters with merged options', t => {
   t.deepEqual(params.b, {bar: 'foo'})
 })
 
-test('should return request parameters with explicit api option', t => {
+test('should return request parameters with cert and key client options', async t => {
+  const client = new Client({api_key: 'username:password', apihost: 'blah', cert: 'mycert=', key: 'mykey='})
+  const METHOD = 'get'
+  const PATH = 'some/path/to/resource'
+  const OPTIONS = { myoption: true }
+
+  const params = await client.params(METHOD, PATH, OPTIONS)
+  t.is(params.url, 'https://blah/api/v1/some/path/to/resource')
+  t.is(params.method, METHOD)
+  t.is(params.cert, 'mycert=')
+  t.is(params.key, 'mykey=')
+})
+
+test('should be able to use proxy options leveraging the proxy agent.', async t => {
+  process.env['proxy'] = 'http://some_proxy'
+  const client = new Client({api_key: 'username:password', apihost: 'blah'})
+  const METHOD = 'get'
+  const PATH = 'some/path/to/resource'
+  const OPTIONS = {agent: new ProxyAgent(process.env['proxy'])}
+
+  const params = await client.params(METHOD, PATH, OPTIONS)
+  t.is(params.method, METHOD)
+  t.true(params.json)
+  t.true(params.rejectUnauthorized)
+  t.true(params.headers.hasOwnProperty('Authorization'))
+  t.deepEqual(params.agent.proxyUri, 'http://some_proxy')
+  delete process.env['proxy']
+})
+
+test('should return request parameters with explicit api option', async t => {
   const client = new Client({api_key: 'username:password', api: 'https://api.com/api/v1'})
   const METHOD = 'get'
   const PATH = 'some/path/to/resource'
 
-  t.is(client.params(METHOD, PATH).url, 'https://api.com/api/v1/some/path/to/resource')
+  t.is((await client.params(METHOD, PATH)).url, 'https://api.com/api/v1/some/path/to/resource')
   client.options.api += '/'
-  t.is(client.params(METHOD, PATH).url, 'https://api.com/api/v1/some/path/to/resource')
+  t.is((await client.params(METHOD, PATH)).url, 'https://api.com/api/v1/some/path/to/resource')
 })
 
-test('should generate auth header from API key', t => {
+test('should generate auth header from API key', async t => {
   const apiKey = 'some sample api key'
   const client = new Client({api: true, api_key: apiKey})
-  t.is(client.authHeader(), `Basic ${Buffer.from(apiKey).toString('base64')}`)
+  t.is(await client.authHeader(), `Basic ${Buffer.from(apiKey).toString('base64')}`)
+})
+
+test('should generate auth header from 3rd party authHandler plugin', async t => {
+  const authHandler = {
+    getAuthHeader: () => {
+      return Promise.resolve('Basic user:password')
+    }
+  }
+  const client = new Client({api: true, auth_handler: authHandler})
+  t.is(await client.authHeader(), `Basic user:password`)
 })
 
 test('should return path and status code in error message', t => {
@@ -194,4 +255,31 @@ test('should return response error string in error message', t => {
 test('should throw errors for non-HTTP response failures', t => {
   const client = new Client({api_key: true, api: true})
   t.throws(() => client.handleErrors({message: 'error message'}), /error message/)
+})
+
+test('should contain x-namespace-id header when namespace in contructor options', async t => {
+  const authHandler = {
+    getAuthHeader: () => {
+      return Promise.resolve('Bearer access_token')
+    }
+  }
+  const client = new Client({apihost: 'my_host', namespace: 'ns', auth_handler: authHandler})
+  const METHOD = 'POST'
+  const PATH = '/publicnamespace/path/to/resource'
+  let params = await client.params(METHOD, PATH, {})
+  t.is(client.options.namespace, 'ns')
+  t.is(params.headers['x-namespace-id'], client.options.namespace)
+})
+
+test('should not contain x-namespace-id header when namespace is not in contructor options', async t => {
+  const authHandler = {
+    getAuthHeader: () => {
+      return Promise.resolve('Bearer access_token')
+    }
+  }
+  const client = new Client({apihost: 'my_host', auth_handler: authHandler})
+  const METHOD = 'POST'
+  const PATH = '/publicnamespace/path/to/resource'
+  let params = await client.params(METHOD, PATH, {})
+  t.is(params.headers['x-namespace-id'], undefined)
 })
