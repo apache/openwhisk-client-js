@@ -217,6 +217,20 @@ ow.actions.create({name, action}).then(result => {
 })
 ```
 
+### create sequence from another action
+
+```javascript
+const actionName = '/mynamespace/reverseWords'
+const name = 'reverse'
+
+ow.actions.create({ name, action: {
+  exec: {
+    kind: 'sequence',
+    components: [ actionName ]
+  }
+}})
+```
+
 ### retrieve action resource
 
 ```javascript
@@ -261,6 +275,24 @@ ow.packages.update({name, package}).then(package => {
   console.log('updated package:', package.name)
 }).catch(err => {
   console.error('failed to update package', err)
+})
+```
+
+### bind a package from another namespace
+
+```javascript
+const name = 'myBoundPackage'
+const package = {
+  binding: {
+    namespace: "othernamespace", // namespace to bind from
+    name: "otherpackage" // package to bind from
+  }
+}
+
+ow.packages.update({name, package}).then(package => {
+  console.log('bound package:', package.name)
+}).catch(err => {
+  console.error('failed to bind package', err)
 })
 ```
 
