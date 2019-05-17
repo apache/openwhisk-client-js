@@ -217,6 +217,20 @@ ow.actions.create({name, action}).then(result => {
 })
 ```
 
+### create sequence from another action
+
+```javascript
+const actionName = '/mynamespace/reverseWords'
+const name = 'reverse'
+
+ow.actions.create({ name, action: {
+  exec: {
+    kind: 'sequence',
+    components: [ actionName ]
+  }
+}})
+```
+
 ### retrieve action resource
 
 ```javascript
