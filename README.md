@@ -278,6 +278,24 @@ ow.packages.update({name, package}).then(package => {
 })
 ```
 
+### bind a package from another namespace
+
+```javascript
+const name = 'myBoundPackage'
+const package = {
+  binding: {
+    namespace: "othernamespace", // namespace to bind from
+    name: "otherpackage" // package to bind from
+  }
+}
+
+ow.packages.update({name, package}).then(package => {
+  console.log('bound package:', package.name)
+}).catch(err => {
+  console.error('failed to bind package', err)
+})
+```
+
 ### create trigger feed from alarm package
 
 ```javascript
