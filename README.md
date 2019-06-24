@@ -223,12 +223,7 @@ ow.actions.create({name, action}).then(result => {
 const actionName = '/mynamespace/reverseWords'
 const name = 'reverse'
 
-ow.actions.create({ name, action: {
-  exec: {
-    kind: 'sequence',
-    components: [ actionName ]
-  }
-}})
+ow.actions.create({ name, sequence: [ actionName ] })
 ```
 
 ### retrieve action resource
@@ -451,6 +446,32 @@ The following optional parameters are supported:
 - `annotations` - object containing annotations for the action (default: `{}`)
 - `limits` - object containing limits for the action (default: `{}`)
 - `kind` - runtime environment parameter, ignored when `action` is an object (default: `nodejs:default`)
+- `version` - set semantic version of the action. If parameter is empty when create new action openwisk generate 0.0.1 value when update an action increase the patch version.
+
+If you pass in an array for the first parameter, the `create` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
+
+```javascript
+ow.actions.create([{...}, {...}])
+```
+
+### create & update action sequence
+
+```javascript
+ow.actions.create({name: '...', sequence: ["action_name", "next_action", ...]})
+ow.actions.update({name: '...', sequence: ["action_name", "next_action", ...]})
+```
+
+The following mandatory parameters are supported:
+
+- `name` - action identifier
+- `sequence` - Array containing JS strings with action identifiers to use in sequence. This can be a full or relative action identifier (e.g. `action-name` or `/namespace/package/action-name`).
+
+The following optional parameters are supported:
+
+- `namespace` - set custom namespace for endpoint
+- `params` - object containing default parameters for the action (default: `{}`)
+- `annotations` - object containing annotations for the action (default: `{}`)
+- `limits` - object containing limits for the action (default: `{}`)
 - `version` - set semantic version of the action. If parameter is empty when create new action openwisk generate 0.0.1 value when update an action increase the patch version.
 
 If you pass in an array for the first parameter, the `create` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
