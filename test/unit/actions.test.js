@@ -506,9 +506,6 @@ test('creating action with both sequence and action parameters', t => {
   t.throws(() => actions.create({name: '12345', action: 'function main() {}', sequence: 'string'}), /Invalid options parameters/)
 })
 
-// update seq
-// integration tests?
-
 test('should pass through requested User-Agent header', t => {
   t.plan(1)
   const userAgent = 'userAgentShouldPassThroughPlease'
