@@ -86,7 +86,7 @@ test('create, get and delete an action', t => {
   }).then(result => {
     t.is(result.name, 'random_action_test')
     t.is(result.namespace, NAMESPACE)
-    t.is(result.exec.kind, 'nodejs:6')
+    t.true(result.exec.kind.startsWith('nodejs'))
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
     return actions.get({actionName: 'random_action_test'}).then(actionResult => {
       t.is(actionResult.name, 'random_action_test')
@@ -110,7 +110,7 @@ test('create and update an action', t => {
   }).then(result => {
     t.is(result.name, 'random_update_tested')
     t.is(result.namespace, NAMESPACE)
-    t.is(result.exec.kind, 'nodejs:6')
+    t.true(result.exec.kind.startsWith('nodejs'))
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
     return actions.update({actionName: 'random_update_tested', action: 'update test'}).then(updateResult => {
       t.is(updateResult.exec.code, 'update test')
@@ -135,7 +135,7 @@ test('create, get and delete with parameters an action', t => {
     t.is(result.name, 'random_action_params_test')
     t.is(result.namespace, NAMESPACE)
     t.deepEqual(result.parameters, [{key: 'hello', value: 'world'}])
-    t.is(result.exec.kind, 'nodejs:6')
+    t.true(result.exec.kind.startsWith('nodejs'))
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
     return actions.update({
       actionName: 'random_action_params_test',
@@ -161,7 +161,7 @@ test('get an action with and without its code', t => {
   return actions.create({actionName: 'random_action_get_test', action: 'function main() {return {payload:"testing"}}'}).then(result => {
     t.is(result.name, 'random_action_get_test')
     t.is(result.namespace, NAMESPACE)
-    t.is(result.exec.kind, 'nodejs:6')
+    t.true(result.exec.kind.startsWith('nodejs'))
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
     return actions.get({actionName: 'random_action_get_test', code: false}).then(actionResult => {
       t.is(actionResult.name, 'random_action_get_test')
