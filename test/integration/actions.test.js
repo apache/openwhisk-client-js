@@ -224,3 +224,27 @@ test('create, invoke and remove package action', t => {
     })
   }).catch(errors)
 })
+
+test('create, get and delete sequence action', t => {
+  const errors = err => {
+    console.log(err)
+    t.fail()
+  }
+
+  const actions = new Actions(new Client(options))
+  return actions.create({
+    actionName: 'my_sequence',
+    sequence: ['/whisk.system/utils/echo']
+  }).then(result => {
+    t.is(result.name, 'my_sequence')
+    t.is(result.namespace, NAMESPACE)
+    t.is(result.exec.kind, 'sequence')
+    t.deepEqual(result.exec.components, ['/whisk.system/utils/echo'])
+    return actions.get({actionName: 'my_sequence'}).then(actionResult => {
+      t.is(actionResult.name, 'my_sequence')
+      t.is(actionResult.namespace, NAMESPACE)
+      t.pass()
+      return actions.delete({actionName: 'my_sequence'}).catch(errors)
+    }).catch(errors)
+  }).catch(errors)
+})

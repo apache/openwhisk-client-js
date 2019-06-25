@@ -430,6 +430,82 @@ test('create a new action with version parameter', t => {
   return actions.create({name: '12345', action, version})
 })
 
+test('create a new sequence action', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const sequence = ['/ns/action', '/ns/another_action', '/ns/final_action']
+
+  const actions = new Actions(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {exec: {kind: 'sequence', components: sequence}})
+  }
+
+  return actions.create({name: '12345', sequence})
+})
+
+test('create a new sequence action with additional options', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const sequence = ['/ns/action', '/ns/another_action', '/ns/final_action']
+  const annotations = {
+    foo: 'bar'
+  }
+  const params = {
+    foo: 'bar'
+  }
+  const limits = {
+    timeout: 300000
+  }
+
+  const actions = new Actions(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {exec: {kind: 'sequence', components: sequence},
+      limits,
+      parameters: [
+        {key: 'foo', value: 'bar'}
+      ],
+      annotations: [
+        { key: 'foo', value: 'bar' }
+      ]})
+  }
+
+  return actions.create({name: '12345', sequence, annotations, params, limits})
+})
+
+test('creating sequence action with invalid sequence parameter', t => {
+  const client = {}
+
+  const actions = new Actions(client)
+
+  t.throws(() => actions.create({name: '12345', sequence: 'string'}), /Invalid sequence parameter/)
+  t.throws(() => actions.create({name: '12345', sequence: { foo: 'bar' }}), /Invalid sequence parameter/)
+})
+
+test('creating sequence action with empty array', t => {
+  const client = {}
+
+  const actions = new Actions(client)
+
+  t.throws(() => actions.create({name: '12345', sequence: []}), /Invalid sequence parameter/)
+})
+
+test('creating action with both sequence and action parameters', t => {
+  const client = {}
+  const actions = new Actions(client)
+
+  t.throws(() => actions.create({name: '12345', action: 'function main() {}', sequence: 'string'}), /Invalid options parameters/)
+})
+
 test('should pass through requested User-Agent header', t => {
   t.plan(1)
   const userAgent = 'userAgentShouldPassThroughPlease'
