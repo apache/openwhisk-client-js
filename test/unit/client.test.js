@@ -6,7 +6,6 @@
 const test = require('ava')
 const Client = require('../../lib/client')
 const http = require('http')
-const ProxyAgent = require('proxy-agent')
 
 test('should use default constructor options', t => {
   const client = new Client({api_key: 'aaa', apihost: 'my_host'})
@@ -172,20 +171,44 @@ test('should return request parameters with cert and key client options', async 
   t.is(params.key, 'mykey=')
 })
 
-test('should be able to use proxy options leveraging the proxy agent.', async t => {
-  process.env['proxy'] = 'http://some_proxy'
-  const client = new Client({api_key: 'username:password', apihost: 'blah'})
+test('should be able to set proxy uri as client options.', async t => {
+  const PROXY_URL = 'http://some_proxy:5678'
   const METHOD = 'get'
   const PATH = 'some/path/to/resource'
-  const OPTIONS = {agent: new ProxyAgent(process.env['proxy'])}
+  const OPTIONS = {}
 
+  const client = new Client({api_key: 'username:password', apihost: 'blah', proxy: PROXY_URL})
   const params = await client.params(METHOD, PATH, OPTIONS)
-  t.is(params.method, METHOD)
-  t.true(params.json)
-  t.true(params.rejectUnauthorized)
-  t.true(params.headers.hasOwnProperty('Authorization'))
-  t.deepEqual(params.agent.proxyUri, 'http://some_proxy')
-  delete process.env['proxy']
+  t.is(params.proxy, PROXY_URL)
+})
+
+test('should be able to set http agent using client options.', async t => {
+  const METHOD = 'get'
+  const PATH = 'some/path/to/resource'
+  const OPTIONS = {}
+
+  const agent = new http.Agent({})
+  const client = new Client({api_key: 'username:password', apihost: 'blah', agent})
+  const params = await client.params(METHOD, PATH, OPTIONS)
+  t.is(params.agent, agent)
+})
+
+test('should be able to use env params to set proxy option.', async t => {
+  const PROXY_URL = 'https://some_proxy:1234'
+  const METHOD = 'get'
+  const PATH = 'some/path/to/resource'
+  const OPTIONS = {}
+
+  const ENV_PARAMS = ['proxy', 'PROXY', 'http_proxy', 'HTTP_PROXY',
+    'https_proxy', 'HTTPS_PROXY']
+
+  for (let envParam of ENV_PARAMS) {
+    process.env[envParam] = PROXY_URL
+    const client = new Client({api_key: 'username:password', apihost: 'blah'})
+    const params = await client.params(METHOD, PATH, OPTIONS)
+    t.is(params.proxy, PROXY_URL, `Cannot set proxy using ${envParam}`)
+    delete process.env[envParam]
+  }
 })
 
 test('should return request parameters with explicit api option', async t => {

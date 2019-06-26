@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 -->
-# OpenWhisk Client for JavaScript
+# Apache OpenWhisk Client for JavaScript
 
 [![Build Status](https://travis-ci.org/apache/incubator-openwhisk-client-js.svg?branch=master)](https://travis-ci.org/apache/incubator-openwhisk-client-js)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
@@ -117,6 +117,8 @@ _Client constructor supports the following mandatory parameters:_
 - **apigw_space_guid**. API Gateway space identifier. This is optional when using an API gateway service, defaults to the authentication uuid.
 - **cert**. Client cert to use when connecting to the `apihost` (if `nginx_ssl_verify_client` is turned on in your apihost)
 - **key**. Client key to use when connecting to the `apihost` (if `nginx_ssl_verify_client` is turned on in your apihost)
+- **proxy.** HTTP(s) URI for proxy service to forwards requests through. Uses Needle's [built-in proxy support](https://github.com/tomas/needle#request-options).
+- **agent.** Provide custom [http.Agent](https://nodejs.org/api/http.html#http_class_http_agent) implementation.
 
 
 ### environment variables
@@ -155,13 +157,13 @@ ow.actions.invoke({ noUserAgent: true, name, params })
 
 ### Working with a Proxy
 
- If you are working behind a firewall, you could use the following environment variables to proxy your HTTP/HTTPS requests
+If you are working behind a firewall, HTTP(s) proxy details can be set by using the `proxy` option in the constructor parameters with the proxy service URI, e.g. `http://proxy-server.com:3128`. The proxy URI can also be set using the following environment parameters (to set a proxy without changing application code):
 
- - *http_proxy/HTTP_PROXY*
-- *https_proxy/HTTPS_proxy*
+ - *proxy or PROXY*
+ - *http_proxy or HTTP_PROXY*
+- *https_proxy or HTTPS_proxy*
 
- The openwhisk-client-js SDK supports the use of above mentioned proxies through third-party
- HTTP agent such as [proxy-agent](https://github.com/TooTallNate/node-proxy-agent "proxy-agent Github page")
+If you need more advanced proxy behaviour, rather than using Needle's default [built-in HTTP agent](https://github.com/tomas/needle), the `agent` constructor parameter can be used to set a custom `http.Agent` implementation, e.g [proxy-agent](https://github.com/TooTallNate/node-proxy-agent "proxy-agent Github page")
 
 ## Examples
 
