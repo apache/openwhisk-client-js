@@ -649,7 +649,7 @@ var openwhisk = require('openwhisk');
 ### unit tests
 
 ```bash
-$ npm test
+$ npm test:unit
 ```
 
 ### integration tests
@@ -657,37 +657,25 @@ $ npm test
 *Please [see the instructions](https://github.com/openwhisk/openwhisk-client-js/tree/master/test/integration) for setting up the integration test environment prior to running these tests.*
 
 ```bash
-$ npm run-script test-integration
+$ npm run test:integration
 ```
 
-**Note:** The test integration runs in secure mode by default, which means that all trusted signers must be present and available to the client process.
-If your local environment is using self-signed certificates, you can use the following command to start the script in insecure mode:
+**Note:** The test integration runs in secure mode by default, which means that all trusted signers must be present and available to the client process. If your local environment is using self-signed certificates, you can use the following command to start the script in insecure mode:
 
-`npm run test-integration -i`
+`__OW_INSECURE=true npm run test-integration`
 
 This will disable SSL/TLS verification for all SSL communication.
 
-Alternatively, you can run the `prepIntegrationTests.sh` script using guest credentials or by specifying specific credentials.
-Run the script with openwhisk credentials:
-```bash
-$ ./test/integration/prepIntegrationTests.sh <your key in the form of ABCD:EFGH> <openwhisk instance hostname> <openwhisk namespace> <api gatewaytoken>
-```
-The `prepIntegrationTests.sh` script is designed to give you feedback if it detects a setting that is not correct on your machine. ex: `node 6 or above is not detected`
+### code coverage
 
-## Code-Coverage:
+Code coverage data for the unit and integration tests can be created using the following commands:
 
-You can customize how comprehensive the tests are over the code, and generate reports to view the results by using
-the provided `code-coverage` commands below.
+- `npm run coverage:unit`
+- `npm run coverage:integration`
 
-**Note:** Ensure that you use guest credentials with the wsk CLI.
+*Generated data in stored in the `.nyc_output` directory.*
 
-To compile down to ECMA5 run the following command:
-1 `$ npm run code-coverage-build`
-
-To generate combined reports of both the unit and integration tests, run the following command:
-2 `$ npm run code-coverage-run <key> <host> <namespace> <token> <options>`
-
-The report is viewable under `/coverage`. Click **`/coverage/index.html`** to view the full report.
+Running the `npm run coverage:report` command will generate the output reports.
 
 # Disclaimer
 Apache OpenWhisk JavaScript Client Library is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.

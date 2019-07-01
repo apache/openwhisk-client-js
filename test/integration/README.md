@@ -29,5 +29,3 @@ Running the integration tests requires the following environment variables to be
 You can retrieve these settings from the `.wskprops` file.
 
 *Note:* If the tests fail, you might need to remove the created artifacts manually.
-
-[Alternatively](https://github.com/apache/incubator-openwhisk-client-js#integration-tests), you can run the`prepIntegrationTests.sh` script using guest credentials or by specifying specific credentials.

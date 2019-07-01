@@ -36,16 +36,16 @@ test('should parse namespace from resource with explicit ns and package but miss
   t.is(names.parseNamespace('ns/pkg/hello'), 'ns')
 })
 
-test('should throw error for resource with only namespace', t => {
+test('should throw error parsing namespace with only namespace', t => {
   t.throws(() => names.parseNamespace('/ns'), /Invalid resource identifier/)
 })
 
-test('should throw error for resource with only extra paths', t => {
+test('should throw error parsing namespace with only extra paths', t => {
   t.throws(() => names.parseNamespace('/ns/pkg/action/extra'), /Invalid resource identifier/)
   t.throws(() => names.parseNamespace('ns/pkg/action/extra'), /Invalid resource identifier/)
 })
 
-test('should throw error for resource with missing parts', t => {
+test('should throw error parsing namespace with missing parts', t => {
   t.throws(() => names.parseNamespace('/'), /Invalid resource identifier/)
 })
 
@@ -69,15 +69,15 @@ test('should parse id from resource with explicit ns and package but missing lea
   t.is(names.parseId('ns/pkg/hello'), 'pkg/hello')
 })
 
-test('should throw error for resource with only namespace', t => {
+test('should throw error parsing id with only namespace', t => {
   t.throws(() => names.parseId('/ns'), /Invalid resource identifier/)
 })
 
-test('should throw error for resource with only extra paths', t => {
+test('should throw error parsing id with only extra paths', t => {
   t.throws(() => names.parseId('/ns/pkg/action/extra'), /Invalid resource identifier/)
   t.throws(() => names.parseId('ns/pkg/action/extra'), /Invalid resource identifier/)
 })
 
-test('should throw error for resource with missing parts', t => {
+test('should throw error parsing id with missing parts', t => {
   t.throws(() => names.parseId('/'), /Invalid resource identifier/)
 })
