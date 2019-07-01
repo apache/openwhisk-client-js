@@ -9,6 +9,7 @@ const Triggers = require('../../lib/triggers.js')
 const Client = require('../../lib/client.js')
 const Utils = require('./utils.js')
 const options = Utils.autoOptions()
+const tempTest = Utils.getInsecureFlag() ? test.skip : test
 
 const envParams = ['API_KEY', 'API_HOST', 'NAMESPACE']
 
@@ -21,14 +22,8 @@ envParams.forEach(key => {
 })
 
 const NAMESPACE = process.env.__OW_NAMESPACE
-const tempTest = Utils.getInsecureFlag() ? test.skip : test
 
-tempTest('create, get, update, and delete a feed', t => {
-  const errors = err => {
-    console.log(err)
-    t.fail()
-  }
-
+tempTest('create, get, update, and delete a feed', async t => {
   const feeds = new Feeds(new Client(options))
   const triggers = new Triggers(new Client(options))
   const feedParams = {
@@ -36,19 +31,26 @@ tempTest('create, get, update, and delete a feed', t => {
     trigger: `/${NAMESPACE}/sample_feed_trigger`,
     params: {cron: '*/8 * * * * *', trigger_payload: {name: 'test', place: 'hello'}}
   }
-  return triggers.create({triggerName: 'sample_feed_trigger'}).then(() => feeds.create(feedParams)).then(result => {
+
+  try {
+    await triggers.create({triggerName: 'sample_feed_trigger'})
+    const result = await feeds.create(feedParams)
     t.is(result.response.success, true)
-    return feeds.get(feedParams).then(getTesult => {
-      t.is(getTesult.response.success, true)
-      return feeds.delete(feedParams).then(feedResult => {
-        t.is(feedResult.response.success, true)
-        return feeds.update(feedParams).then(() => {
-          t.is(feedResult.response.success, false) // alarms does not currently support update, hence should fail
-          return triggers.delete({triggerName: 'sample_feed_trigger'}).then(() => {
-            t.pass()
-          })
-        }).catch(errors)
-      }).catch(errors)
-    }).catch(errors)
-  }).catch(errors)
+
+    const getResult = await feeds.get(feedParams)
+    t.is(getResult.response.success, true)
+
+    feedParams.cron = '* * * * * *'
+    const updateResult = await feeds.update(feedParams)
+    t.is(updateResult.response.success, true)
+
+    const deleteResult = await feeds.delete(feedParams)
+    t.is(deleteResult.response.success, true)
+
+    await triggers.delete({triggerName: 'sample_feed_trigger'})
+    t.pass()
+  } catch (err) {
+    console.log(err)
+    t.fail()
+  }
 })
