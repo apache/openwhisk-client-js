@@ -38,7 +38,7 @@ key=$(cat $WHISKDIR/ansible/files/auth.guest)
 
 # Test
 cd $ROOTDIR
-npm ci
+npm install
 #npm run lint
 
 npm run check-deps-size
