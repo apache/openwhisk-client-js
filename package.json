@@ -18,7 +18,7 @@
     "coverage:integration": "nyc --no-clean --silent npm run test:integration",
     "coverage:report": "nyc report --reporter=lcov --reporter=text-summary",
     "coverage:upload": "codecov",
-    "check-deps-size": "./tools/check_size.sh 1000",
+    "check-deps-size": "./tools/check_size.sh 1100",
     "lint": "standard"
   },
   "repository": {
