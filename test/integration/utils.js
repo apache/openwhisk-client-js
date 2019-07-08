@@ -2,15 +2,11 @@
 // license agreements; and to You under the Apache License, Version 2.0.
 
 function getInsecureFlag () {
-  let npmConfigArgObj = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv) : null
-  if (npmConfigArgObj) {
-    return npmConfigArgObj.original && npmConfigArgObj.original[2] === '-i'
-  }
-  return false
+  return process.env['__OW_INSECURE'] === 'true'
 }
 
 function autoOptions () {
-  var options = {}
+  const options = {}
   if (getInsecureFlag()) {
     options.ignore_certs = true
     options.apigw_token = true

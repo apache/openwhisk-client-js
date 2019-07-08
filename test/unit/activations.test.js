@@ -15,13 +15,13 @@ test('list all activations', t => {
   client.request = (method, path, options) => {
     t.is(method, 'GET')
     t.is(path, `namespaces/${ns}/activations`)
-    t.deepEqual(options, {qs: {}})
+    t.deepEqual(options, { qs: {} })
   }
 
   return activations.list()
 })
 
-test('list all activations', t => {
+test('list all activations with options', t => {
   t.plan(3)
   const client = {}
   const activations = new Activations(client)
@@ -29,7 +29,7 @@ test('list all activations', t => {
   client.request = (method, path, options) => {
     t.is(method, 'GET')
     t.is(path, `namespaces/options_namespace/activations`)
-    t.deepEqual(options.qs, {name: 'Hello', limit: 100, skip: 100, upto: 100, docs: true, since: 100})
+    t.deepEqual(options.qs, { name: 'Hello', limit: 100, skip: 100, upto: 100, docs: true, since: 100 })
   }
 
   return activations.list({
@@ -51,10 +51,10 @@ test('list all activations with count parameter', t => {
   client.request = (method, path, options) => {
     t.is(method, 'GET')
     t.is(path, `namespaces/options_namespace/activations`)
-    t.deepEqual(options.qs, {name: 'Hello', count: true})
+    t.deepEqual(options.qs, { name: 'Hello', count: true })
   }
 
-  return activations.list({namespace: 'options_namespace', name: 'Hello', count: true})
+  return activations.list({ namespace: 'options_namespace', name: 'Hello', count: true })
 })
 
 test('should retrieve an activation', t => {
@@ -69,7 +69,7 @@ test('should retrieve an activation', t => {
     t.is(path, `namespaces/${ns}/activations/${activationId}`)
   }
 
-  return activations.get({name: activationId})
+  return activations.get({ name: activationId })
 })
 
 test('should retrieve an activation passing through user-agent header', t => {
@@ -86,7 +86,7 @@ test('should retrieve an activation passing through user-agent header', t => {
     t.is(options['User-Agent'], userAgent)
   }
 
-  return activations.get({name: activationId, 'User-Agent': userAgent})
+  return activations.get({ name: activationId, 'User-Agent': userAgent })
 })
 
 test('should retrieve an activation using alt id parameter', t => {
@@ -101,7 +101,7 @@ test('should retrieve an activation using alt id parameter', t => {
     t.is(path, `namespaces/${ns}/activations/${activationId}`)
   }
 
-  return activations.get({activation: activationId})
+  return activations.get({ activation: activationId })
 })
 
 test('should retrieve an activation using string id parameter', t => {
@@ -146,7 +146,7 @@ test('should retrieve an activation logs', t => {
     t.is(path, `namespaces/${ns}/activations/${activationId}/logs`)
   }
 
-  return activations.logs({name: activationId})
+  return activations.logs({ name: activationId })
 })
 
 test('should retrieve an activation result using string id', t => {
@@ -176,7 +176,7 @@ test('should retrieve an activation result', t => {
     t.is(path, `namespaces/${ns}/activations/${activationId}/result`)
   }
 
-  return activations.result({name: activationId})
+  return activations.result({ name: activationId })
 })
 
 test('should throw when retrieving activation without id', t => {

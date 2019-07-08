@@ -1,4 +1,4 @@
-<!--
+#!/bin/bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -15,17 +15,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
--->
-Integrations Test
---
 
-Running the integration tests requires the following environment variables to be defined.
+set -ue
 
-    export __OW_API_KEY=<your api key>
-    export __OW_API_HOST=<openwhisk API hostname>
-    export __OW_NAMESPACE=<openwhisk namespace>
-    export __OW_APIGW_TOKEN=<api gateway token>
+if [ -z "$1" ]
+  then
+    echo "Missing maximum size argument (kilobytes)"
+fi
 
-You can retrieve these settings from the `.wskprops` file.
+echo "Checking node_modules size isn't more than threshold (kb): $1"
 
-*Note:* If the tests fail, you might need to remove the created artifacts manually.
+UNPACK_DIR=$(mktemp -d)
+npm pack -q
+
+cp openwhisk-*.tgz $UNPACK_DIR
+cd $UNPACK_DIR
+
+tar -xzf openwhisk-*.tgz
+cd package
+npm install --production --silent
+cd node_modules
+NODE_MODULES_SIZE=$(du  -ks | cut -f 1)
+
+if [ "$NODE_MODULES_SIZE" -gt "$1" ]; then
+  echo "failure! node_modules size ($NODE_MODULES_SIZE) is more than threshold"
+  exit 1
+else
+  echo "success! node_modules size ($NODE_MODULES_SIZE) is less than threshold"
+fi

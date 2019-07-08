@@ -19,7 +19,6 @@ $ANSIBLE_CMD prereq.yml
 $ANSIBLE_CMD couchdb.yml
 $ANSIBLE_CMD initdb.yml
 
-
 cd $WHISKDIR
  ./gradlew  -PdockerImagePrefix=openwhisk
 cd $WHISKDIR/ansible
@@ -39,7 +38,19 @@ key=$(cat $WHISKDIR/ansible/files/auth.guest)
 
 # Test
 cd $ROOTDIR
-npm install --dev
-npm run lint
-npm run code-coverage-build
-npm run code-coverage-run $key $edgehost guest true "travis,insecure"
+npm ci
+#npm run lint
+
+npm run check-deps-size
+npm run coverage:unit
+
+# integration test parameters
+export __OW_API_KEY="$key"
+export __OW_API_HOST="$edgehost"
+export __OW_NAMESPACE="guest"
+export __OW_APIGW_TOKEN="true"
+export __OW_INSECURE="true"
+
+npm run coverage:integration
+npm run coverage:report
+npm run coverage:upload
