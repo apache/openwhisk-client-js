@@ -131,6 +131,7 @@ Client constructor will read values for the `apihost`, `namespace`, `api_key`, `
 - *__OW_IGNORE_CERTS*
 - *__OW_APIGW_TOKEN*
 - *__OW_APIGW_SPACE_SUID*
+- *__OW_USER_AGENT*
 
 ### User-Agent
 
