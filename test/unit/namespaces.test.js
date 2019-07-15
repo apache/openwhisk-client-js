@@ -93,6 +93,76 @@ test('should list all namespaces, NOT passing through user-agent header (variant
   return namespaces.list({noUserAgent: true})
 })
 
+test('should list all namespaces, using __OW_USER_AGENT', t => {
+  t.plan(3)
+  const client = {}
+  process.env['__OW_USER_AGENT'] = 'my-useragent'
+  client.request = async (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces`)
+
+    const parms = await new Client({api: 'aaa', api_key: 'aaa'}).params(method, path, options)
+    t.is(parms.headers['User-Agent'], 'my-useragent')
+    delete process.env['__OW_USER_AGENT']
+  }
+
+  const namespaces = new Namespaces(client)
+  return namespaces.list({})
+})
+
+test('should list all namespaces, NOT using __OW_USER_AGENT when noUserAgent true', t => {
+  t.plan(3)
+  const client = {}
+  process.env['__OW_USER_AGENT'] = 'my-useragent'
+  client.request = async (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces`)
+
+    const parms = await new Client({api: 'aaa', api_key: 'aaa', noUserAgent: true}).params(method, path, options)
+    t.is(parms.headers['User-Agent'], undefined)
+    delete process.env['__OW_USER_AGENT']
+  }
+
+  const namespaces = new Namespaces(client)
+  return namespaces.list({})
+})
+
+test('should list all namespaces, NOT using __OW_USER_AGENT when user-agent is passed through', t => {
+  t.plan(3)
+  const client = {}
+  const userAgent = 'userAgentShouldPassThroughPlease'
+  process.env['__OW_USER_AGENT'] = 'my-useragent'
+  client.request = async (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces`)
+
+    const parms = await new Client({api: 'aaa', api_key: 'aaa'}).params(method, path, options)
+    t.is(parms.headers['User-Agent'], userAgent)
+    delete process.env['__OW_USER_AGENT']
+  }
+
+  const namespaces = new Namespaces(client)
+  return namespaces.list({'User-Agent': userAgent})
+})
+
+test('should list all namespaces, NOT using __OW_USER_AGENT or user-agent when noUserAgent is true', t => {
+  t.plan(3)
+  const client = {}
+  const userAgent = 'userAgentShouldPassThroughPlease'
+  process.env['__OW_USER_AGENT'] = 'my-useragent'
+  client.request = async (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, `namespaces`)
+
+    const parms = await new Client({api: 'aaa', api_key: 'aaa', noUserAgent: true}).params(method, path, options)
+    t.is(parms.headers['User-Agent'], undefined)
+    delete process.env['__OW_USER_AGENT']
+  }
+
+  const namespaces = new Namespaces(client)
+  return namespaces.list({'User-Agent': userAgent})
+})
+
 test('should retrieve namespace entities', t => {
   t.plan(16)
   const client = {}
