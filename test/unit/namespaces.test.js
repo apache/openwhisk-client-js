@@ -1,5 +1,19 @@
-// Licensed to the Apache Software Foundation (ASF) under one or more contributor
-// license agreements; and to You under the Apache License, Version 2.0.
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict'
 
@@ -30,7 +44,7 @@ test('should list all namespaces, passing through user-agent header', t => {
   }
 
   const namespaces = new Namespaces(client)
-  return namespaces.list({'User-Agent': userAgent})
+  return namespaces.list({ 'User-Agent': userAgent })
 })
 
 test('should list all namespaces, NOT passing through user-agent header (variant 1)', t => {
@@ -41,12 +55,12 @@ test('should list all namespaces, NOT passing through user-agent header (variant
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({api: 'aaa', api_key: 'aaa'}).params(method, path, options)
+    const parms = await new Client({ api: 'aaa', api_key: 'aaa' }).params(method, path, options)
     t.is(parms.headers['User-Agent'], undefined)
   }
 
   const namespaces = new Namespaces(client)
-  return namespaces.list({'User-Agent': userAgent, noUserAgent: true})
+  return namespaces.list({ 'User-Agent': userAgent, noUserAgent: true })
 })
 
 test('should list all namespaces, NOT passing through user-agent header (variant 2)', t => {
@@ -57,12 +71,12 @@ test('should list all namespaces, NOT passing through user-agent header (variant
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({api: 'aaa', api_key: 'aaa', noUserAgent: true}).params(method, path, options)
+    const parms = await new Client({ api: 'aaa', api_key: 'aaa', noUserAgent: true }).params(method, path, options)
     t.is(parms.headers['User-Agent'], undefined)
   }
 
   const namespaces = new Namespaces(client)
-  return namespaces.list({'User-Agent': userAgent})
+  return namespaces.list({ 'User-Agent': userAgent })
 })
 
 test('should list all namespaces, NOT passing through user-agent header (variant 3)', t => {
@@ -72,7 +86,7 @@ test('should list all namespaces, NOT passing through user-agent header (variant
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({api: 'aaa', api_key: 'aaa', noUserAgent: true}).params(method, path, options)
+    const parms = await new Client({ api: 'aaa', api_key: 'aaa', noUserAgent: true }).params(method, path, options)
     t.is(parms.headers['User-Agent'], undefined)
   }
 
@@ -90,7 +104,7 @@ test('should list all namespaces, NOT passing through user-agent header (variant
   }
 
   const namespaces = new Namespaces(client)
-  return namespaces.list({noUserAgent: true})
+  return namespaces.list({ noUserAgent: true })
 })
 
 test('should list all namespaces, using __OW_USER_AGENT', t => {
@@ -101,7 +115,7 @@ test('should list all namespaces, using __OW_USER_AGENT', t => {
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({api: 'aaa', api_key: 'aaa'}).params(method, path, options)
+    const parms = await new Client({ api: 'aaa', api_key: 'aaa' }).params(method, path, options)
     t.is(parms.headers['User-Agent'], 'my-useragent')
     delete process.env['__OW_USER_AGENT']
   }
@@ -118,7 +132,7 @@ test('should list all namespaces, NOT using __OW_USER_AGENT when noUserAgent tru
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({api: 'aaa', api_key: 'aaa', noUserAgent: true}).params(method, path, options)
+    const parms = await new Client({ api: 'aaa', api_key: 'aaa', noUserAgent: true }).params(method, path, options)
     t.is(parms.headers['User-Agent'], undefined)
     delete process.env['__OW_USER_AGENT']
   }
@@ -136,13 +150,13 @@ test('should list all namespaces, NOT using __OW_USER_AGENT when user-agent is p
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({api: 'aaa', api_key: 'aaa'}).params(method, path, options)
+    const parms = await new Client({ api: 'aaa', api_key: 'aaa' }).params(method, path, options)
     t.is(parms.headers['User-Agent'], userAgent)
     delete process.env['__OW_USER_AGENT']
   }
 
   const namespaces = new Namespaces(client)
-  return namespaces.list({'User-Agent': userAgent})
+  return namespaces.list({ 'User-Agent': userAgent })
 })
 
 test('should list all namespaces, NOT using __OW_USER_AGENT or user-agent when noUserAgent is true', t => {
@@ -154,13 +168,13 @@ test('should list all namespaces, NOT using __OW_USER_AGENT or user-agent when n
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({api: 'aaa', api_key: 'aaa', noUserAgent: true}).params(method, path, options)
+    const parms = await new Client({ api: 'aaa', api_key: 'aaa', noUserAgent: true }).params(method, path, options)
     t.is(parms.headers['User-Agent'], undefined)
     delete process.env['__OW_USER_AGENT']
   }
 
   const namespaces = new Namespaces(client)
-  return namespaces.list({'User-Agent': userAgent})
+  return namespaces.list({ 'User-Agent': userAgent })
 })
 
 test('should retrieve namespace entities', t => {
@@ -192,5 +206,5 @@ test('should retrieve namespace entities, passing through user-agent header', t 
   }
 
   const namespaces = new Namespaces(client)
-  return namespaces.get({'User-Agent': userAgent})
+  return namespaces.get({ 'User-Agent': userAgent })
 })
