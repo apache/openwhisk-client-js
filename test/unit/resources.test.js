@@ -1,5 +1,19 @@
-// Licensed to the Apache Software Foundation (ASF) under one or more contributor
-// license agreements; and to You under the Apache License, Version 2.0.
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict'
 
@@ -26,7 +40,7 @@ test('should send HTTP GET request with id for retrieving resource', t => {
     return Promise.resolve()
   }
 
-  return resources.get({name: '12345'})
+  return resources.get({ name: '12345' })
 })
 
 test('should send HTTP GET request with string id for retrieving resource', t => {
@@ -50,7 +64,7 @@ test('should send HTTP POST request with id for invoking resource', t => {
     return Promise.resolve()
   }
 
-  return resources.invoke({name: '12345'})
+  return resources.invoke({ name: '12345' })
 })
 
 test('should send HTTP POST request with string id for invoking resource', t => {
@@ -74,7 +88,7 @@ test('should send HTTP PUT request with id for creating resource', t => {
     return Promise.resolve()
   }
 
-  return resources.create({name: '12345'})
+  return resources.create({ name: '12345' })
 })
 
 test('should send HTTP PUT request with string id for creating resource', t => {
@@ -99,7 +113,7 @@ test('should send HTTP PUT request with id and overwrite for updating resource',
     return Promise.resolve()
   }
 
-  return resources.update({name: '12345'})
+  return resources.update({ name: '12345' })
 })
 
 test('should send HTTP PUT request with string id and overwrite for updating resource', t => {
@@ -124,7 +138,7 @@ test('should send HTTP DELETE request with id for removing resource', t => {
     return Promise.resolve()
   }
 
-  return resources.delete({name: '12345'})
+  return resources.delete({ name: '12345' })
 })
 
 test('should send HTTP DELETE request with string id for removing resource', t => {
@@ -149,7 +163,7 @@ test('should send multiple requests for array parameters', t => {
     return Promise.resolve()
   }
 
-  return resources.operationWithId('GET', [name, {name}, name, {name}, name])
+  return resources.operationWithId('GET', [name, { name }, name, { name }, name])
     .then(result => {
       t.is(result.length, 5)
     })
@@ -171,10 +185,10 @@ test('should parse action name from identifier', t => {
   const nsId = '/ns/12345'
   const nsPackageId = '/ns/package/12345'
 
-  t.is(resources.parseId({name: id}), id)
-  t.is(resources.parseId({name: nsId}), id)
-  t.is(resources.parseId({name: nsPackageId}), `package/12345`)
-  t.throws(() => resources.parseId({name: '/ns'}), /Invalid resource/)
+  t.is(resources.parseId({ name: id }), id)
+  t.is(resources.parseId({ name: nsId }), id)
+  t.is(resources.parseId({ name: nsPackageId }), `package/12345`)
+  t.throws(() => resources.parseId({ name: '/ns' }), /Invalid resource/)
 })
 
 test('should parse namespace from identifier and options', t => {
@@ -183,10 +197,10 @@ test('should parse namespace from identifier and options', t => {
   const nsName = '/ns/12345'
   const nsPackageName = '/ns/package/12345'
 
-  t.falsy(resources.parseNamespace({name}))
-  t.is(resources.parseNamespace({name: nsName}), 'ns')
-  t.is(resources.parseNamespace({name: nsPackageName}), 'ns')
-  t.is(resources.parseNamespace({name, namespace: 'custom'}), 'custom')
-  t.is(resources.parseNamespace({name: nsName, namespace: 'custom'}), 'ns')
-  t.is(resources.parseNamespace({name: nsPackageName, namespace: 'custom'}), 'ns')
+  t.falsy(resources.parseNamespace({ name }))
+  t.is(resources.parseNamespace({ name: nsName }), 'ns')
+  t.is(resources.parseNamespace({ name: nsPackageName }), 'ns')
+  t.is(resources.parseNamespace({ name, namespace: 'custom' }), 'custom')
+  t.is(resources.parseNamespace({ name: nsName, namespace: 'custom' }), 'ns')
+  t.is(resources.parseNamespace({ name: nsPackageName, namespace: 'custom' }), 'ns')
 })

@@ -1,5 +1,19 @@
-// Licensed to the Apache Software Foundation (ASF) under one or more contributor
-// license agreements; and to You under the Apache License, Version 2.0.
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict'
 
@@ -38,7 +52,7 @@ test('list all actions using default namespace', t => {
 
 test('list all actions using options namespace', t => {
   const actions = new Actions(new Client(options))
-  return actions.list({namespace: NAMESPACE}).then(result => {
+  return actions.list({ namespace: NAMESPACE }).then(result => {
     t.true(Array.isArray(result))
     result.forEach(action => {
       t.is(action.namespace, NAMESPACE)
@@ -52,22 +66,22 @@ test('list all actions using options namespace', t => {
 
 test('get a non-existing action, expecting 404', async t => {
   const actions = new Actions(new Client(options))
-  await actions.get({name: 'glorfindel'}).catch(err => {
+  await actions.get({ name: 'glorfindel' }).catch(err => {
     t.is(err.statusCode, 404)
   })
 })
 
 test('delete a non-existing action, expecting 404', async t => {
   const actions = new Actions(new Client(options))
-  await actions.delete({name: 'glorfindel'}).catch(err => {
+  await actions.delete({ name: 'glorfindel' }).catch(err => {
     t.is(err.statusCode, 404)
   })
 })
 
 test('create with an existing action, expecting 409', async t => {
   const actions = new Actions(new Client(options))
-  await actions.create({name: 'glorfindel2', action: 'x=>x'})
-    .then(() => actions.create({name: 'glorfindel2', action: 'x=>x'}))
+  await actions.create({ name: 'glorfindel2', action: 'x=>x' })
+    .then(() => actions.create({ name: 'glorfindel2', action: 'x=>x' }))
     .catch(err => {
       t.is(err.statusCode, 409)
     })
@@ -88,11 +102,11 @@ test('create, get and delete an action', t => {
     t.is(result.namespace, NAMESPACE)
     t.true(result.exec.kind.startsWith('nodejs'))
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
-    return actions.get({actionName: 'random_action_test'}).then(actionResult => {
+    return actions.get({ actionName: 'random_action_test' }).then(actionResult => {
       t.is(actionResult.name, 'random_action_test')
       t.is(actionResult.namespace, NAMESPACE)
       t.pass()
-      return actions.delete({actionName: 'random_action_test'}).catch(errors)
+      return actions.delete({ actionName: 'random_action_test' }).catch(errors)
     }).catch(errors)
   }).catch(errors)
 })
@@ -112,10 +126,10 @@ test('create and update an action', t => {
     t.is(result.namespace, NAMESPACE)
     t.true(result.exec.kind.startsWith('nodejs'))
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
-    return actions.update({actionName: 'random_update_tested', action: 'update test'}).then(updateResult => {
+    return actions.update({ actionName: 'random_update_tested', action: 'update test' }).then(updateResult => {
       t.is(updateResult.exec.code, 'update test')
       t.pass()
-      return actions.delete({actionName: 'random_update_tested'}).catch(errors)
+      return actions.delete({ actionName: 'random_update_tested' }).catch(errors)
     }).catch(errors)
   }).catch(errors)
 })
@@ -129,24 +143,24 @@ test('create, get and delete with parameters an action', t => {
   const actions = new Actions(new Client(options))
   return actions.create({
     name: 'random_action_params_test',
-    params: {hello: 'world'},
+    params: { hello: 'world' },
     action: 'function main() {return {payload:"testing"}}'
   }).then(result => {
     t.is(result.name, 'random_action_params_test')
     t.is(result.namespace, NAMESPACE)
-    t.deepEqual(result.parameters, [{key: 'hello', value: 'world'}])
+    t.deepEqual(result.parameters, [{ key: 'hello', value: 'world' }])
     t.true(result.exec.kind.startsWith('nodejs'))
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
     return actions.update({
       actionName: 'random_action_params_test',
-      params: {foo: 'bar'},
+      params: { foo: 'bar' },
       action: 'update test'
     }).then(updateResult => {
       t.is(updateResult.name, 'random_action_params_test')
       t.is(updateResult.namespace, NAMESPACE)
-      t.deepEqual(updateResult.parameters, [{key: 'foo', value: 'bar'}])
+      t.deepEqual(updateResult.parameters, [{ key: 'foo', value: 'bar' }])
       t.pass()
-      return actions.delete({name: 'random_action_params_test'}).catch(errors)
+      return actions.delete({ name: 'random_action_params_test' }).catch(errors)
     }).catch(errors)
   }).catch(errors)
 })
@@ -158,25 +172,25 @@ test('get an action with and without its code', t => {
   }
 
   const actions = new Actions(new Client(options))
-  return actions.create({actionName: 'random_action_get_test', action: 'function main() {return {payload:"testing"}}'}).then(result => {
+  return actions.create({ actionName: 'random_action_get_test', action: 'function main() {return {payload:"testing"}}' }).then(result => {
     t.is(result.name, 'random_action_get_test')
     t.is(result.namespace, NAMESPACE)
     t.true(result.exec.kind.startsWith('nodejs'))
     t.is(result.exec.code, 'function main() {return {payload:"testing"}}')
-    return actions.get({actionName: 'random_action_get_test', code: false}).then(actionResult => {
+    return actions.get({ actionName: 'random_action_get_test', code: false }).then(actionResult => {
       t.is(actionResult.name, 'random_action_get_test')
       t.is(actionResult.namespace, NAMESPACE)
       t.is(actionResult.exec.code, undefined)
-      return actions.get({actionName: 'random_action_get_test', code: true}).then(actionResult => {
+      return actions.get({ actionName: 'random_action_get_test', code: true }).then(actionResult => {
         t.is(actionResult.name, 'random_action_get_test')
         t.is(actionResult.namespace, NAMESPACE)
         t.is(actionResult.exec.code, 'function main() {return {payload:"testing"}}')
-        return actions.get({actionName: 'random_action_get_test'}).then(actionTesult => {
+        return actions.get({ actionName: 'random_action_get_test' }).then(actionTesult => {
           t.is(actionTesult.name, 'random_action_get_test')
           t.is(actionTesult.namespace, NAMESPACE)
           t.is(actionTesult.exec.code, 'function main() {return {payload:"testing"}}')
           t.pass()
-          return actions.delete({actionName: 'random_action_get_test'}).catch(errors)
+          return actions.delete({ actionName: 'random_action_get_test' }).catch(errors)
         }).catch(errors)
       }).catch(errors)
     }).catch(errors)
@@ -191,7 +205,7 @@ test('invoke action with fully-qualified name', t => {
   }
 
   const actions = new Actions(new Client(options))
-  return actions.invoke({actionName: '/whisk.system/utils/sort', blocking: true}).then(invokeResult => {
+  return actions.invoke({ actionName: '/whisk.system/utils/sort', blocking: true }).then(invokeResult => {
     t.true(invokeResult.response.success)
     t.pass()
   }).catch(errors)
@@ -205,21 +219,21 @@ test('create, invoke and remove package action', t => {
   }
 
   const zip = new JSZip()
-  zip.file('package.json', JSON.stringify({main: 'index.js'}))
+  zip.file('package.json', JSON.stringify({ main: 'index.js' }))
   zip.file('index.js', 'function main(params) {return params};\nexports.main = main;')
 
-  return zip.generateAsync({type: 'nodebuffer'}).then(content => {
+  return zip.generateAsync({ type: 'nodebuffer' }).then(content => {
     const actions = new Actions(new Client(options))
-    return actions.create({actionName: 'random_package_action_test', action: content}).then(result => {
+    return actions.create({ actionName: 'random_package_action_test', action: content }).then(result => {
       return actions.invoke({
         actionName: 'random_package_action_test',
-        params: {hello: 'world'},
+        params: { hello: 'world' },
         blocking: true
       }).then(invokeResult => {
-        t.deepEqual(invokeResult.response.result, {hello: 'world'})
+        t.deepEqual(invokeResult.response.result, { hello: 'world' })
         t.true(invokeResult.response.success)
         t.pass()
-        return actions.delete({actionName: 'random_package_action_test'}).catch(errors)
+        return actions.delete({ actionName: 'random_package_action_test' }).catch(errors)
       })
     })
   }).catch(errors)
@@ -240,11 +254,11 @@ test('create, get and delete sequence action', t => {
     t.is(result.namespace, NAMESPACE)
     t.is(result.exec.kind, 'sequence')
     t.deepEqual(result.exec.components, ['/whisk.system/utils/echo'])
-    return actions.get({actionName: 'my_sequence'}).then(actionResult => {
+    return actions.get({ actionName: 'my_sequence' }).then(actionResult => {
       t.is(actionResult.name, 'my_sequence')
       t.is(actionResult.namespace, NAMESPACE)
       t.pass()
-      return actions.delete({actionName: 'my_sequence'}).catch(errors)
+      return actions.delete({ actionName: 'my_sequence' }).catch(errors)
     }).catch(errors)
   }).catch(errors)
 })

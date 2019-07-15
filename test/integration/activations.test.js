@@ -1,5 +1,19 @@
-// Licensed to the Apache Software Foundation (ASF) under one or more contributor
-// license agreements; and to You under the Apache License, Version 2.0.
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 'use strict'
 
@@ -37,7 +51,7 @@ test('retrieve individual activations', t => {
   const activations = new Activations(new Client(options))
   return activations.list().then(result => {
     t.true(Array.isArray(result))
-    return Promise.all(result.map(r => activations.get({activation: r.activationId})))
+    return Promise.all(result.map(r => activations.get({ activation: r.activationId })))
   }).catch(err => {
     console.log(err)
     t.fail()
@@ -48,7 +62,7 @@ test('retrieve individual activation logs', t => {
   const activations = new Activations(new Client(options))
   return activations.list().then(result => {
     t.true(Array.isArray(result))
-    return Promise.all(result.map(r => activations.logs({activation: r.activationId})))
+    return Promise.all(result.map(r => activations.logs({ activation: r.activationId })))
   }).catch(err => {
     console.log(err)
     t.fail()
@@ -59,7 +73,7 @@ test('retrieve individual activation result', t => {
   const activations = new Activations(new Client(options))
   return activations.list().then(result => {
     t.true(Array.isArray(result))
-    return Promise.all(result.map(r => activations.result({activation: r.activationId})))
+    return Promise.all(result.map(r => activations.result({ activation: r.activationId })))
   }).catch(err => {
     console.log(err)
     t.fail()
