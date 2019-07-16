@@ -190,6 +190,27 @@ test('should create a new package with parameters', t => {
   return packages.create({ name: id, 'package': pkg })
 })
 
+test('create a new package with annotations', t => {
+  t.plan(3)
+  const ns = '_'
+  const client = {}
+  const id = '12345'
+  const annotations = {
+    foo: 'bar'
+  }
+  const packages = new Packages(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/packages/${id}`)
+    t.deepEqual(options.body, { annotations: [
+      { key: 'foo', value: 'bar' }
+    ] })
+  }
+
+  return packages.create({ name: id, annotations })
+})
+
 test('should update an existing package', t => {
   t.plan(4)
   const ns = '_'
