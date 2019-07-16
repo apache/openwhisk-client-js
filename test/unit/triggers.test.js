@@ -252,3 +252,24 @@ test('create a new trigger with custom body', t => {
 
   return triggers.create({ name: '12345', trigger })
 })
+
+test('create a new trigger with annotations', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const annotations = {
+    foo: 'bar'
+  }
+  const triggers = new Triggers(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/triggers/12345`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, { annotations: [
+      { key: 'foo', value: 'bar' }
+    ] })
+  }
+
+  return triggers.create({ name: '12345', annotations })
+})

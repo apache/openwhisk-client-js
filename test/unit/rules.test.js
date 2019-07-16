@@ -178,6 +178,34 @@ test('create a new rule using fully qualified names', t => {
   return rules.create({ name, action, trigger })
 })
 
+test('create a new rule with annotations', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const annotations = {
+    foo: 'bar'
+  }
+  const rules = new Rules(client)
+
+  const name = '12345'
+  const action = '/hello/some_action'
+  const trigger = '/hello/some_trigger'
+
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/rules/${name}`)
+    t.deepEqual(options.qs, {})
+    t.deepEqual(options.body, {
+      action,
+      trigger,
+      annotations: [
+        { key: 'foo', value: 'bar' }
+      ] })
+  }
+
+  return rules.create({ name, action, trigger, annotations })
+})
+
 test('create a rule without providing a rule name', t => {
   const client = { options: {} }
   const rules = new Rules(client)

@@ -516,6 +516,7 @@ ow.triggers.update({name: '...'})
 The following optional parameters are supported:
 - `trigger` - JSON object containing parameters for the trigger body (default: `{}`)
 - `namespace` - set custom namespace for endpoint
+- `annotations` - object containing annotations for the trigger (default: `{}`)
 
 ### create & update packages
 
@@ -527,6 +528,7 @@ ow.packages.update({name: '...'})
 The following optional parameters are supported:
 - `package` - JSON object containing parameters for the package body (default: `{}`)
 - `namespace` - set custom namespace for endpoint
+- `annotations` - object containing annotations for the package (default: `{}`)
 
 ### create & update rule
 
@@ -541,6 +543,7 @@ appended in the request, unless a fully qualified name is passed in
 
 The following optional parameters are supported:
 - `namespace` - set namespace for rule
+- `annotations` - object containing annotations for the rule (default: `{}`)
 
 ### enable & disable rule
 
