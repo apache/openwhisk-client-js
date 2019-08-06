@@ -18,13 +18,13 @@
 -->
 # Apache OpenWhisk Client for JavaScript
 
-[![Build Status](https://travis-ci.org/apache/incubator-openwhisk-client-js.svg?branch=master)](https://travis-ci.org/apache/incubator-openwhisk-client-js)
+[![Build Status](https://travis-ci.org/apache/openwhisk-client-js.svg?branch=master)](https://travis-ci.org/apache/openwhisk-client-js)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
-[![codecov](https://codecov.io/gh/apache/incubator-openwhisk-client-js/branch/master/graph/badge.svg)](https://codecov.io/gh/apache/incubator-openwhisk-client-js)
+[![codecov](https://codecov.io/gh/apache/openwhisk-client-js/branch/master/graph/badge.svg)](https://codecov.io/gh/apache/openwhisk-client-js)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-JavaScript client library for the [Apache OpenWhisk](https://github.com/apache/incubator-openwhisk) platform.
-Provides a wrapper around the [OpenWhisk APIs](https://github.com/apache/incubator-openwhisk/blob/fb001afa237476eda0c0f6494ee92702e5986538/core/controller/src/main/resources/apiv1swagger.json) (Swagger JSON).
+JavaScript client library for the [Apache OpenWhisk](https://github.com/apache/openwhisk) platform.
+Provides a wrapper around the [OpenWhisk APIs](https://github.com/apache/openwhisk/blob/fb001afa237476eda0c0f6494ee92702e5986538/core/controller/src/main/resources/apiv1swagger.json) (Swagger JSON).
 
 ## installation
 
@@ -568,7 +568,7 @@ The following optional parameters are supported:
 
 ## api gateway
 
-OpenWhisk supports a [built-in API gateway service](https://github.com/apache/incubator-openwhisk/blob/master/docs/apigateway.md) and external third-party providers.
+OpenWhisk supports a [built-in API gateway service](https://github.com/apache/openwhisk/blob/master/docs/apigateway.md) and external third-party providers.
 
 This client library defaults to using the platform service. If the `apigw_token` parameter is passed into the client constructor, the implementation will switch to the [IBM Bluemix API Gateway](https://console.ng.bluemix.net/docs/openwhisk/openwhisk_apigateway.html#openwhisk_apigateway).
 
@@ -629,7 +629,7 @@ The following optional parameters are supported:
 ow.routes.create({swagger: '{...}'})
 ```
 
-Swagger parameter must be a well-formed JSON string, containing a valid Swagger API definition, which follows the [OpenWhisk API Gateway route schema](https://github.com/apache/incubator-openwhisk-apigateway/blob/master/doc/v2/management_interface_v2.md#post-v2tenant_idapis).
+Swagger parameter must be a well-formed JSON string, containing a valid Swagger API definition, which follows the [OpenWhisk API Gateway route schema](https://github.com/apache/openwhisk-apigateway/blob/master/doc/v2/management_interface_v2.md#post-v2tenant_idapis).
 
 *No other parameters are supported when creating the route from a JSON Swagger document.*
 
