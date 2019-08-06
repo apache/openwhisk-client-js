@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/apache/incubator-openwhisk-client-js"
+    "url": "git+https://github.com/apache/openwhisk-client-js"
   },
   "keywords": [
     "apache openwhisk",
@@ -35,9 +35,9 @@
   "author": "James Thomas <james@jamesthom.as>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/apache/incubator-openwhisk-client-js/issues"
+    "url": "https://github.com/apache/openwhisk-client-js/issues"
   },
-  "homepage": "https://github.com/apache/incubator-openwhisk-client-js#readme",
+  "homepage": "https://github.com/apache/openwhisk-client-js#readme",
   "devDependencies": {
     "@types/node": "^12.0.10",
     "@types/swagger-schema-official": "^2.0.17",

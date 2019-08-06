@@ -39,7 +39,7 @@ cd $WHISKDIR
 cd $WHISKDIR/ansible
 
 $ANSIBLE_CMD wipe.yml
-$ANSIBLE_CMD openwhisk.yml  -e '{"openwhisk_cli":{"installation_mode":"remote","remote":{"name":"OpenWhisk_CLI","dest_name":"OpenWhisk_CLI","location":"https://github.com/apache/incubator-openwhisk-cli/releases/download/latest"}}}'
+$ANSIBLE_CMD openwhisk.yml  -e '{"openwhisk_cli":{"installation_mode":"remote","remote":{"name":"OpenWhisk_CLI","dest_name":"OpenWhisk_CLI","location":"https://github.com/apache/openwhisk-cli/releases/download/latest"}}}'
 $ANSIBLE_CMD apigateway.yml
 $ANSIBLE_CMD properties.yml # required for to run before routemgmt.yml
 $ANSIBLE_CMD routemgmt.yml
