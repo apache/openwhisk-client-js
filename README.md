@@ -653,7 +653,7 @@ var openwhisk = require('openwhisk');
 ### unit tests
 
 ```bash
-$ npm test:unit
+$ npm run test:unit
 ```
 
 ### integration tests
