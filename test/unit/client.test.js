@@ -20,6 +20,19 @@
 const test = require('ava')
 const Client = require('../../lib/client')
 const http = require('http')
+const nock = require('nock')
+
+// Note: this has to come before any of the proxy tests, as they interfere
+test('should handle http request errors', async t => {
+  const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '' })
+  const METHOD = 'GET'
+  const PATH = '/some/path'
+
+  nock('https://test_host').get(PATH).replyWithError('simulated error')
+  const error = await t.throwsAsync(client.request(METHOD, PATH, {}))
+  t.truthy(error.message)
+  t.assert(error.message.includes('simulated error'))
+})
 
 test('should use default constructor options', t => {
   const client = new Client({ api_key: 'aaa', apihost: 'my_host' })
