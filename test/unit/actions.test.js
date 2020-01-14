@@ -400,7 +400,7 @@ test('create a new action with annotations', t => {
   return actions.create({ name: '12345', action, annotations })
 })
 
-test('update a action with no paramters', t => {
+test('update a action with no parameters', t => {
   t.plan(4)
   const ns = '_'
   const client = {}
