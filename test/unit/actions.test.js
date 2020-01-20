@@ -246,6 +246,25 @@ test('should invoke action to retrieve result', t => {
   })
 })
 
+test('should invoke action to retrieve result but request is demoted to async', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const actions = new Actions(client)
+  const result = { activationId: '123456' }
+
+  client.request = (method, path, options) => {
+    t.is(method, 'POST')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+    t.deepEqual(options.qs, { blocking: true })
+    return Promise.resolve(result)
+  }
+
+  return actions.invoke({ name: '12345', result: true, blocking: true }).catch(_result => {
+    t.deepEqual(_result, result)
+  })
+})
+
 test('should invoke action to retrieve result without blocking', t => {
   t.plan(4)
   const ns = '_'
