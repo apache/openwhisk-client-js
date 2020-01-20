@@ -62,7 +62,7 @@ declare namespace openwhisk {
         invoke<In extends Dict, Out extends Dict>(options: { name: string; namespace?: string; blocking?: boolean; params?: In; result?: boolean; }): Promise<{ activationId: string }>;
         create(options: { name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; overwrite?: boolean; params?: Dict; annotations?: Dict; limits?: Limits; version?: string; }): Promise<Action>;
         //create(options: { name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; overwrite?: boolean; params?: Dict; version?: string; }[]): Promise<Action[]>;
-        update(options: { name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; params?: Dict; annotations?: Dict; limits?: Limits; version?: string; }): Promise<Action>;
+        update(options: { name: string; namespace?: string; action?: (string | Buffer | Action); kind?: Kind; params?: Dict; annotations?: Dict; limits?: Limits; version?: string; }): Promise<Action>;
         //update(options: ({ name: string; namespace?: string; action: (string | Buffer | Action); kind?: Kind; params?: Dict; version?: string; })[]): Promise<Action[]>;
         delete(options: string): Promise<Action>;
         delete(options: { name: string; namespace?: string; }): Promise<Action>;

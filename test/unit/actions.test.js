@@ -419,6 +419,22 @@ test('create a new action with annotations', t => {
   return actions.create({ name: '12345', action, annotations })
 })
 
+test('update a action with no parameters', t => {
+  t.plan(4)
+  const ns = '_'
+  const client = {}
+  const actions = new Actions(client)
+
+  client.request = (method, path, options) => {
+    t.is(method, 'PUT')
+    t.is(path, `namespaces/${ns}/actions/12345`)
+    t.deepEqual(options.qs, { overwrite: true })
+    t.deepEqual(options.body, { })
+  }
+
+  return actions.create({ name: '12345', overwrite: true })
+})
+
 test('create a new action with limits', t => {
   t.plan(4)
   const ns = '_'
