@@ -89,6 +89,20 @@ test('get routes with incorrect parameters', t => {
   t.throws(() => { routes.get({ basepath: 'id', name: 'id' }) }, /Invalid parameters: use basepath or name, not both/)
 })
 
+// OVERRIDE gateway package
+test('should override package name for apigateway', t => {
+  t.plan(3)
+  const client = { options: {} }
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, routes.routeMgmtApiPath('getApi'))
+    t.is(path, 'foo/bar/baz/getApi')
+  }
+
+  const routes = new Routes(client, (p) => `foo/bar/baz/${p}`)
+  return routes.list()
+})
+
 // ADD NAME TO OTHER METHODS
 
 test('should list all routes', t => {
@@ -244,7 +258,7 @@ test('delete routes providing basepath and name', t => {
 
 test('should create a route', t => {
   t.plan(3)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey }
   const client = { pathUrl, options: clientOptions }
@@ -260,7 +274,7 @@ test('should create a route', t => {
         name: 'helloAction',
         namespace: '_',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/_/default/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/_/default/helloAction.http',
         authkey: apiKey
       }
     }
@@ -278,7 +292,7 @@ test('should create a route', t => {
 
 test('should create a route from swagger file', t => {
   t.plan(3)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey }
   const client = { pathUrl, options: clientOptions }
@@ -302,7 +316,7 @@ test('should create a route from swagger file', t => {
 
 test('should create a route with api name', t => {
   t.plan(3)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey }
   const client = { pathUrl, options: clientOptions }
@@ -319,7 +333,7 @@ test('should create a route with api name', t => {
         name: 'helloAction',
         namespace: '_',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/_/default/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/_/default/helloAction.http',
         authkey: apiKey
       }
     }
@@ -337,7 +351,7 @@ test('should create a route with api name', t => {
 
 test('should create a route with apigwToken', t => {
   t.plan(4)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey, apigwToken: 'token', apigwSpaceGuid: 'space' }
   const client = { pathUrl, options: clientOptions }
@@ -353,7 +367,7 @@ test('should create a route with apigwToken', t => {
         name: 'helloAction',
         namespace: '_',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/_/default/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/_/default/helloAction.http',
         authkey: apiKey
       }
     }
@@ -372,7 +386,7 @@ test('should create a route with apigwToken', t => {
 
 test('should create a route with response type', t => {
   t.plan(4)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey }
   const client = { pathUrl, options: clientOptions }
@@ -388,7 +402,7 @@ test('should create a route with response type', t => {
         name: 'helloAction',
         namespace: '_',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/_/default/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/_/default/helloAction.http',
         authkey: apiKey
       }
     }
@@ -407,7 +421,7 @@ test('should create a route with response type', t => {
 
 test('should create a route with secure key', t => {
   t.plan(3)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const secureKey = 'some_key'
   const clientOptions = { apiKey }
@@ -424,7 +438,7 @@ test('should create a route with secure key', t => {
         name: 'helloAction',
         namespace: '_',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/_/default/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/_/default/helloAction.http',
         authkey: apiKey,
         secureKey: secureKey
       }
@@ -443,7 +457,7 @@ test('should create a route with secure key', t => {
 
 test('should create a route with apigwToken and action with package', t => {
   t.plan(4)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey, apigwToken: 'token', apigwSpaceGuid: 'space' }
   const client = { pathUrl, options: clientOptions }
@@ -459,7 +473,7 @@ test('should create a route with apigwToken and action with package', t => {
         name: 'package/helloAction',
         namespace: '_',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/_/package/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/_/package/helloAction.http',
         authkey: apiKey
       }
     }
@@ -478,7 +492,7 @@ test('should create a route with apigwToken and action with package', t => {
 
 test('should create a route with apigwToken and action with package & ns', t => {
   t.plan(4)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey, apigwToken: 'token', apigwSpaceGuid: 'space' }
   const client = { pathUrl, options: clientOptions }
@@ -494,7 +508,7 @@ test('should create a route with apigwToken and action with package & ns', t => 
         name: 'package/helloAction',
         namespace: 'ns',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/ns/package/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/ns/package/helloAction.http',
         authkey: apiKey
       }
     }
@@ -513,7 +527,7 @@ test('should create a route with apigwToken and action with package & ns', t => 
 
 test('should create a route using global ns', t => {
   t.plan(3)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey, namespace: 'global_ns' }
   const client = { pathUrl, options: clientOptions }
@@ -529,7 +543,7 @@ test('should create a route using global ns', t => {
         name: 'helloAction',
         namespace: 'global_ns',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/global_ns/default/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/global_ns/default/helloAction.http',
         authkey: apiKey
       }
     }
@@ -547,7 +561,7 @@ test('should create a route using global ns', t => {
 
 test('should create a route using basepath', t => {
   t.plan(3)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey }
   const client = { pathUrl, options: clientOptions }
@@ -563,7 +577,7 @@ test('should create a route using basepath', t => {
         name: 'helloAction',
         namespace: '_',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/_/default/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/_/default/helloAction.http',
         authkey: apiKey
       }
     }
@@ -581,7 +595,7 @@ test('should create a route using basepath', t => {
 
 test('should create a route using fully-qualified action name', t => {
   t.plan(3)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey }
   const client = { pathUrl, options: clientOptions }
@@ -597,7 +611,7 @@ test('should create a route using fully-qualified action name', t => {
         name: 'foo/helloAction',
         namespace: 'test',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/test/foo/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/test/foo/helloAction.http',
         authkey: apiKey
       }
     }
@@ -615,7 +629,7 @@ test('should create a route using fully-qualified action name', t => {
 
 test('should create a route using action name with ns', t => {
   t.plan(3)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey: apiKey }
   const client = { pathUrl, options: clientOptions }
@@ -631,7 +645,7 @@ test('should create a route using action name with ns', t => {
         name: 'helloAction',
         namespace: 'test',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/test/default/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/test/default/helloAction.http',
         authkey: apiKey
       }
     }
@@ -649,7 +663,7 @@ test('should create a route using action name with ns', t => {
 
 test('should create a route using action name with ns overriding defaults', t => {
   t.plan(3)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey, namespace: 'global' }
   const client = { pathUrl, options: clientOptions }
@@ -665,7 +679,7 @@ test('should create a route using action name with ns overriding defaults', t =>
         name: 'helloAction',
         namespace: 'test',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/test/default/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/test/default/helloAction.http',
         authkey: apiKey
       }
     }
@@ -683,7 +697,7 @@ test('should create a route using action name with ns overriding defaults', t =>
 
 test('should create a route with path parameters', t => {
   t.plan(3)
-  const pathUrl = path => `https://openwhisk.ng.bluemix.net/api/v1/${path}`
+  const pathUrl = path => `https://example.com/api/v1/${path}`
   const apiKey = 'username:password'
   const clientOptions = { apiKey }
   const client = { pathUrl, options: clientOptions }
@@ -699,7 +713,7 @@ test('should create a route with path parameters', t => {
         name: 'helloAction',
         namespace: '_',
         backendMethod: 'GET',
-        backendUrl: 'https://openwhisk.ng.bluemix.net/api/v1/web/_/default/helloAction.http',
+        backendUrl: 'https://example.com/api/v1/web/_/default/helloAction.http',
         authkey: apiKey
       },
       pathParameters: [

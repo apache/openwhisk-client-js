@@ -19,7 +19,20 @@
 
 # Changelog
 
-## v3.19.0
+## v3.21.0
+
+* Allow clients to override API mappings for the Route operations (#201)
+* Handle a blocking/result response that is demoted to async (#199)
+* Fix handling of request exceptions in client.js (#196)
+* Allow update to action without requiring a code artifact (#195)
+
+## v3.20.0
+
+* Removed all references to Incubator now Apache OpenWhisk has passed incubation (#190, #192)
+* Add proxy agent to be included by runtime, rather than building in (#175)
+* Re-worked CI/CD setup (#180)
+
+## v3.19.0-incubating
 
 * Initial release as an Apache Incubator project.
 * Add support for using HTTP Proxy with library (#147)
