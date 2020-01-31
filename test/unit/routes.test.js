@@ -89,6 +89,20 @@ test('get routes with incorrect parameters', t => {
   t.throws(() => { routes.get({ basepath: 'id', name: 'id' }) }, /Invalid parameters: use basepath or name, not both/)
 })
 
+// OVERRIDE gateway package
+test('should override package name for apigateway', t => {
+  t.plan(3)
+  const client = { options: {} }
+  client.request = (method, path, options) => {
+    t.is(method, 'GET')
+    t.is(path, routes.routeMgmtApiPath('getApi'))
+    t.is(path, 'foo/bar/baz/getApi')
+  }
+
+  const routes = new Routes(client, (p) => `foo/bar/baz/${p}`)
+  return routes.list()
+})
+
 // ADD NAME TO OTHER METHODS
 
 test('should list all routes', t => {
