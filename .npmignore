@@ -1,5 +1,6 @@
 tools/
 test/
+.editorconfig
 .gitignore
 .travis.yml
-CONTRIBUTIN.md
+CONTRIBUTING.md

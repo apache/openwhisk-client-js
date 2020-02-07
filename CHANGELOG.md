@@ -19,6 +19,11 @@
 
 # Changelog
 
+## v3.21.1
+
+* Fix version in package.json and package-lock.json
+* Update npm ignores.
+
 ## v3.21.0
 
 * Allow clients to override API mappings for the Route operations (#201)
