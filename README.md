@@ -59,20 +59,6 @@ ow.resource.operation()
 
 Users can override default constructor parameters by passing in explicit options as shown in the example below.
 
-_**Please note**: Due to [an issue](https://github.com/openwhisk/openwhisk/issues/1751) with the Node.js runtime in OpenWhisk, environment variables used by the constructor are not available until the invocation function handler is called. If you want to define the client instance outside this function, you will need to manually pass in the constructor options ._
-
-```javascript
-var openwhisk = require('openwhisk');
-// DOES NOT WORK! Environment parameters not set.
-var ow = openwhisk();
-
-function action() {
-  return ow.actions.invoke('sample')
-}
-
-exports.main = action
-```
-
 ### outside openwhisk platform
 
 ```javascript
