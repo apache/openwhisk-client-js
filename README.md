@@ -69,7 +69,7 @@ ow.actions.invoke('sample').then(result => console.log(result))
 ```
 
 #### using 3rd party authentication handler
-You can specify an authentication handler in `options.auth_handler` this is an object that provides a function `getAuthHeader` that returns a Promise or String to be used in the `Authorization` http header for every http request.
+You can specify an authentication handler in `options.auth_handler` this is an object that provides a function `getAuthHeader` that returns a Promise resolving to a string to be used in the `Authorization` http header for every http request.
 ```javascript
 const authHandler = {
   getAuthHeader: ()=>{
