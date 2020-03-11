@@ -16,6 +16,7 @@
  */
 
 import * as Swagger from 'swagger-schema-official'
+import { Agent } from 'http'
 
 export = openwhisk;
 
@@ -30,6 +31,15 @@ declare namespace openwhisk {
         ignore_certs?: boolean;
         apigw_token?: string;
         apigw_space_guid?: string;
+        proxy?: string;
+        agent?: Agent;
+        apiversion?: string;
+        noUserAgent?: boolean;
+        cert?: string;
+        key?: string;
+        auth_handler?: {
+          getAuthHeader: () => Promise<string>
+        }
     }
 
     // Client
