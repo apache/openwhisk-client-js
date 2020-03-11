@@ -225,6 +225,12 @@ declare namespace openwhisk {
     interface Trigger extends TriggerDesc {
         parameters?: KeyVal[];
         limits?: any;
+        rules?: {
+            [key: string]: {
+                action: PathName;
+                status: Status;
+            }
+        }
     }
 
     interface Route {
