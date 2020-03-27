@@ -185,6 +185,17 @@ test('should return request parameters with merged options', async t => {
   t.deepEqual(params.b, { bar: 'foo' })
 })
 
+test('should return request parameters transaction id', async t => {
+  process.env['__OW_TRANSACTION_ID'] = 'example-transaction-id'
+  const client = new Client({ api_key: 'username:password', apihost: 'blah' })
+  const METHOD = 'get'
+  const PATH = 'some/path/to/resource'
+
+  const params = await client.params(METHOD, PATH)
+  t.is(params.headers['x-request-id'], 'example-transaction-id')
+  delete process.env['__OW_TRANSACTION_ID']
+})
+
 test('should return request parameters with cert and key client options', async t => {
   const client = new Client({ api_key: 'username:password', apihost: 'blah', cert: 'mycert=', key: 'mykey=' })
   const METHOD = 'get'
