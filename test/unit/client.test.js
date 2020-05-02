@@ -77,6 +77,22 @@ test('apihost and apiversion set', t => {
   t.is(client.options.apiVersion, 'v2')
 })
 
+test('option headers are respected', async t => {
+  const client = new Client({ api_key: 'username:password', apihost: 'blah' })
+  const METHOD = 'get'
+  const PATH = 'some/path/to/resource'
+  const OPTIONS = { headers: {
+    'x-custom-header': 'some-value',
+    'User-Agent': 'some-custom-useragent-string'
+  } }
+  const params = await client.params(METHOD, PATH, OPTIONS)
+  t.true(params.headers.hasOwnProperty('Authorization'))
+  t.true(params.headers.hasOwnProperty('x-custom-header'))
+  // options.headers overwrite defaults if they match
+  t.true(params.headers.hasOwnProperty('User-Agent'))
+  t.true(params.headers['User-Agent'] === OPTIONS.headers['User-Agent'])
+})
+
 test('should support deprecated explicit constructor options', t => {
   const client = new Client({
     namespace: 'ns',
