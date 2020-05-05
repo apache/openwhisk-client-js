@@ -19,6 +19,11 @@
 
 # Changelog
 
+## v3.21.2
+
+* Allow custom headers (#209)
+* Propagate __OW_TRANSACTION_ID if present (#208)
+
 ## v3.21.1
 
 * Fix version in package.json and package-lock.json
