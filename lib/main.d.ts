@@ -256,20 +256,7 @@ declare namespace openwhisk {
         components: string[];
     }
 
-    type Kind =
-        "" |
-        "java" |
-        "nodejs:default" |
-        "nodejs:6" |
-        "nodejs:8" |
-        "python:default" |
-        "python:3" |
-        "python:2" |
-        "swift:default" |
-        "swift:3.1.1" |
-        "swift:4.1" |
-        "php:default" |
-        "php:7.1";
+    type Kind = string;
 
     interface Limits {
         timeout?: number;
