@@ -21,6 +21,10 @@
 
 ## v3.21.2
 
+* relax Kind typings (#215)
+
+## v3.21.2
+
 * Allow custom headers (#209)
 * Propagate __OW_TRANSACTION_ID if present (#208)
 
