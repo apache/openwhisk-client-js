@@ -21,7 +21,7 @@
 
 ## v3.21.3
 
-* relax Kind typings (#215)
+* Relax action kind typing (#215)
 
 ## v3.21.2
 
