@@ -19,6 +19,10 @@
 
 # Changelog
 
+## v3.21.3
+
+* Relax action kind typing (#215)
+
 ## v3.21.2
 
 * Allow custom headers (#209)
