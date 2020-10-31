@@ -19,7 +19,7 @@
 
 # Changelog
 
-## v3.21.2
+## v3.21.3
 
 * relax Kind typings (#215)
 
