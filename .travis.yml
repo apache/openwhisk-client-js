@@ -17,12 +17,20 @@
 
 language: node_js
 node_js:
-- '8'
 - '10'
 - '12'
+- '14'
 sudo: required
 services:
 - docker
+
+notifications:
+  email: false
+  webhooks:
+    urls:
+      # travis2slack webhook to enable DMs on openwhisk-team.slack.com to PR authors with TravisCI results
+      secure: "ovQJRc9+y4NDh3kR0Pfay7DaS9XNVf2GrdClxWEC8lqHA/zSYRSocm9TEiOKsEyfhcyeH00PlZzqowJdIF+FxWaaguftSutlWGh5RS430T3R9fRH2cnawZul3tUJArkHjkbQKB3Rbyrtw0AUalnaO/FSTygIqQcJN/HoUPY+cBdMtueqRBiTaEBYkFivfbrFNXRHHf7/3c1pVbJWeZNhULz6dmtqr/t4glQs0cy4HZLL5uMM4VrojYYlBoXOQaK6SsizrN0TL0eolqbp/5Vd8dApFYIPRjZ1QaIx07NoAhy6tjVi0WR9PVi/kOwKUgRlAkOjn53Og7ToNO6sgkExjiMdBxfclmO4pc7JoUPxz22b6adzK0JoOp422ZJMnaKWHyg7ruFxCtWTCa448BDSyMT07Ei8yhPxRVwY73iVMSj4foonTCXVMCzPZP0Vt79xyu04A4hjtkBLaLbwouLElOxqWpZymnj7VNNWeTlfjkKfEezjl08jQrmCKD63ASwgKALg/FXV2+gffa140MkQnnXC8Np8pZNYSrc5FwiLk2VrY382MLF9c4N7GlbG4WvR416QqvFy354FNeaXcps04JLeCjIovaVF9qnDzfjlkVWfMs+o6rvhV89M79HAK6vEpe2X563RW8QJt15pqGReyNe3LnKRJDrympuF73XVKDQ="
+
 before_install:
 - cd $TRAVIS_BUILD_DIR
 install:
