@@ -262,6 +262,7 @@ declare namespace openwhisk {
         timeout?: number;
         memory?: number;
         logs?: number;
+        concurrency?: number;
     }
 
     interface Response<T extends Dict> {
