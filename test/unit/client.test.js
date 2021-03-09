@@ -334,7 +334,7 @@ test('should throw errors for non-HTTP response failures', t => {
   t.throws(() => client.handleErrors({ message: 'error message' }), /error message/)
 })
 
-test('should contain x-namespace-id header when namespace in contructor options', async t => {
+test('should contain x-namespace-id header when namespace in constructor options', async t => {
   const authHandler = {
     getAuthHeader: () => {
       return Promise.resolve('Bearer access_token')

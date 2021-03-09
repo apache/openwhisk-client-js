@@ -55,7 +55,7 @@ declare namespace openwhisk {
         routes: Routes;
     }
 
-    // Ressources
+    // Resources
 
     interface Actions {
         list(options?: { namespace?: string; skip?: number; limit?: number; count?: boolean; }): Promise<ActionDesc[]>;
