@@ -72,7 +72,7 @@ test('get a non-existing rule, expecting 404', async t => {
   })
 })
 
-// Running update tests conconcurrently leads to resource conflict errors.
+// Running update tests concurrently leads to resource conflict errors.
 test.serial('create, get and delete a rule', t => {
   const errors = err => {
     console.log(err)
