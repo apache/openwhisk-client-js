@@ -435,7 +435,6 @@ The following optional parameters are supported:
 - `annotations` - object containing annotations for the action (default: `{}`)
 - `limits` - object containing limits for the action (default: `{}`)
 - `kind` - runtime environment parameter, ignored when `action` is an object (default: `nodejs:default`)
-- `version` - set semantic version of the action. If parameter is empty when create new action openwhisk generate 0.0.1 value when update an action increase the patch version.
 
 If you pass in an array for the first parameter, the `create` call will be executed for each array item. The function returns a Promise which resolves with the results when all operations have finished.
 
