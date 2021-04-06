@@ -248,7 +248,8 @@ declare namespace openwhisk {
     interface Exec {
         kind: Kind;
         code: string;
-        binary?: boolean
+        binary?: boolean;
+        main?: string;
     }
 
     interface Sequence {
