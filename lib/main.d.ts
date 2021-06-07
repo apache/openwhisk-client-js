@@ -250,6 +250,7 @@ declare namespace openwhisk {
         code: string;
         binary?: boolean;
         main?: string;
+        image?: string;
     }
 
     interface Sequence {
