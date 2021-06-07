@@ -19,6 +19,12 @@
 
 # Changelog
 
+## v3.21.4
+
+Adding missing main property to Exec type (#222)
+chore: Fix spelling errors (#219)
+Add concurrency to the limits map to allow the client to request conrrency limits (#218)
+
 ## v3.21.3
 
 * Relax action kind typing (#215)
