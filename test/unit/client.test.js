@@ -22,17 +22,59 @@ const Client = require('../../lib/client')
 const http = require('http')
 const nock = require('nock')
 
-// Note: this has to come before any of the proxy tests, as they interfere
+// Note: All client.request tests have to come before any of the proxy tests, as they interfere
+
+test('should return response', async t => {
+  const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '' })
+  const METHOD = 'GET'
+  const PATH = '/some/path'
+
+  const interceptor = nock('https://test_host').get(PATH).times(1).reply(200, 'all good')
+  const result = await client.request(METHOD, PATH, {})
+  t.is(result.toString(), 'all good')
+  nock.removeInterceptor(interceptor)
+})
+
 test('should handle http request errors', async t => {
   const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '' })
   const METHOD = 'GET'
   const PATH = '/some/path'
 
-  nock('https://test_host').get(PATH).replyWithError('simulated error')
+  const interceptor = nock('https://test_host').get(PATH).times(1).replyWithError('simulated error')
   const error = await t.throwsAsync(client.request(METHOD, PATH, {}))
   t.truthy(error.message)
   t.assert(error.message.includes('simulated error'))
+  nock.removeInterceptor(interceptor)
 })
+
+test('should support retries on error', async t => {
+  const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '', retry: { retries: 2 } })
+  const METHOD = 'GET'
+  const PATH = '/some/path'
+
+  const interceptor = nock('https://test_host')
+    .get(PATH).times(2).replyWithError('simulated error')
+    .get(PATH).times(1).reply(200, 'now all good')
+  const result = await client.request(METHOD, PATH, {})
+  t.is(result.toString(), 'now all good')
+  nock.removeInterceptor(interceptor)
+})
+
+test('should handle errors even after retries', async t => {
+  const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '', retry: { retries: 2 } })
+  const METHOD = 'GET'
+  const PATH = '/some/path'
+
+  const interceptor = nock('https://test_host')
+    .get(PATH).times(3).replyWithError('simulated error')
+    .get(PATH).times(1).reply(200, 'not enough retries to come here')
+  const error = await t.throwsAsync(client.request(METHOD, PATH, {}))
+  t.truthy(error.message)
+  t.assert(error.message.includes('simulated error'))
+  nock.removeInterceptor(interceptor)
+})
+
+// end client request tests
 
 test('should use default constructor options', t => {
   const client = new Client({ api_key: 'aaa', apihost: 'my_host' })

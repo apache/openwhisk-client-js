@@ -50,6 +50,7 @@
     "standard": "^12.0.1"
   },
   "dependencies": {
+    "async-retry": "^1.3.3",
     "needle": "^2.4.0"
   }
 }
