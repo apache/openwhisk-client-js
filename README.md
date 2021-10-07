@@ -105,7 +105,7 @@ _Client constructor supports the following mandatory parameters:_
 - **key**. Client key to use when connecting to the `apihost` (if `nginx_ssl_verify_client` is turned on in your apihost)
 - **proxy.** HTTP(s) URI for proxy service to forwards requests through. Uses Needle's [built-in proxy support](https://github.com/tomas/needle#request-options).
 - **agent.** Provide custom [http.Agent](https://nodejs.org/api/http.html#http_class_http_agent) implementation.
-- **retry**. Provide a retry options to retry on errors, for example, `{ retries: 2 }`. By default, no retries will be done. Uses [async-retry options](https://github.com/vercel/async-retry#api). Defaults values are different from async-retry, please refer to the api doc.
+- **retry**. Provide a retry options to retry on errors, for example, `{ retries: 2 }`. By default, no retries will be done. Uses [async-retry options](https://github.com/vercel/async-retry#api). Default values are different from async-retry, please refer to the api doc.
 
 ### environment variables
 
