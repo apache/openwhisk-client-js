@@ -27,51 +27,66 @@ const nock = require('nock')
 test('should return response', async t => {
   const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '' })
   const METHOD = 'GET'
-  const PATH = '/some/path'
+  // NOTE: paths must be different as tests are run in parallel and adding/removing nock interceptors will create race conditions.
+  const PATH = '/some/path/1'
 
-  const interceptor = nock('https://test_host').get(PATH).times(1).reply(200, 'all good')
+  const mock = nock('https://test_host').get(PATH).times(1).reply(200, 'all good')
   const result = await client.request(METHOD, PATH, {})
   t.is(result.toString(), 'all good')
-  nock.removeInterceptor(interceptor)
+  mock.interceptors.forEach(nock.removeInterceptor)
 })
 
 test('should handle http request errors', async t => {
   const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '' })
   const METHOD = 'GET'
-  const PATH = '/some/path'
+  const PATH = '/some/path/2'
 
-  const interceptor = nock('https://test_host').get(PATH).times(1).replyWithError('simulated error')
+  const mock = nock('https://test_host').get(PATH).times(1).replyWithError('simulated error')
   const error = await t.throwsAsync(client.request(METHOD, PATH, {}))
   t.truthy(error.message)
   t.assert(error.message.includes('simulated error'))
-  nock.removeInterceptor(interceptor)
+  mock.interceptors.forEach(nock.removeInterceptor)
 })
 
 test('should support retries on error', async t => {
   const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '', retry: { retries: 2 } })
   const METHOD = 'GET'
-  const PATH = '/some/path'
+  const PATH = '/some/path/3'
 
-  const interceptor = nock('https://test_host')
+  const mock = nock('https://test_host')
     .get(PATH).times(2).replyWithError('simulated error')
     .get(PATH).times(1).reply(200, 'now all good')
   const result = await client.request(METHOD, PATH, {})
   t.is(result.toString(), 'now all good')
-  nock.removeInterceptor(interceptor)
+  mock.interceptors.forEach(nock.removeInterceptor)
+})
+
+test('should not retry when no retry config available', async t => {
+  const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '' })
+  const METHOD = 'GET'
+  const PATH = '/some/path/4'
+
+  const mock = nock('https://test_host')
+    .get(PATH).times(1).replyWithError('simulated error')
+    // .get(PATH).times(1).reply(200, 'now all good')
+  const error = await t.throwsAsync(client.request(METHOD, PATH, {}))
+  t.truthy(error.message)
+  t.assert(error.message.includes('simulated error'))
+  mock.interceptors.forEach(nock.removeInterceptor)
 })
 
 test('should handle errors even after retries', async t => {
   const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '', retry: { retries: 2 } })
   const METHOD = 'GET'
-  const PATH = '/some/path'
+  const PATH = '/some/path/5'
 
-  const interceptor = nock('https://test_host')
+  const mock = nock('https://test_host')
     .get(PATH).times(3).replyWithError('simulated error')
     .get(PATH).times(1).reply(200, 'not enough retries to come here')
   const error = await t.throwsAsync(client.request(METHOD, PATH, {}))
   t.truthy(error.message)
   t.assert(error.message.includes('simulated error'))
-  nock.removeInterceptor(interceptor)
+  mock.interceptors.forEach(nock.removeInterceptor)
 })
 
 // end client request tests
