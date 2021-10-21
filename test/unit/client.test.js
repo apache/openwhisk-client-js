@@ -21,18 +21,94 @@ const test = require('ava')
 const Client = require('../../lib/client')
 const http = require('http')
 const nock = require('nock')
+const sinon = require('sinon')
 
-// Note: this has to come before any of the proxy tests, as they interfere
+// Note: All client.request tests have to come before any of the proxy tests, as they interfere
+
+test('should return response', async t => {
+  const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '' })
+  const METHOD = 'GET'
+  // NOTE: paths must be different as tests are run in parallel and adding/removing nock
+  // interceptors for a same path will create race conditions.
+  const PATH = '/return/response'
+
+  const mock = nock('https://test_host').get(PATH).times(1).reply(200, 'all good')
+  const result = await client.request(METHOD, PATH, {})
+  t.is(result.toString(), 'all good')
+  mock.interceptors.forEach(nock.removeInterceptor)
+})
+
 test('should handle http request errors', async t => {
   const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '' })
   const METHOD = 'GET'
-  const PATH = '/some/path'
+  const PATH = '/handle/error'
 
-  nock('https://test_host').get(PATH).replyWithError('simulated error')
+  const mock = nock('https://test_host').get(PATH).times(1).replyWithError('simulated error')
   const error = await t.throwsAsync(client.request(METHOD, PATH, {}))
   t.truthy(error.message)
   t.assert(error.message.includes('simulated error'))
+  mock.interceptors.forEach(nock.removeInterceptor)
 })
+
+test('should support retries on error', async t => {
+  const retrySpy = sinon.spy()
+  const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '', retry: { retries: 2, onRetry: retrySpy } })
+  const METHOD = 'GET'
+  const PATH = '/retry/on/error'
+
+  const mock = nock('https://test_host')
+    .get(PATH).times(2).replyWithError('simulated error')
+    .get(PATH).times(1).reply(200, 'now all good')
+  const result = await client.request(METHOD, PATH, {})
+  t.is(result.toString(), 'now all good')
+  t.is(retrySpy.callCount, 2)
+  mock.interceptors.forEach(nock.removeInterceptor)
+})
+
+test('should not retry on success', async t => {
+  const retrySpy = sinon.spy()
+  const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '', retry: { retries: 10, onRetry: retrySpy } })
+  const METHOD = 'GET'
+  const PATH = '/no/retry/on/sucess'
+
+  const mock = nock('https://test_host')
+    .get(PATH).times(1).reply(200, 'now all good')
+  const result = await client.request(METHOD, PATH, {})
+  t.is(result.toString(), 'now all good')
+  t.is(retrySpy.callCount, 0) // => no retries
+  mock.interceptors.forEach(nock.removeInterceptor)
+})
+
+test('should not retry when no retry config available', async t => {
+  const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '' })
+  const METHOD = 'GET'
+  const PATH = '/no/config/no/retry'
+
+  const mock = nock('https://test_host')
+    .get(PATH).times(1).replyWithError('simulated error')
+    .get(PATH).times(1).reply(200, 'now all good')
+  const error = await t.throwsAsync(client.request(METHOD, PATH, {}))
+  t.truthy(error.message)
+  t.assert(error.message.includes('simulated error'))
+  mock.interceptors.forEach(nock.removeInterceptor)
+})
+
+test('should handle errors even after retries', async t => {
+  const retrySpy = sinon.spy()
+  const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '', retry: { retries: 2, onRetry: retrySpy } })
+  const METHOD = 'GET'
+  const PATH = '/handle/error/on/retry'
+
+  const mock = nock('https://test_host')
+    .get(PATH).times(3).replyWithError('simulated error')
+    .get(PATH).times(1).reply(200, 'not enough retries to come here')
+  const error = await t.throwsAsync(client.request(METHOD, PATH, {}))
+  t.truthy(error.message)
+  t.assert(error.message.includes('simulated error'))
+  mock.interceptors.forEach(nock.removeInterceptor)
+})
+
+// end client request tests
 
 test('should use default constructor options', t => {
   const client = new Client({ api_key: 'aaa', apihost: 'my_host' })

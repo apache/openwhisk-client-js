@@ -33,7 +33,7 @@ cd $UNPACK_DIR
 
 tar -xzf openwhisk-*.tgz
 cd package
-npm install --production --silent
+npm install --only=production --silent
 cd node_modules
 NODE_MODULES_SIZE=$(du  -ks | cut -f 1)
 
