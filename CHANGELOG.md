@@ -19,6 +19,11 @@
 
 # Changelog
 
+## v3.21.5
+
+Support client retries (#227)
+Adding missing properties to Exec TS defs (#225)
+
 ## v3.21.4
 
 Adding missing main property to Exec type (#222)
