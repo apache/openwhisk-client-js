@@ -108,6 +108,34 @@ test('should handle errors even after retries', async t => {
   mock.interceptors.forEach(nock.removeInterceptor)
 })
 
+test('should retry with same url + querystring', async t => {
+  const calledUrls = []
+  const retrySpy = sinon.spy((error) => {
+    if (error && error.options) {
+      calledUrls.push(error.options.url)
+    }
+  })
+  const client = new Client({ api_key: 'secret', apihost: 'test_host', proxy: '', retry: { retries: 3, onRetry: retrySpy } })
+  const METHOD = 'GET'
+  const PATH = '/dont/add/to/querystring'
+  const options = { qs: { bob: 'your uncle' } }
+  const mock = nock('https://test_host')
+    .get(PATH)
+    .query({ bob: 'your uncle' })
+    .times(4)
+    .replyWithError('simulated error')
+    .get(PATH).times(1).reply(200, 'not enough retries to come here')
+
+  const error = await t.throwsAsync(client.request(METHOD, PATH, options))
+  t.truthy(error.message)
+  t.assert(error.message.includes('simulated error'))
+  t.assert(calledUrls.length === 3)
+  t.assert(calledUrls[0] === calledUrls[1])
+  t.assert(calledUrls[0] === calledUrls[2])
+
+  mock.interceptors.forEach(nock.removeInterceptor)
+})
+
 // end client request tests
 
 test('should use default constructor options', t => {
