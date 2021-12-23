@@ -19,6 +19,10 @@
 
 # Changelog
 
+## v3.21.6
+
+fix: Do not modify input params. (#231)
+
 ## v3.21.5
 
 Support client retries (#227)
