@@ -19,6 +19,9 @@
 
 # Changelog
 
+## v3.21.7
+Update dependencies
+
 ## v3.21.6
 
 fix: Do not modify input params. (#231)
