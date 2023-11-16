@@ -1,0 +1,111 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ master ]
+    tags: [ '*' ]
+  pull_request:
+    branches: [ master ]
+    types: [ opened, synchronize, reopened ]
+  schedule:
+    - cron: '30 1 * * 1,3,5'
+
+permissions: read-all
+
+jobs:
+  ci:
+    runs-on: ubuntu-22.04
+    steps:
+      # Checkout just this repo and run scanCode before we do anything else
+      - name: Checkout client-js repo
+        uses: actions/checkout@v3
+        with:
+          path: client-js
+      - name: Scan Code
+        uses: apache/openwhisk-utilities/scancode@master
+
+      # Configure Java, Node.js, and Python environments
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # Run unit tests for this repo
+      - name: Run unit tests
+        working-directory: client-js
+        run: |
+          npm ci
+          npm run lint
+          npm run check-deps-size
+          npm run test:unit
+
+      # Deploy OpenWhisk so we can run this repos integration tests
+      - name: Checkout OpenWhisk core repo
+        uses: actions/checkout@v3
+        with:
+          repository: apache/openwhisk
+          path: core
+      - name: Install python packages needed to deploy OpenWhisk
+        run: |
+          pip install couchdb
+          pip install 'jinja2<3.1' ansible==2.8.18
+          pip install pydocumentdb
+          pip install humanize requests
+      - name: Deploy OpenWhisk
+        working-directory: core/ansible
+        env:
+          ANSIBLE_CMD: "ansible-playbook -i environments/local -e docker_image_prefix=openwhisk -e docker_image_tag=nightly"
+        run: |
+          $ANSIBLE_CMD setup.yml
+          $ANSIBLE_CMD prereq.yml
+          $ANSIBLE_CMD couchdb.yml
+          $ANSIBLE_CMD initdb.yml
+          $ANSIBLE_CMD wipe.yml
+          $ANSIBLE_CMD openwhisk.yml  -e '{"openwhisk_cli":{"installation_mode":"remote","remote":{"name":"OpenWhisk_CLI","dest_name":"OpenWhisk_CLI","location":"https://github.com/apache/openwhisk-cli/releases/download/latest"}}}'
+          $ANSIBLE_CMD apigateway.yml
+          $ANSIBLE_CMD properties.yml # required for to run before routemgmt.yml
+          $ANSIBLE_CMD routemgmt.yml
+          $ANSIBLE_CMD postdeploy.yml
+
+      # Run the intergration tests against the openwhisk deployment
+      - name: Run integration tests
+        working-directory: client-js
+        env:
+          WHISK_DIR: "../core"
+        run: |
+          cat $WHISK_DIR/whisk.properties
+          edgehost=$(cat $WHISK_DIR/whisk.properties | grep edge.host= | sed s/edge\.host=//)
+          key=$(cat $WHISK_DIR/ansible/files/auth.guest)
+          export __OW_API_KEY="$key"
+          export __OW_API_HOST="$edgehost"
+          export __OW_NAMESPACE="guest"
+          export __OW_APIGW_TOKEN="true"
+          export __OW_INSECURE="true"
+          npm run test:integration
