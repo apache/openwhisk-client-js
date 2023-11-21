@@ -18,8 +18,8 @@
 -->
 # Apache OpenWhisk Client for JavaScript
 
-[![Build Status](https://travis-ci.com/apache/openwhisk-client-js.svg?branch=master)](https://travis-ci.com/github/apache/openwhisk-client-js)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Continuous Integration](https://github.com/apache/openwhisk-client-js/actions/workflows/ci.yaml/badge.svg)](https://github.com/apache/openwhisk-client-js/actions/workflows/ci.yaml)
 [![codecov](https://codecov.io/gh/apache/openwhisk-client-js/branch/master/graph/badge.svg)](https://codecov.io/gh/apache/openwhisk-client-js)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
