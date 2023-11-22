@@ -1,6 +1,8 @@
 tools/
 test/
+.asf.yaml
 .editorconfig
 .gitignore
-.travis.yml
+.github/
+.nyc_output
 CONTRIBUTING.md
