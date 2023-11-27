@@ -84,9 +84,9 @@ test('should retrieve routes with apigwToken and basepath', t => {
 
 test('get routes with incorrect parameters', t => {
   const routes = new Routes({ options: {} })
-  t.throws(() => { routes.get() }, /Missing mandatory parameters: basepath or name/)
-  t.throws(() => { routes.get({}) }, /Missing mandatory parameters: basepath or name/)
-  t.throws(() => { routes.get({ basepath: 'id', name: 'id' }) }, /Invalid parameters: use basepath or name, not both/)
+  t.throws(() => { routes.get() }, { message: /Missing mandatory parameters: basepath or name/ })
+  t.throws(() => { routes.get({}) }, { message: /Missing mandatory parameters: basepath or name/ })
+  t.throws(() => { routes.get({ basepath: 'id', name: 'id' }) }, { message: /Invalid parameters: use basepath or name, not both/ })
 })
 
 // OVERRIDE gateway package
@@ -172,7 +172,7 @@ test('list routes providing basepath and name', t => {
       basepath: 'bp',
       name: 'nm'
     })
-  }, /Invalid parameters: use basepath or name, not both/)
+  }, { message: /Invalid parameters: use basepath or name, not both/ })
 })
 
 test('should delete a route with basepath', t => {
@@ -242,7 +242,7 @@ test('should delete a route with parameters', t => {
 test('delete routes without providing basepath or name', t => {
   const client = { options: {} }
   const routes = new Routes(client)
-  return t.throws(() => { routes.delete() }, /Missing mandatory parameters: basepath or name/)
+  return t.throws(() => { routes.delete() }, { message: /Missing mandatory parameters: basepath or name/ })
 })
 
 test('delete routes providing basepath and name', t => {
@@ -253,7 +253,7 @@ test('delete routes providing basepath and name', t => {
       basepath: 'bp',
       name: 'nm'
     })
-  }, /Invalid parameters: use basepath or name, not both/)
+  }, { message: /Invalid parameters: use basepath or name, not both/ })
 })
 
 test('should create a route', t => {
@@ -763,8 +763,8 @@ test('should parse path parameters', t => {
 
 test('create routes missing mandatory parameters', t => {
   const routes = new Routes()
-  t.throws(() => { routes.create() }, /Missing mandatory parameters: relpath, operation, action/)
-  t.throws(() => { routes.create({ relpath: true, operation: true }) }, /Missing mandatory parameters: action/)
-  t.throws(() => { routes.create({ action: true, operation: true }) }, /Missing mandatory parameters: relpath/)
-  t.throws(() => { routes.create({ relpath: true, action: true }) }, /Missing mandatory parameters: operation/)
+  t.throws(() => { routes.create() }, { message: /Missing mandatory parameters: relpath, operation, action/ })
+  t.throws(() => { routes.create({ relpath: true, operation: true }) }, { message: /Missing mandatory parameters: action/ })
+  t.throws(() => { routes.create({ action: true, operation: true }) }, { message: /Missing mandatory parameters: relpath/ })
+  t.throws(() => { routes.create({ relpath: true, action: true }) }, { message: /Missing mandatory parameters: operation/ })
 })

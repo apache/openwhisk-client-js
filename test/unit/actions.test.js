@@ -477,7 +477,7 @@ test('create a new action with concurrency setting', t => {
 
 test('create an action without providing an action body', t => {
   const actions = new Actions()
-  t.throws(() => actions.create({ name: '12345' }), /Missing mandatory action/)
+  t.throws(() => actions.create({ name: '12345' }), { message: /Missing mandatory action/ })
 })
 
 test('create a new action with version parameter', t => {
@@ -556,8 +556,8 @@ test('creating sequence action with invalid sequence parameter', t => {
 
   const actions = new Actions(client)
 
-  t.throws(() => actions.create({ name: '12345', sequence: 'string' }), /Invalid sequence parameter/)
-  t.throws(() => actions.create({ name: '12345', sequence: { foo: 'bar' } }), /Invalid sequence parameter/)
+  t.throws(() => actions.create({ name: '12345', sequence: 'string' }), { message: /Invalid sequence parameter/ })
+  t.throws(() => actions.create({ name: '12345', sequence: { foo: 'bar' } }), { message: /Invalid sequence parameter/ })
 })
 
 test('creating sequence action with empty array', t => {
@@ -565,14 +565,14 @@ test('creating sequence action with empty array', t => {
 
   const actions = new Actions(client)
 
-  t.throws(() => actions.create({ name: '12345', sequence: [] }), /Invalid sequence parameter/)
+  t.throws(() => actions.create({ name: '12345', sequence: [] }), { message: /Invalid sequence parameter/ })
 })
 
 test('creating action with both sequence and action parameters', t => {
   const client = {}
   const actions = new Actions(client)
 
-  t.throws(() => actions.create({ name: '12345', action: 'function main() {}', sequence: 'string' }), /Invalid options parameters/)
+  t.throws(() => actions.create({ name: '12345', action: 'function main() {}', sequence: 'string' }), { message: /Invalid options parameters/ })
 })
 
 test('should pass through requested User-Agent header', t => {

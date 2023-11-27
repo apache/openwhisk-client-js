@@ -172,11 +172,11 @@ test('should send multiple requests for array parameters', t => {
 test('should throw errors when missing resource identifier', t => {
   const resources = new Resources()
 
-  t.throws(() => resources.get(), /Missing resource identifier from parameters, supported parameter names: name/)
-  t.throws(() => resources.invoke(), /Missing resource identifier from parameters, supported parameter names: name/)
-  t.throws(() => resources.create(), /Missing resource identifier from parameters, supported parameter names: name/)
-  t.throws(() => resources.update({}), /Missing resource identifier from parameters, supported parameter names: name/)
-  t.throws(() => resources.delete(), /Missing resource identifier from parameters, supported parameter names: name/)
+  t.throws(() => resources.get(), { message: /Missing resource identifier from parameters, supported parameter names: name/ })
+  t.throws(() => resources.invoke(), { message: /Missing resource identifier from parameters, supported parameter names: name/ })
+  t.throws(() => resources.create(), { message: /Missing resource identifier from parameters, supported parameter names: name/ })
+  t.throws(() => resources.update({}), { message: /Missing resource identifier from parameters, supported parameter names: name/ })
+  t.throws(() => resources.delete(), { message: /Missing resource identifier from parameters, supported parameter names: name/ })
 })
 
 test('should parse action name from identifier', t => {
@@ -188,7 +188,7 @@ test('should parse action name from identifier', t => {
   t.is(resources.parseId({ name: id }), id)
   t.is(resources.parseId({ name: nsId }), id)
   t.is(resources.parseId({ name: nsPackageId }), `package/12345`)
-  t.throws(() => resources.parseId({ name: '/ns' }), /Invalid resource/)
+  t.throws(() => resources.parseId({ name: '/ns' }), { message: /Invalid resource/ })
 })
 
 test('should parse namespace from identifier and options', t => {

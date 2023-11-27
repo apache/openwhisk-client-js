@@ -135,7 +135,7 @@ test('should delete rule from string identifier', t => {
 
 test('should throw error trying to invoke rule', t => {
   const rules = new Rules()
-  return t.throws(() => rules.invoke(), /Operation \(invoke\) not supported/)
+  return t.throws(() => rules.invoke(), { message: /Operation \(invoke\) not supported/ })
 })
 
 test('create a new rule', t => {
@@ -211,21 +211,21 @@ test('create a rule without providing a rule name', t => {
   const rules = new Rules(client)
   return t.throws(() => {
     rules.create({ action: '', trigger: '' })
-  }, /name, ruleName/)
+  }, { message: /name, ruleName/ })
 })
 
 test('create a rule without providing an action name', t => {
   const rules = new Rules()
   return t.throws(() => {
     rules.create({ name: '', trigger: '' })
-  }, /Missing mandatory action parameter/)
+  }, { message: /Missing mandatory action parameter/ })
 })
 
 test('create a rule without providing a trigger name', t => {
   const rules = new Rules()
   return t.throws(() => {
     rules.create({ name: '', action: '' })
-  }, /Missing mandatory trigger parameter/)
+  }, { message: /Missing mandatory trigger parameter/ })
 })
 
 test('update existing rule', t => {
