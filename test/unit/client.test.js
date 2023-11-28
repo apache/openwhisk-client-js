@@ -260,11 +260,11 @@ test('should use options for parameters even if environment parameters are avail
 })
 
 test('should throw error when missing API key option.', t => {
-  t.throws(() => new Client({ api: true }), /Missing api_key parameter./)
+  t.throws(() => new Client({ api: true }), { message: /Missing api_key parameter./ })
 })
 
 test('should throw error when missing both API and API Host options.', t => {
-  t.throws(() => new Client({ api_key: true }), /Missing either api or apihost parameters/)
+  t.throws(() => new Client({ api_key: true }), { message: /Missing either api or apihost parameters/ })
 })
 
 test('should handle multiple api parameter formats', t => {
@@ -403,7 +403,7 @@ test('should return path and status code in error message', t => {
   t.throws(() => client.handleErrors({
     options: { method, url },
     statusCode
-  }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "Response Missing Error Message."`)
+  }), { message: `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "Response Missing Error Message."` })
 })
 
 test('should return response error string in error message', t => {
@@ -415,27 +415,27 @@ test('should return response error string in error message', t => {
     error: { error: 'hello' },
     options: { method, url },
     statusCode
-  }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
+  }), { message: `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"` })
   t.throws(() => client.handleErrors({
     error: { response: { result: { error: 'hello' } } },
     options: { method, url },
     statusCode
-  }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
+  }), { message: `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"` })
   t.throws(() => client.handleErrors({
     error: { response: { result: { error: { error: 'hello' } } } },
     options: { method, url },
     statusCode
-  }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"`)
+  }), { message: `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "hello"` })
   t.throws(() => client.handleErrors({
     error: { response: { result: { error: { statusCode: 404 } } } },
     options: { method, url },
     statusCode
-  }), `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "application error, status code: ${404}"`)
+  }), { message: `${method} ${url} Returned HTTP ${statusCode} (${http.STATUS_CODES[statusCode]}) --> "application error, status code: ${404}"` })
 })
 
 test('should throw errors for non-HTTP response failures', t => {
   const client = new Client({ api_key: true, api: true })
-  t.throws(() => client.handleErrors({ message: 'error message' }), /error message/)
+  t.throws(() => client.handleErrors({ message: 'error message' }), { message: /error message/ })
 })
 
 test('should contain x-namespace-id header when namespace in constructor options', async t => {

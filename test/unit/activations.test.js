@@ -197,5 +197,5 @@ test('should throw when retrieving activation without id', t => {
   const activations = new Activations()
   return t.throws(() => {
     activations.get()
-  }, /Missing mandatory/)
+  }, { message: /Missing mandatory/ })
 })

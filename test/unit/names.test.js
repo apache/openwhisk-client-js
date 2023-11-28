@@ -51,16 +51,16 @@ test('should parse namespace from resource with explicit ns and package but miss
 })
 
 test('should throw error parsing namespace with only namespace', t => {
-  t.throws(() => names.parseNamespace('/ns'), /Invalid resource identifier/)
+  t.throws(() => names.parseNamespace('/ns'), { message: /Invalid resource identifier/ })
 })
 
 test('should throw error parsing namespace with only extra paths', t => {
-  t.throws(() => names.parseNamespace('/ns/pkg/action/extra'), /Invalid resource identifier/)
-  t.throws(() => names.parseNamespace('ns/pkg/action/extra'), /Invalid resource identifier/)
+  t.throws(() => names.parseNamespace('/ns/pkg/action/extra'), { message: /Invalid resource identifier/ })
+  t.throws(() => names.parseNamespace('ns/pkg/action/extra'), { message: /Invalid resource identifier/ })
 })
 
 test('should throw error parsing namespace with missing parts', t => {
-  t.throws(() => names.parseNamespace('/'), /Invalid resource identifier/)
+  t.throws(() => names.parseNamespace('/'), { message: /Invalid resource identifier/ })
 })
 
 test('should parse id from resource without explicit ns', t => {
@@ -84,14 +84,14 @@ test('should parse id from resource with explicit ns and package but missing lea
 })
 
 test('should throw error parsing id with only namespace', t => {
-  t.throws(() => names.parseId('/ns'), /Invalid resource identifier/)
+  t.throws(() => names.parseId('/ns'), { message: /Invalid resource identifier/ })
 })
 
 test('should throw error parsing id with only extra paths', t => {
-  t.throws(() => names.parseId('/ns/pkg/action/extra'), /Invalid resource identifier/)
-  t.throws(() => names.parseId('ns/pkg/action/extra'), /Invalid resource identifier/)
+  t.throws(() => names.parseId('/ns/pkg/action/extra'), { message: /Invalid resource identifier/ })
+  t.throws(() => names.parseId('ns/pkg/action/extra'), { message: /Invalid resource identifier/ })
 })
 
 test('should throw error parsing id with missing parts', t => {
-  t.throws(() => names.parseId('/'), /Invalid resource identifier/)
+  t.throws(() => names.parseId('/'), { message: /Invalid resource identifier/ })
 })

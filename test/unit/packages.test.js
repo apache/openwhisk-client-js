@@ -135,7 +135,7 @@ test('should delete package from identifier', t => {
 
 test('should throw error trying to invoke package', t => {
   const packages = new Packages()
-  return t.throws(() => packages.invoke(), /Operation \(invoke\) not supported/)
+  return t.throws(() => packages.invoke(), { message: /Operation \(invoke\) not supported/ })
 })
 
 test('should create a new package using string id', t => {

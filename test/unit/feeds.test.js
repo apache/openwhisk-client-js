@@ -303,11 +303,11 @@ test('should be able to update feed', t => {
 test('should throw errors without trigger parameter ', t => {
   const client = { options: {} }
   const feeds = new Feeds(client)
-  t.throws(() => feeds.feed('', { feedName: 'myFeed' }), /trigger/)
+  t.throws(() => feeds.feed('', { feedName: 'myFeed' }), { message: /trigger/ })
 })
 
 test('should throw errors without id parameter', t => {
   const client = { options: {} }
   const feeds = new Feeds(client)
-  t.throws(() => feeds.feed('', { trigger: 'myFeed' }), /feedName/)
+  t.throws(() => feeds.feed('', { trigger: 'myFeed' }), { message: /feedName/ })
 })
