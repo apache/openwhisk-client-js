@@ -19,6 +19,10 @@
 
 # Changelog
 
+## v3.21.8
+Update dependencies
+Switched CI from Travis to GitHub Actions
+
 ## v3.21.7
 Update dependencies
 
