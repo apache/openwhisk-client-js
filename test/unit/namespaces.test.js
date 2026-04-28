@@ -55,7 +55,7 @@ test('should list all namespaces, NOT passing through user-agent header (variant
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({ api: 'aaa', api_key: 'aaa' }).params(method, path, options)
+    const parms = await new Client({ api: 'http://aaa', api_key: 'aaa' }).params(method, path, options)
     t.is(parms.headers['User-Agent'], undefined)
   }
 
@@ -71,7 +71,7 @@ test('should list all namespaces, NOT passing through user-agent header (variant
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({ api: 'aaa', api_key: 'aaa', noUserAgent: true }).params(method, path, options)
+    const parms = await new Client({ api: 'http://aaa', api_key: 'aaa', noUserAgent: true }).params(method, path, options)
     t.is(parms.headers['User-Agent'], undefined)
   }
 
@@ -86,7 +86,7 @@ test('should list all namespaces, NOT passing through user-agent header (variant
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({ api: 'aaa', api_key: 'aaa', noUserAgent: true }).params(method, path, options)
+    const parms = await new Client({ api: 'http://aaa', api_key: 'aaa', noUserAgent: true }).params(method, path, options)
     t.is(parms.headers['User-Agent'], undefined)
   }
 
@@ -115,7 +115,7 @@ test('should list all namespaces, using __OW_USER_AGENT', t => {
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({ api: 'aaa', api_key: 'aaa' }).params(method, path, options)
+    const parms = await new Client({ api: 'http://aaa', api_key: 'aaa' }).params(method, path, options)
     t.is(parms.headers['User-Agent'], 'my-useragent')
     delete process.env['__OW_USER_AGENT']
   }
@@ -132,7 +132,7 @@ test('should list all namespaces, NOT using __OW_USER_AGENT when noUserAgent tru
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({ api: 'aaa', api_key: 'aaa', noUserAgent: true }).params(method, path, options)
+    const parms = await new Client({ api: 'http://aaa', api_key: 'aaa', noUserAgent: true }).params(method, path, options)
     t.is(parms.headers['User-Agent'], undefined)
     delete process.env['__OW_USER_AGENT']
   }
@@ -150,7 +150,7 @@ test('should list all namespaces, NOT using __OW_USER_AGENT when user-agent is p
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({ api: 'aaa', api_key: 'aaa' }).params(method, path, options)
+    const parms = await new Client({ api: 'http://aaa', api_key: 'aaa' }).params(method, path, options)
     t.is(parms.headers['User-Agent'], userAgent)
     delete process.env['__OW_USER_AGENT']
   }
@@ -168,7 +168,7 @@ test('should list all namespaces, NOT using __OW_USER_AGENT or user-agent when n
     t.is(method, 'GET')
     t.is(path, `namespaces`)
 
-    const parms = await new Client({ api: 'aaa', api_key: 'aaa', noUserAgent: true }).params(method, path, options)
+    const parms = await new Client({ api: 'http://aaa', api_key: 'aaa', noUserAgent: true }).params(method, path, options)
     t.is(parms.headers['User-Agent'], undefined)
     delete process.env['__OW_USER_AGENT']
   }
