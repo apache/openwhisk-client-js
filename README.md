@@ -619,10 +619,10 @@ Swagger parameter must be a well-formed JSON string, containing a valid Swagger 
 
 ## Debugging
 
-Setting an environment parameter (`DEBUG=needle`) will dump the HTTP requests from the client library and responses received to `stderr`.
+Setting an environment parameter (`NODE_DEBUG=needle`) will dump the HTTP requests from the client library and responses received to `stderr`.
 
 ```bash
-DEBUG=needle node script.js
+NODE_DEBUG=needle node script.js
 ```
 
 This parameter can also be set dynamically at runtime, provided this happens before the `openwhisk` module is required.
