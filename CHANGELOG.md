@@ -19,6 +19,9 @@
 
 # Changelog
 
+## v3.21.9
+Replace deprecated url.parse usage with WHATWG URL API (#282)
+
 ## v3.21.8
 Update dependencies
 Switched CI from Travis to GitHub Actions
