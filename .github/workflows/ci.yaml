@@ -71,28 +71,31 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: apache/openwhisk
+          ref: 2.0.0
           path: core
       - name: Install python packages needed to deploy OpenWhisk
         run: |
           pip install couchdb
           pip install 'jinja2<3.1' ansible==2.8.18
           pip install pydocumentdb
-          pip install humanize requests
+          pip install humanize 'requests<2.32' 'urllib3<2' 'docker<7'
       - name: Deploy OpenWhisk
         working-directory: core/ansible
         env:
           ANSIBLE_CMD: "ansible-playbook -i environments/local -e docker_image_prefix=openwhisk -e docker_image_tag=nightly"
+          ANSIBLE_EXTRA_VARS: '{"scheduler_enable":false,"jmxremote_enabled":"","controller_loadbalancer_spi":"org.apache.openwhisk.core.loadBalancer.ShardingContainerPoolBalancer","invokerReactive_spi":"org.apache.openwhisk.core.invoker.InvokerReactive","invokerServer_spi":"org.apache.openwhisk.core.invoker.DefaultInvokerServer"}'
         run: |
-          $ANSIBLE_CMD setup.yml
-          $ANSIBLE_CMD prereq.yml
-          $ANSIBLE_CMD couchdb.yml
-          $ANSIBLE_CMD initdb.yml
-          $ANSIBLE_CMD wipe.yml
-          $ANSIBLE_CMD openwhisk.yml  -e '{"openwhisk_cli":{"installation_mode":"remote","remote":{"name":"OpenWhisk_CLI","dest_name":"OpenWhisk_CLI","location":"https://github.com/apache/openwhisk-cli/releases/download/latest"}}}' -e db_activation_backend=ElasticSearch
-          $ANSIBLE_CMD apigateway.yml
-          $ANSIBLE_CMD properties.yml # required for to run before routemgmt.yml
-          $ANSIBLE_CMD routemgmt.yml
-          $ANSIBLE_CMD postdeploy.yml
+          $ANSIBLE_CMD setup.yml -e "$ANSIBLE_EXTRA_VARS"
+          $ANSIBLE_CMD prereq.yml -e "$ANSIBLE_EXTRA_VARS"
+          pip install 'requests<2.32' 'urllib3<2' 'docker<7'
+          $ANSIBLE_CMD couchdb.yml -e "$ANSIBLE_EXTRA_VARS"
+          $ANSIBLE_CMD initdb.yml -e "$ANSIBLE_EXTRA_VARS"
+          $ANSIBLE_CMD wipe.yml -e "$ANSIBLE_EXTRA_VARS"
+          $ANSIBLE_CMD openwhisk.yml -e "$ANSIBLE_EXTRA_VARS" -e '{"openwhisk_cli":{"installation_mode":"remote","remote":{"name":"OpenWhisk_CLI","dest_name":"OpenWhisk_CLI","location":"https://github.com/apache/openwhisk-cli/releases/download/latest"}}}'
+          $ANSIBLE_CMD apigateway.yml -e "$ANSIBLE_EXTRA_VARS"
+          $ANSIBLE_CMD properties.yml -e "$ANSIBLE_EXTRA_VARS" # required for to run before routemgmt.yml
+          $ANSIBLE_CMD routemgmt.yml -e "$ANSIBLE_EXTRA_VARS"
+          $ANSIBLE_CMD postdeploy.yml -e "$ANSIBLE_EXTRA_VARS"
 
       # Run the intergration tests against the openwhisk deployment
       - name: Run integration tests
