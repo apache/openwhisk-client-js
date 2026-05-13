@@ -78,7 +78,7 @@ jobs:
           pip install couchdb
           pip install 'jinja2<3.1' ansible==2.8.18
           pip install pydocumentdb
-          pip install humanize 'requests<2.32' 'urllib3<2' 'docker<7'
+          pip install humanize 'requests<2.32' 'urllib3<2' 'docker>=6,<7'
       - name: Deploy OpenWhisk
         working-directory: core/ansible
         env:
@@ -87,7 +87,7 @@ jobs:
         run: |
           $ANSIBLE_CMD setup.yml -e "$ANSIBLE_EXTRA_VARS"
           $ANSIBLE_CMD prereq.yml -e "$ANSIBLE_EXTRA_VARS"
-          pip install 'requests<2.32' 'urllib3<2' 'docker<7'
+          pip install --upgrade 'requests<2.32' 'urllib3<2' 'docker>=6,<7'
           $ANSIBLE_CMD couchdb.yml -e "$ANSIBLE_EXTRA_VARS"
           $ANSIBLE_CMD initdb.yml -e "$ANSIBLE_EXTRA_VARS"
           $ANSIBLE_CMD wipe.yml -e "$ANSIBLE_EXTRA_VARS"
