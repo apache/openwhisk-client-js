@@ -75,19 +75,29 @@ jobs:
           path: core
       - name: Install python packages needed to deploy OpenWhisk
         run: |
-          pip install couchdb
-          pip install 'jinja2<3.1' ansible==2.8.18
-          pip install pydocumentdb
-          pip install humanize 'requests<2.32' 'urllib3<2' 'docker>=6,<7'
+          python3 -m pip install couchdb
+          python3 -m pip install 'jinja2<3.1' ansible==2.8.18
+          python3 -m pip install pydocumentdb
+          python3 -m pip install humanize 'requests<2.32' 'urllib3<2' 'docker>=6,<7'
       - name: Deploy OpenWhisk
         working-directory: core/ansible
         env:
           ANSIBLE_CMD: "ansible-playbook -i environments/local -e docker_image_prefix=openwhisk -e docker_image_tag=nightly"
           ANSIBLE_EXTRA_VARS: '{"scheduler_enable":false,"jmxremote_enabled":"","controller_loadbalancer_spi":"org.apache.openwhisk.core.loadBalancer.ShardingContainerPoolBalancer","invokerReactive_spi":"org.apache.openwhisk.core.invoker.InvokerReactive","invokerServer_spi":"org.apache.openwhisk.core.invoker.DefaultInvokerServer"}'
         run: |
+          PYTHON_BIN="$(command -v python3)"
+          ANSIBLE_CMD="$ANSIBLE_CMD -e ansible_python_interpreter=$PYTHON_BIN"
           $ANSIBLE_CMD setup.yml -e "$ANSIBLE_EXTRA_VARS"
           $ANSIBLE_CMD prereq.yml -e "$ANSIBLE_EXTRA_VARS"
-          pip install --upgrade 'requests<2.32' 'urllib3<2' 'docker>=6,<7'
+          "$PYTHON_BIN" -m pip install --upgrade --force-reinstall 'requests<2.32' 'urllib3<2' 'docker>=6,<7'
+          "$PYTHON_BIN" - <<'PY'
+          import docker
+          import requests
+          import urllib3
+
+          docker_version = getattr(docker, "__version__", getattr(docker, "version", "unknown"))
+          print(f"docker={docker_version} requests={requests.__version__} urllib3={urllib3.__version__}")
+          PY
           $ANSIBLE_CMD couchdb.yml -e "$ANSIBLE_EXTRA_VARS"
           $ANSIBLE_CMD initdb.yml -e "$ANSIBLE_EXTRA_VARS"
           $ANSIBLE_CMD wipe.yml -e "$ANSIBLE_EXTRA_VARS"
